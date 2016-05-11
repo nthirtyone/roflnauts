@@ -1,2 +1,2 @@
 # Duh!
-Not on [Github](http://github.com/).
+There are spritesheets in this directory but they are not on [Github](http://github.com/).
