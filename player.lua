@@ -49,7 +49,6 @@ function Player:new(world, x, y, spritesheet)
 	o.fixture:setCategory(2)
 	o.fixture:setMask(2)
 	o.body:setFixedRotation(true)
-	print(o.body.mass)
 	-- Animation
 	o.initial = o.delay
 	o.current = o.animations.idle
@@ -69,7 +68,7 @@ function Player:update(dt)
 	-- Salto
 	if not self.jumpdouble and self.inAir then
 		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
-	else
+	elseif self.rotate ~= 0 then
 		self.rotate = 0
 	end
 	
