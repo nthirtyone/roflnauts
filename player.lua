@@ -49,7 +49,6 @@ function Player:new(world, x, y, spritesheet)
 	o.fixture:setCategory(2)
 	o.fixture:setMask(2)
 	o.body:setFixedRotation(true)
-	o.body:setLinearDamping(0.1)
 	print(o.body.mass)
 	-- Animation
 	o.initial = o.delay
@@ -59,7 +58,7 @@ end
 
 -- Update callback of `Player`
 function Player:update(dt)
-	-- VERTICAL MOVEMENT
+	-- # VERTICAL MOVEMENT
 	-- Jumping
 	if self.jumpactive and self.jumptimer > 0 then
 		local x,y = self.body:getLinearVelocity()
@@ -74,12 +73,13 @@ function Player:update(dt)
 		self.rotate = 0
 	end
 	
-	-- HORIZONTAL MOVEMENT
+	-- # HORIZONTAL MOVEMENT
 	-- Walking
 	local x,y = self.body:getLinearVelocity()
 	if love.keyboard.isDown(self.key_left) then
 		self.facing = -1
 		self.body:applyForce(-200, 0)
+		-- Controlled speed limit
 		if x < -self.max_velocity then
 			self.body:applyForce(200, 0)
 		end
@@ -87,24 +87,29 @@ function Player:update(dt)
 	if love.keyboard.isDown(self.key_right) then
 		self.facing = 1
 		self.body:applyForce(200, 0)
+		-- Controlled speed limit
 		if x > self.max_velocity then
 			self.body:applyForce(-200, 0)
 		end
 	end
-
-	-- Limit `Player` horizontal speed
-	-- Maximum speed may be actually a little bit higher or lower
-	--[[
-	local x,y = self.body:getLinearVelocity()
-	if x > self.max_velocity then
-		self.body:setLinearVelocity(self.max_velocity, y)
-	end
-	if x < -self.max_velocity then
-		self.body:setLinearVelocity(-self.max_velocity, y)
-	end
-	--]]
 	
-	-- ANIMATIONS
+	-- Custom linear damping
+	if  not self.inAir and
+		not love.keyboard.isDown(self.key_left) and
+		not love.keyboard.isDown(self.key_right)
+	then
+		local face = nil
+		if x < -12 then
+			face = 1
+		elseif x > 12 then
+			face = -1
+		else
+			face = 0
+		end
+		self.body:applyForce(120*face,0)
+	end
+	
+	-- # ANIMATIONS
 	-- Animation
 	self.delay = self.delay - dt
 	if self.delay < 0 then
@@ -181,6 +186,7 @@ function Player:changeAnimation(animation)
 end
 
 -- Punch of `Player`
+-- REWORK NEEDED
 function Player:hit(horizontal, vertical)
 	if vertical == -1 then
 		self:changeAnimation("attack_up")
@@ -188,7 +194,7 @@ function Player:hit(horizontal, vertical)
 		self:changeAnimation("attack_down")
 	else
 		self:changeAnimation("attack")
-		self.body:applyForce(800*self.facing, 0)
+		self.body:applyLinearImpulse(10*self.facing, 0)
 	end
 	for k,n in pairs(Nauts) do
 		if n ~= self then
@@ -216,6 +222,6 @@ end
 
 -- Taking damage of `Player` by successful hit test
 function Player:damage(horizontal, vertical)
-	self.body:applyLinearImpulse((10+10*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
+	self.body:applyLinearImpulse((34+12*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 end
