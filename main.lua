@@ -63,6 +63,13 @@ function love.keyreleased(key)
 end
 
 function love.draw()
+	-- Draw SOME background
+	-- I'm already bored with solid color!
+	love.graphics.setColor(193, 100, 99, 255)
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), 60)
+	love.graphics.setColor(179, 82, 80, 255)
+	love.graphics.rectangle("fill", 0, 160, love.graphics.getWidth(), 40)
+	
 	-- Draw ground
 	for k,platform in pairs(Platforms) do
 		love.graphics.setColor(255,255,255,255)
