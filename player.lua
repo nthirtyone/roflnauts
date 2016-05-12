@@ -50,6 +50,7 @@ function Player:new(world, x, y, spritesheet)
 	o.fixture:setMask(2)
 	o.body:setFixedRotation(true)
 	o.body:setLinearDamping(0.1)
+	print(o.body.mass)
 	-- Animation
 	o.initial = o.delay
 	o.current = o.animations.idle
@@ -58,6 +59,7 @@ end
 
 -- Update callback of `Player`
 function Player:update(dt)
+	-- VERTICAL MOVEMENT
 	-- Jumping
 	if self.jumpactive and self.jumptimer > 0 then
 		local x,y = self.body:getLinearVelocity()
@@ -65,26 +67,44 @@ function Player:update(dt)
 		self.jumptimer = self.jumptimer - dt
 	end
 	
+	-- Salto
+	if not self.jumpdouble and self.inAir then
+		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
+	else
+		self.rotate = 0
+	end
+	
+	-- HORIZONTAL MOVEMENT
 	-- Walking
+	local x,y = self.body:getLinearVelocity()
 	if love.keyboard.isDown(self.key_left) then
 		self.facing = -1
-		local x,y = self.body:getLinearVelocity()
-		if math.abs(x) > self.max_velocity then
-			self.body:applyForce(-200, 0)
-		else
-			self.body:setLinearVelocity(-self.max_velocity/2, y)
+		self.body:applyForce(-200, 0)
+		if x < -self.max_velocity then
+			self.body:applyForce(200, 0)
 		end
 	end
 	if love.keyboard.isDown(self.key_right) then
 		self.facing = 1
-		local x,y = self.body:getLinearVelocity()
-		if math.abs(x) > self.max_velocity then
-			self.body:applyForce(200, 0)
-		else
-			self.body:setLinearVelocity(self.max_velocity/2, y)
+		self.body:applyForce(200, 0)
+		if x > self.max_velocity then
+			self.body:applyForce(-200, 0)
 		end
 	end
+
+	-- Limit `Player` horizontal speed
+	-- Maximum speed may be actually a little bit higher or lower
+	--[[
+	local x,y = self.body:getLinearVelocity()
+	if x > self.max_velocity then
+		self.body:setLinearVelocity(self.max_velocity, y)
+	end
+	if x < -self.max_velocity then
+		self.body:setLinearVelocity(-self.max_velocity, y)
+	end
+	--]]
 	
+	-- ANIMATIONS
 	-- Animation
 	self.delay = self.delay - dt
 	if self.delay < 0 then
@@ -101,25 +121,6 @@ function Player:update(dt)
 			self:changeAnimation("idle")
 		end
 	end
-	
-	-- Salto mothafocka
-	if not self.jumpdouble and self.inAir then
-		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
-	else
-		self.rotate = 0
-	end
-	
-	--[[
-	-- Limit `Player` horizontal speed
-	-- Maximum speed may be actually a little bit higher or lower
-	local x,y = self.body:getLinearVelocity()
-	if x > self.max_velocity then
-		self.body:setLinearVelocity(self.max_velocity, y)
-	end
-	if x < -self.max_velocity then
-		self.body:setLinearVelocity(-self.max_velocity, y)
-	end
-	--]]
 end
 
 -- Keypressed callback of `Player`

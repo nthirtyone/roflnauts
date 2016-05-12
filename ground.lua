@@ -19,6 +19,6 @@ function Ground:new (world, x, y, shape, sprite)
 	o.fixture = love.physics.newFixture(o.body, o.shape)
 	o.sprite  = love.graphics.newImage(sprite)
 	o.fixture:setCategory(1)
-	o.fixture:setFriction(0.7)
+	o.fixture:setFriction(0.75)
 	return o
 end
