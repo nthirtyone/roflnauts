@@ -1,5 +1,4 @@
 # Authors
-**Not in repo. Yet.**
 ### Original
 All original Roflnauts sprites are made by [Vlambeer](http://www.vlambeer.com/):
 - *clunk.png*
