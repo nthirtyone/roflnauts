@@ -57,6 +57,10 @@ function love.keypressed (key)
 	if key == "x" then
 		debug = not debug
 	end
+	--
+	if key == "z" then
+		camera.scale = (camera.scale % 2) + 1
+	end
 	-- Players
 	for k,naut in pairs(Nauts) do
 		naut:keypressed(key)
@@ -74,19 +78,20 @@ function love.draw ()
 	-- Draw SOME background
 	-- I'm already bored with solid color!
 	love.graphics.setColor(193, 100, 99, 255)
-	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), 60)
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.25)
 	love.graphics.setColor(179, 82, 80, 255)
-	love.graphics.rectangle("fill", 0, 160, love.graphics.getWidth(), 40)
+	love.graphics.rectangle("fill", 0, love.graphics.getHeight()*0.8, love.graphics.getWidth(), love.graphics.getHeight()*0.2)
 	
 	local offset_x, offset_y = camera:getOffsets()
+	local scale = camera.scale
 	-- Draw ground
 	for k,platform in pairs(Platforms) do
-		platform:draw(offset_x, offset_y, debug)
+		platform:draw(offset_x, offset_y, scale, debug)
 	end
 	
 	-- Draw player
 	for k,naut in pairs(Nauts) do
-		naut:draw(offset_x, offset_y, debug)
+		naut:draw(offset_x, offset_y, scale, debug)
 	end
 end
 

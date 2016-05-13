@@ -5,6 +5,7 @@
 Camera = {
 	x = 0,
 	y = 0,
+	scale = 4,
 	follow = nil
 }
 
@@ -39,11 +40,11 @@ end
 
 -- Move follow
 function Camera:moveFollow ()
-	local x,y,i = 145, 90, 1
+	local x,y,i = 145, 120, 1
 	for k,point in pairs(Nauts) do
 		i = i + 1
 		x = math.max(math.min(point.body:getX(),290),0) + x
-		y = math.max(math.min(point.body:getY(),180),0) + y
+		y = math.max(math.min(point.body:getY(),180),20) + y
 	end
 	x = x / i - 145
 	y = y / i - 90

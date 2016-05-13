@@ -185,14 +185,14 @@ function Player:keyreleased (key)
 end
 
 -- Draw of `Player`
-function Player:draw (offset_x, offset_y, debug)
+function Player:draw (offset_x, offset_y, scale, debug)
 	-- defaults
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
 	local debug = debug or false
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.current[self.frame], self.body:getX()+offset_x, self.body:getY()+offset_y, self.rotate, self.facing, 1, 12, 15)
+	love.graphics.draw(self.sprite, self.current[self.frame], (self.body:getX()+offset_x)*scale, (self.body:getY()+offset_y)*scale, self.rotate, self.facing*scale, 1*scale, 12, 15)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(50, 255, 50, 100)
