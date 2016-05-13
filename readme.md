@@ -1,2 +1,2 @@
-# Notnautz
-Repository of some prototype games.
+# Notnauts
+Well, yep.
