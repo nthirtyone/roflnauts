@@ -38,9 +38,10 @@ local animations = {
 	},
 	damage = {
 		[1] = love.graphics.newQuad(326, 1, 24,24, 376,26),
-		[2] = love.graphics.newQuad(326, 1, 24,24, 376,26),
-		[3] = love.graphics.newQuad(351, 1, 24,24, 376,26),
-		frames = 3,
+		[2] = love.graphics.newQuad(351, 1, 24,24, 376,26),
+		[3] = love.graphics.newQuad(326, 1, 24,24, 376,26),
+		[4] = love.graphics.newQuad(351, 1, 24,24, 376,26),
+		frames = 4,
 		repeated = false
 	},
 }
