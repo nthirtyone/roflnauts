@@ -38,7 +38,7 @@ Player = {
 }
 
 -- Constructor of `Player`
-function Player:new(world, x, y, spritesheet)
+function Player:new (world, x, y, spritesheet)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
@@ -59,7 +59,7 @@ function Player:new(world, x, y, spritesheet)
 end
 
 -- Update callback of `Player`
-function Player:update(dt)
+function Player:update (dt)
 	-- # VERTICAL MOVEMENT
 	-- Jumping
 	if self.jumpactive and self.jumptimer > 0 then
@@ -131,7 +131,7 @@ function Player:update(dt)
 end
 
 -- Keypressed callback of `Player`
-function Player:keypressed(key)
+function Player:keypressed (key)
 	-- Jumping
 	if key == self.key_jump then
 		if not self.inAir then
@@ -168,7 +168,7 @@ function Player:keypressed(key)
 end
 
 -- Keyreleased callback of `Player`
-function Player:keyreleased(key)
+function Player:keyreleased (key)
 	-- Jumping
 	if key == self.key_jump then
 		self.jumpactive = false
@@ -184,6 +184,27 @@ function Player:keyreleased(key)
 	end
 end
 
+-- Draw of `Player`
+function Player:draw (offset_x, offset_y, debug)
+	-- defaults
+	local offset_x = offset_x or 0
+	local offset_y = offset_y or 0
+	local debug = debug or false
+	-- sprite draw
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.draw(self.sprite, self.current[self.frame], self.body:getX(), self.body:getY(), self.rotate, self.facing, 1, 12, 15)
+	-- debug draw
+	if debug then
+		love.graphics.setColor(50, 255, 50, 100)
+		love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.points(self.body:getX()+12*self.facing,self.body:getY()-2)
+		love.graphics.points(self.body:getX()+ 6*self.facing,self.body:getY()+2)
+		love.graphics.points(self.body:getX()+18*self.facing,self.body:getY()+2)
+		love.graphics.points(self.body:getX()+12*self.facing,self.body:getY()+6)
+	end
+end
+
 -- Change animation of `Player`
 -- idle, walk, attack, attack_up, attack_down, damage
 function Player:changeAnimation(animation)
@@ -194,7 +215,7 @@ end
 
 -- Punch of `Player`
 -- REWORK NEEDED
-function Player:hit(horizontal, vertical)
+function Player:hit (horizontal, vertical)
 	if vertical == -1 then
 		self:changeAnimation("attack_up")
 	elseif vertical == 1 then
@@ -228,7 +249,7 @@ function Player:hit(horizontal, vertical)
 end
 
 -- Taking damage of `Player` by successful hit test
-function Player:damage(horizontal, vertical)
+function Player:damage (horizontal, vertical)
 	self.body:applyLinearImpulse((34+12*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 end

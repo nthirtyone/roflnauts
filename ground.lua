@@ -1,5 +1,8 @@
 -- `Ground`
+-- Static platform physical object with a sprite. `Players` can walk on it.
 -- Collision category: [1]
+
+-- WHOLE CODE HAS FLAG OF "need a cleanup"
 
 -- Metatable of `Ground`
 -- nils initialized in constructor
@@ -21,4 +24,20 @@ function Ground:new (world, x, y, shape, sprite)
 	o.fixture:setCategory(1)
 	o.fixture:setFriction(0.2)
 	return o
+end
+
+-- Draw of `Ground`
+function Ground:draw (offset_x, offset_y, debug)
+	-- defaults
+	local offset_x = offset_x or 0
+	local offset_y = offset_y or 0
+	local debug = debug or false
+	-- sprite draw
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.draw(self.sprite, self.body:getX()-math.ceil(self.sprite:getWidth()/2), self.body:getY())
+	-- debug draw
+	if debug then
+		love.graphics.setColor(220, 220, 220, 100)
+		love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+	end
 end

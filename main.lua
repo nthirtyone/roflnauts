@@ -1,9 +1,12 @@
+-- "NOTNAUTS"
+-- WHOLE CODE HAS FLAG OF "need a cleanup"
+
 require "ground"
 require "player"
 
 debug = false
 
-function love.load()
+function love.load ()
 	-- Graphics
 	love.graphics.setBackgroundColor(189, 95, 93)
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -35,7 +38,7 @@ function love.load()
 	Nauts[2].key_hit = "g"
 end
 
-function love.update(dt)
+function love.update (dt)
 	-- Put world in motion!
 	world:update(dt)
 	-- Players
@@ -44,7 +47,7 @@ function love.update(dt)
 	end
 end
 
-function love.keypressed(key)
+function love.keypressed (key)
 	-- Switch hitbox display on/off
 	if key == "x" then
 		debug = not debug
@@ -62,7 +65,7 @@ function love.keyreleased(key)
 	end
 end
 
-function love.draw()
+function love.draw ()
 	-- Draw SOME background
 	-- I'm already bored with solid color!
 	love.graphics.setColor(193, 100, 99, 255)
@@ -72,31 +75,16 @@ function love.draw()
 	
 	-- Draw ground
 	for k,platform in pairs(Platforms) do
-		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(platform.sprite, platform.body:getX()-math.ceil(platform.sprite:getWidth()/2), platform.body:getY())
-		if debug then
-			love.graphics.setColor(220, 220, 220, 100)
-			love.graphics.polygon("fill", platform.body:getWorldPoints(platform.shape:getPoints()))
-		end
+		platform:draw(0, 0, debug)
 	end
 	
 	-- Draw player
 	for k,naut in pairs(Nauts) do
-		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(naut.sprite, naut.current[naut.frame], naut.body:getX(), naut.body:getY(), naut.rotate, naut.facing, 1, 12, 15)
-		if debug then
-			love.graphics.setColor(50, 255, 50, 100)
-			love.graphics.polygon("fill", naut.body:getWorldPoints(naut.shape:getPoints()))
-			love.graphics.setColor(255,255,255,255)
-			love.graphics.points(naut.body:getX()+12*naut.facing,naut.body:getY()-2)
-			love.graphics.points(naut.body:getX()+6*naut.facing,naut.body:getY()+2)
-			love.graphics.points(naut.body:getX()+18*naut.facing,naut.body:getY()+2)
-			love.graphics.points(naut.body:getX()+12*naut.facing,naut.body:getY()+6)
-		end
+		naut:draw(0, 0, debug)
 	end
 end
 
-function beginContact(a, b, coll)
+function beginContact (a, b, coll)
 	local x,y = coll:getNormal()
 	if y == -1 then
 		print(b:getUserData().name .. " is not in air")
@@ -105,7 +93,7 @@ function beginContact(a, b, coll)
 	end
 end
 
-function endContact(a, b, coll)
+function endContact (a, b, coll)
 	print(b:getUserData().name .. " is in air")
 	b:getUserData().inAir = true
 end
