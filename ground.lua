@@ -34,7 +34,7 @@ function Ground:draw (offset_x, offset_y, debug)
 	local debug = debug or false
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.body:getX()-math.ceil(self.sprite:getWidth()/2), self.body:getY())
+	love.graphics.draw(self.sprite, self.body:getX()-math.ceil(self.sprite:getWidth()/2)+offset_x, self.body:getY()+offset_y)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(220, 220, 220, 100)

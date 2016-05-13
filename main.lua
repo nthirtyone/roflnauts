@@ -3,6 +3,7 @@
 
 require "ground"
 require "player"
+require "camera"
 
 debug = false
 
@@ -15,7 +16,7 @@ function love.load ()
 	love.physics.setMeter(64)
 	world = love.physics.newWorld(0, 9.81*64, true)
 	world:setCallbacks(beginContact, endContact, preSolve, postSolve)
-
+	
 	-- Platforms (`Ground`)
 	Platforms = {}
 	table.insert(Platforms, Ground:new(world, 290/2, 180/2, {-91,0, 90,0, 90,10, 5,76, -5,76, -91,10}, "assets/platform_big.png"))
@@ -36,11 +37,15 @@ function love.load ()
 	Nauts[2].key_down = "s"
 	Nauts[2].key_jump = "h"
 	Nauts[2].key_hit = "g"
+	
+	-- Camera
+	camera = Camera:new()
 end
 
 function love.update (dt)
 	-- Put world in motion!
 	world:update(dt)
+	camera:moveFollow()
 	-- Players
 	for k,naut in pairs(Nauts) do
 		naut:update(dt)
@@ -73,14 +78,15 @@ function love.draw ()
 	love.graphics.setColor(179, 82, 80, 255)
 	love.graphics.rectangle("fill", 0, 160, love.graphics.getWidth(), 40)
 	
+	local offset_x, offset_y = camera:getOffsets()
 	-- Draw ground
 	for k,platform in pairs(Platforms) do
-		platform:draw(0, 0, debug)
+		platform:draw(offset_x, offset_y, debug)
 	end
 	
 	-- Draw player
 	for k,naut in pairs(Nauts) do
-		naut:draw(0, 0, debug)
+		naut:draw(offset_x, offset_y, debug)
 	end
 end
 

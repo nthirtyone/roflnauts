@@ -192,7 +192,7 @@ function Player:draw (offset_x, offset_y, debug)
 	local debug = debug or false
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.current[self.frame], self.body:getX(), self.body:getY(), self.rotate, self.facing, 1, 12, 15)
+	love.graphics.draw(self.sprite, self.current[self.frame], self.body:getX()+offset_x, self.body:getY()+offset_y, self.rotate, self.facing, 1, 12, 15)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(50, 255, 50, 100)
