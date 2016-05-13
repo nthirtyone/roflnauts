@@ -1,5 +1,8 @@
 -- `Player`
+-- Entity controlled by a player. It has a physical body and a sprite. Can play animations and interact with other instances of the same class.
 -- Collision category: [2]
+
+-- WHOLE CODE HAS FLAG OF "need a cleanup"
 
 -- Metatable of `Player`
 -- nils initialized in constructor
@@ -66,7 +69,7 @@ function Player:update(dt)
 	end
 	
 	-- Salto
-	if not self.jumpdouble and self.inAir then
+	if not self.jumpdouble and self.inAir and (self.current == self.animations.walk or self.current == self.animations.idle) then
 		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
 	elseif self.rotate ~= 0 then
 		self.rotate = 0
@@ -133,6 +136,11 @@ function Player:keypressed(key)
 	if key == self.key_jump then
 		if not self.inAir then
 			self.jumpactive = true
+			if (self.current == self.animations.attack) or 
+			   (self.current == self.animations.attack_up) or
+			   (self.current == self.animations.attack_down) then
+				self:changeAnimation("idle")
+			end
 		elseif self.jumpdouble then
 			self.jumpactive = true
 			self.jumpdouble = false
