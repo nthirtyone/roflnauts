@@ -19,10 +19,10 @@ function love.load ()
 	
 	-- Platforms (`Ground`)
 	Platforms = {}
-	table.insert(Platforms, Ground:new(world, 290/2, 180/2, {-91,0, 90,0, 90,10, 5,76, -5,76, -91,10}, "assets/platform_big.png"))
-	table.insert(Platforms, Ground:new(world, 290/2+140, 180/2+50, {-26,0, 26,0, 26,30, -26,30}, "assets/platform_small.png"))
-	table.insert(Platforms, Ground:new(world, 290/2-140, 180/2+50, {-26,0, 26,0, 26,30, -26,30}, "assets/platform_small.png"))
-	table.insert(Platforms, Ground:new(world, 290/2, 180/2-50, {-17,0, 17,0, 17,17, -17,17}, "assets/platform_top.png"))
+	table.insert(Platforms, Ground:new(world, 290/2, 180/2, {-91,1, 90,1, 90,10, 5,76, -5,76, -91,10}, "assets/platform_big.png"))
+	table.insert(Platforms, Ground:new(world, 290/2+140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png"))
+	table.insert(Platforms, Ground:new(world, 290/2-140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png"))
+	table.insert(Platforms, Ground:new(world, 290/2, 180/2-50, {-17,1, 17,1, 17,17, -17,17}, "assets/platform_top.png"))
 	
 	-- Nauts (`Player`)
 	Nauts = {}
@@ -59,7 +59,7 @@ function love.keypressed (key)
 	end
 	--
 	if key == "z" then
-		camera.scale = (camera.scale % 2) + 1
+		camera.scale = (camera.scale % 4) + 1
 	end
 	-- Players
 	for k,naut in pairs(Nauts) do

@@ -30,17 +30,9 @@ function Camera:setPosition (x, y)
 	self.x, self.y = x, y
 end
 
--- Add follow position
-function Camera:addFollow (x, y, w)
-	local w = 1
-	if x ~= nil and y ~= nil then
-		table.insert(self.follow, {["x"] = x, ["y"] = y, ["w"] = w})
-	end
-end
-
 -- Move follow
 function Camera:moveFollow ()
-	local x,y,i = 145, 120, 1
+	local x,y,i = 105, 120, 1
 	for k,point in pairs(Nauts) do
 		i = i + 1
 		x = math.max(math.min(point.body:getX(),290),0) + x
