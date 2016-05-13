@@ -12,6 +12,8 @@ All original Roflnauts sprites are made by [Vlambeer](http://www.vlambeer.com/):
 - *platform_big.png*
 - *platform_small.png*
 - *platform_top.png*
+- *cloud_big.png*
+- *cloud_small.png*
 
 ### Sequel
 No community sprites used yet.

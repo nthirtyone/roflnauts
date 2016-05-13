@@ -82,8 +82,10 @@ function love.draw ()
 	love.graphics.setColor(179, 82, 80, 255)
 	love.graphics.rectangle("fill", 0, love.graphics.getHeight()*0.8, love.graphics.getWidth(), love.graphics.getHeight()*0.2)
 	
+	-- Get camera (like this, for now ;_; pass camera object to draw function?)
 	local offset_x, offset_y = camera:getOffsets()
 	local scale = camera.scale
+	
 	-- Draw ground
 	for k,platform in pairs(Platforms) do
 		platform:draw(offset_x, offset_y, scale, debug)
