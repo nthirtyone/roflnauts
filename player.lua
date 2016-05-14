@@ -214,7 +214,7 @@ function Player:changeAnimation(animation)
 end
 
 -- Punch of `Player`
--- REWORK NEEDED
+-- REWORK NEEDED Issue #8
 function Player:hit (horizontal, vertical)
 	if vertical == -1 then
 		self:changeAnimation("attack_up")
