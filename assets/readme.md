@@ -10,7 +10,7 @@ All original Roflnauts sprites are made by [Vlambeer](http://www.vlambeer.com/):
 - **Froggy**
 - **Leon**
 - **Lonestar**
-- *Voltar**
+- **Voltar**
 - **Yuri**
 - *platform_big*
 - *platform_small*
