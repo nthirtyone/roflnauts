@@ -15,7 +15,7 @@ function love.load ()
 	-- World physics
 	love.physics.setMeter(64)
 	world = love.physics.newWorld(0, 9.81*64, true)
-	world:setCallbacks(beginContact, endContact, preSolve, postSolve)
+	world:setCallbacks(beginContact, endContact)
 	
 	-- Platforms (`Ground`)
 	Platforms = {}

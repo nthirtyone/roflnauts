@@ -1,5 +1,5 @@
 -- `Cloud`
--- That white thing moving in the background.
+-- That white thing moving in the background. 
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
