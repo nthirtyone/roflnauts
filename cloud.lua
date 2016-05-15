@@ -5,10 +5,10 @@
 
 -- Metatable of `Cloud`
 Cloud = {
-	x = 0, -- position horizontal
-	y = 0, -- position vertical
-	t = 1, -- type (sprite number)
-	v = 6, -- velocity
+	x = 0,  -- position horizontal
+	y = 0,  -- position vertical
+	t = 1,  -- type (sprite number)
+	v = 13, -- velocity
 	sprite = love.graphics.newImage("assets/clouds.png"),
 	quads = {
 		[1] = love.graphics.newQuad(  1,  1, 158,47, 480,49),
