@@ -31,9 +31,17 @@ end
 
 -- Update of `Cloud`, returns x for world to delete cloud after reaching right corner
 function Cloud:update(dt)
-	return x
+	self.x = self.x + 5*dt
+	return self.x
 end
 
 -- Draw `Cloud`
-function Cloud:draw()
+function Cloud:draw(offset_x, offset_y, scale)
+	-- defaults
+	local offset_x = offset_x or 0
+	local offset_y = offset_y or 0
+	local debug = debug or false
+	-- draw
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.draw(self.sprite, self.quads[t], (self.x+offset_x)*scale, (self.y+offset_y)*scale, 0, scale, scale)
 end
