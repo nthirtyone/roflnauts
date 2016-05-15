@@ -6,11 +6,15 @@
 -- Metatable of `World`
 -- nils initialized in constructor
 World = {
+	-- inside
 	world = nil,
 	Nauts = nil,
 	Platforms = nil,
 	Clouds = nil,
-	camera = nil
+	camera = nil,
+	-- cloud generator
+	clouds_delay = 6,
+	clouds_initial = nil
 }
 
 -- Constructor of `World` ZA WARUDO!
@@ -34,6 +38,11 @@ function World:new()
 	math.randomseed(os.time())
 	-- Create camera
 	o.camera = Camera:new()
+	-- Cloud generator
+	o.clouds_initial = o.clouds_delay
+	for i=1,5 do
+		o:randomizeCloud(false)
+	end
 	return o
 end
 
@@ -53,12 +62,21 @@ function World:createCloud(x, y, t, v)
 end
 
 -- Randomize Cloud creation
-function World:randomizeCloud()
+function World:randomizeCloud(outside)
+	if outside == nil then
+		outside = true
+	else
+		outside = outside
+	end
 	local x,y,t,v
-	x = -200+math.random(-20,20)
+	if outside then
+		x = -250+math.random(-30,30)
+	else
+		x = math.random(-200,250)
+	end
 	y = math.random(0, 160)
 	t = math.random(1,3)
-	v = math.random(4,14)
+	v = math.random(8,18)
 	self:createCloud(x, y, t, v)
 end
 
@@ -73,8 +91,20 @@ function World:update(dt)
 		naut:update(dt)
 	end
 	-- Clouds
+	-- generator
+	local n = table.getn(self.Clouds)
+	self.clouds_delay = self.clouds_delay - dt
+	if self.clouds_delay < 0 and
+	   n < 12
+	then
+		self:randomizeCloud()
+		self.clouds_delay = self.clouds_delay + self.clouds_initial
+	end
+	-- movement
 	for _,cloud in pairs(self.Clouds) do
-		cloud:update(dt)
+		if cloud:update(dt) > 340 then
+			table.remove(self.Clouds, _)
+		end
 	end
 end
 
