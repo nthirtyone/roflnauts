@@ -1,112 +1,60 @@
 -- "NOTNAUTS"
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
+require "world"
 require "ground"
 require "player"
 require "camera"
+require "cloud"
 
+-- Temporary debug
 debug = false
 
+-- Load
 function love.load ()
 	-- Graphics
 	love.graphics.setBackgroundColor(189, 95, 93)
 	love.graphics.setDefaultFilter("nearest", "nearest")
 	
-	-- World physics
-	love.physics.setMeter(64)
-	world = love.physics.newWorld(0, 9.81*64, true)
-	world:setCallbacks(beginContact, endContact)
-	
-	-- Platforms (`Ground`)
-	Platforms = {}
-	table.insert(Platforms, Ground:new(world, 290/2, 180/2, {-91,1, 90,1, 90,10, 5,76, -5,76, -91,10}, "assets/platform_big.png"))
-	table.insert(Platforms, Ground:new(world, 290/2+140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png"))
-	table.insert(Platforms, Ground:new(world, 290/2-140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png"))
-	table.insert(Platforms, Ground:new(world, 290/2, 180/2-50, {-17,1, 17,1, 17,17, -17,17}, "assets/platform_top.png"))
-	
-	-- Nauts (`Player`)
-	Nauts = {}
-	table.insert(Nauts, Player:new(world, 290/2-10, 180/2 - 80, "assets/leon.png"))
-	table.insert(Nauts, Player:new(world, 290/2+10, 180/2 - 80, "assets/lonestar.png"))
-	
+	-- ZU WARUDO!
+	w = World:new()
+	w:createPlatform(290/2, 180/2, {-91,1, 90,1, 90,10, 5,76, -5,76, -91,10}, "assets/platform_big.png")
+	w:createPlatform(290/2+140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png")
+	w:createPlatform(290/2-140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png")
+	w:createPlatform(290/2, 180/2-50, {-17,1, 17,1, 17,17, -17,17}, "assets/platform_top.png")
+	w:createNaut(290/2-10, 180/2 - 80, "assets/leon.png")
+	w:createNaut(290/2+10, 180/2 - 80, "assets/lonestar.png")
+
 	-- Temporary settings for second player
-	Nauts[2].name = "Player2"
-	Nauts[2].key_left = "a"
-	Nauts[2].key_right = "d"
-	Nauts[2].key_up = "w"
-	Nauts[2].key_down = "s"
-	Nauts[2].key_jump = "h"
-	Nauts[2].key_hit = "g"
-	
-	-- Camera
-	camera = Camera:new()
+	w.Nauts[2].name = "Player2"
+	w.Nauts[2].key_left = "a"
+	w.Nauts[2].key_right = "d"
+	w.Nauts[2].key_up = "w"
+	w.Nauts[2].key_down = "s"
+	w.Nauts[2].key_jump = "h"
+	w.Nauts[2].key_hit = "g"
 end
 
+-- Update
 function love.update (dt)
-	-- Put world in motion!
-	world:update(dt)
-	camera:moveFollow()
-	-- Players
-	for k,naut in pairs(Nauts) do
-		naut:update(dt)
-	end
+	w:update(dt)
 end
 
+-- KeyPressed
 function love.keypressed (key)
+	w:keypressed(key)
 	-- Switch hitbox display on/off
 	if key == "x" then
 		debug = not debug
 	end
-	--
-	if key == "z" then
-		camera.scale = (camera.scale % 4) + 1
-	end
-	-- Players
-	for k,naut in pairs(Nauts) do
-		naut:keypressed(key)
-	end
 end
 
+-- KeyReleased
 function love.keyreleased(key)
-	-- Players
-	for k,naut in pairs(Nauts) do
-		naut:keyreleased(key)
-	end
+	w:keyreleased(key)
 end
 
+-- Draw
 function love.draw ()
-	-- Draw SOME background
-	-- I'm already bored with solid color!
-	love.graphics.setColor(193, 100, 99, 255)
-	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.25)
-	love.graphics.setColor(179, 82, 80, 255)
-	love.graphics.rectangle("fill", 0, love.graphics.getHeight()*0.8, love.graphics.getWidth(), love.graphics.getHeight()*0.2)
-	
-	-- Get camera (like this, for now ;_; pass camera object to draw function?)
-	local offset_x, offset_y = camera:getOffsets()
-	local scale = camera.scale
-	
-	-- Draw ground
-	for k,platform in pairs(Platforms) do
-		platform:draw(offset_x, offset_y, scale, debug)
-	end
-	
-	-- Draw player
-	for k,naut in pairs(Nauts) do
-		naut:draw(offset_x, offset_y, scale, debug)
-	end
-end
-
-function beginContact (a, b, coll)
-	local x,y = coll:getNormal()
-	if y == -1 then
-		print(b:getUserData().name .. " is not in air")
-		b:getUserData().inAir = false
-		b:getUserData().jumpdouble = true
-	end
-end
-
-function endContact (a, b, coll)
-	print(b:getUserData().name .. " is in air")
-	b:getUserData().inAir = true
+	w:draw()
 end

@@ -224,7 +224,8 @@ function Player:hit (horizontal, vertical)
 		self:changeAnimation("attack")
 		self.body:applyLinearImpulse(10*self.facing, 0)
 	end
-	for k,n in pairs(Nauts) do
+	-- w.Nauts [!] temporary
+	for k,n in pairs(w.Nauts) do
 		if n ~= self then
 			local didHit = false
 			if n.fixture:testPoint(self.body:getX()+12*horizontal,self.body:getY()-2) then
