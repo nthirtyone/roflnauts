@@ -29,7 +29,9 @@ function World:new()
 	local p = {}
 	o.Platforms = {}
 	local c = {}
-	o.Clouds = c
+	o.Clouds   = c
+	-- Random init
+	math.randomseed(os.time())
 	-- Create camera
 	o.camera = Camera:new()
 	return o
@@ -46,8 +48,18 @@ function World:createNaut(x, y, sprite)
 end
 
 -- Add new cloud to the world
-function World:createCloud(x, y, t)
-	table.insert(self.Clouds, Cloud:new(x, y, t))
+function World:createCloud(x, y, t, v)
+	table.insert(self.Clouds, Cloud:new(x, y, t, v))
+end
+
+-- Randomize Cloud creation
+function World:randomizeCloud()
+	local x,y,t,v
+	x = -200+math.random(-20,20)
+	y = math.random(0, 160)
+	t = math.random(1,3)
+	v = math.random(4,14)
+	self:createCloud(x, y, t, v)
 end
 
 -- Update ZU WARUDO
@@ -59,6 +71,10 @@ function World:update(dt)
 	-- Nauts
 	for _,naut in pairs(self.Nauts) do
 		naut:update(dt)
+	end
+	-- Clouds
+	for _,cloud in pairs(self.Clouds) do
+		cloud:update(dt)
 	end
 end
 
@@ -87,6 +103,11 @@ function World:draw()
 	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
 	local scale = self.camera.scale
+	
+	-- Draw clouds
+	for _,cloud in pairs(self.Clouds) do
+		local foo = cloud:draw(offset_x, offset_y, scale)
+	end
 	
 	-- Draw ground
 	for _,platform in pairs(self.Platforms) do

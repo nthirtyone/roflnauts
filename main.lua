@@ -25,6 +25,10 @@ function love.load ()
 	w:createNaut(290/2-10, 180/2 - 80, "assets/leon.png")
 	w:createNaut(290/2+10, 180/2 - 80, "assets/lonestar.png")
 
+	w:randomizeCloud()
+	w:randomizeCloud()
+	w:randomizeCloud()
+	
 	-- Temporary settings for second player
 	w.Nauts[2].name = "Player2"
 	w.Nauts[2].key_left = "a"
