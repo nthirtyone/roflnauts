@@ -24,12 +24,12 @@ function World:new()
 	o.world = love.physics.newWorld(0, 9.81*64, true)
 	o.world:setCallbacks(o.beginContact, o.endContact)
 	-- Empty tables for objects
-	local c = {}
-	o.Clouds = c
 	local n = {}
 	o.Nauts = n
 	local p = {}
 	o.Platforms = {}
+	local c = {}
+	o.Clouds = c
 	-- Create camera
 	o.camera = Camera:new()
 	return o
@@ -90,12 +90,12 @@ function World:draw()
 	
 	-- Draw ground
 	for _,platform in pairs(self.Platforms) do
-		platform:draw(offset_x, offset_y, scale, false)
+		platform:draw(offset_x, offset_y, scale, debug)
 	end
 	
 	-- Draw player
 	for _,naut in pairs(self.Nauts) do
-		naut:draw(offset_x, offset_y, scale, false)
+		naut:draw(offset_x, offset_y, scale, debug)
 	end
 end
 
