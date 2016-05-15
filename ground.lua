@@ -31,6 +31,7 @@ function Ground:draw (offset_x, offset_y, scale, debug)
 	-- defaults
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
+	local scale = scale or 1
 	local debug = debug or false
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
