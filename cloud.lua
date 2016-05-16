@@ -11,9 +11,9 @@ Cloud = {
 	v = 13, -- velocity
 	sprite = love.graphics.newImage("assets/clouds.png"),
 	quads = {
-		[1] = love.graphics.newQuad(  1,  1, 158,47, 480,49),
-		[2] = love.graphics.newQuad(161,  1, 158,47, 480,49),
-		[3] = love.graphics.newQuad(321,  1, 158,47, 480,49)
+		[1] = love.graphics.newQuad(  1,  1, 158,47, 478,49),
+		[2] = love.graphics.newQuad(160,  1, 158,47, 478,49),
+		[3] = love.graphics.newQuad(319,  1, 158,47, 478,49)
 	}
 }
 
@@ -23,6 +23,12 @@ function Cloud:new(x, y, t, v)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
+	-- Fix for texture bug
+	local min, mag = self.sprite:getFilter()
+	if min ~= "nearest" or
+	   mag ~= "nearest" then
+		self.sprite:setFilter("nearest", "nearest")
+	end
 	-- Init
 	o.x = x or self.x
 	o.y = y or self.y
