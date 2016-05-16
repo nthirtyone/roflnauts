@@ -49,7 +49,6 @@ function Cloud:draw(offset_x, offset_y, scale)
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
 	local scale = scale or 1
-	local debug = debug or false
 	-- draw
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.draw(self.sprite, self.quads[self.t], (self.x+offset_x)*scale, (self.y+offset_y)*scale, 0, scale, scale)
