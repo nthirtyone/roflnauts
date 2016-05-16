@@ -6,6 +6,7 @@ require "ground"
 require "player"
 require "camera"
 require "cloud"
+require "effect"
 
 -- Temporary debug
 debug = false
@@ -24,7 +25,6 @@ function love.load ()
 	w:createPlatform(290/2, 180/2-50, {-17,1, 17,1, 17,17, -17,17}, "assets/platform_top.png")
 	w:createNaut(290/2-10, 180/2 - 80, "assets/leon.png")
 	w:createNaut(290/2+10, 180/2 - 80, "assets/lonestar.png")
-
 	
 	-- Temporary settings for second player
 	w.Nauts[2].name = "Player2"
@@ -58,4 +58,7 @@ end
 -- Draw
 function love.draw ()
 	w:draw()
+	if debug then
+		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+	end
 end

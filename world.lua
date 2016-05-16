@@ -11,6 +11,8 @@ World = {
 	Nauts = nil,
 	Platforms = nil,
 	Clouds = nil,
+	EffectsBottom = nil,
+	EffectsTop = nil,
 	camera = nil,
 	-- cloud generator
 	clouds_delay = 6,
@@ -30,10 +32,14 @@ function World:new()
 	-- Empty tables for objects
 	local n = {}
 	o.Nauts = n
-	local p = {}
+	local p     = {}
 	o.Platforms = {}
-	local c = {}
-	o.Clouds   = c
+	local c  = {}
+	o.Clouds = c
+	local eb  = {}
+	local et  = {}
+	o.EffectsBottom = eb
+	o.EffectsTop    = et
 	-- Random init
 	math.randomseed(os.time())
 	-- Create camera
@@ -80,6 +86,16 @@ function World:randomizeCloud(outside)
 	self:createCloud(x, y, t, v)
 end
 
+-- Add an effect behind nauts
+function World:createEffectBottom(name, x, y)
+	table.insert(self.EffectsBottom, Effect:new(name, x, y))
+end
+
+-- Add an effect behind nauts
+function World:createEffectTop(name, x, y)
+	table.insert(self.EffectsTop, Effect:new(name, x, y))
+end
+
 -- Update ZU WARUDO
 function World:update(dt)
 	-- Physical world
@@ -104,6 +120,17 @@ function World:update(dt)
 	for _,cloud in pairs(self.Clouds) do
 		if cloud:update(dt) > 340 then
 			table.remove(self.Clouds, _)
+		end
+	end
+	-- Effects
+	for _,effect in pairs(self.EffectsBottom) do
+		if effect:update(dt) then
+			table.remove(self.EffectsBottom, _)
+		end
+	end
+	for _,effect in pairs(self.EffectsTop) do
+		if effect:update(dt) then
+			table.remove(self.EffectsTop, _)
 		end
 	end
 end
@@ -136,7 +163,12 @@ function World:draw()
 	
 	-- Draw clouds
 	for _,cloud in pairs(self.Clouds) do
-		local foo = cloud:draw(offset_x, offset_y, scale)
+		cloud:draw(offset_x, offset_y, scale)
+	end
+	
+	-- Draw effects bottom
+	for _,effect in pairs(self.EffectsBottom) do
+		effect:draw(offset_x,offset_y, scale)
 	end
 	
 	-- Draw ground
@@ -148,6 +180,11 @@ function World:draw()
 	for _,naut in pairs(self.Nauts) do
 		naut:draw(offset_x, offset_y, scale, debug)
 	end
+	
+	-- Draw effects top
+	for _,effect in pairs(self.EffectsTop) do
+		effect:draw(offset_x,offset_y, scale)
+	end
 end
 
 -- beginContact
@@ -157,6 +194,7 @@ function World.beginContact(a, b, coll)
 		print(b:getUserData().name .. " is not in air")
 		b:getUserData().inAir = false
 		b:getUserData().jumpdouble = true
+		w:createEffectBottom("land", b:getBody():getX()-12, b:getBody():getY()-15)
 	end
 end
 
