@@ -23,7 +23,7 @@ function Cloud:new(x, y, t, v)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
-	-- Fix for texture bug
+	-- Set filter
 	local min, mag = self.sprite:getFilter()
 	if min ~= "nearest" or
 	   mag ~= "nearest" then
