@@ -16,8 +16,7 @@ All original Roflnauts sprites are made by [Vlambeer](http://www.vlambeer.com/):
 - *platform_big*
 - *platform_small*
 - *platform_top*
-- *cloud_big*
-- *cloud_small*
+- *clouds*
 
 ### Sequel
 - **Scoop** made by [MilkingChicken](https://www.awesomenauts.com/forum/memberlist.php?mode=viewprofile&u=26114)
