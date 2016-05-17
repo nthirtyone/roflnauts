@@ -36,10 +36,8 @@ function World:new()
 	o.Platforms = {}
 	local c  = {}
 	o.Clouds = c
-	local eb  = {}
-	local et  = {}
-	o.EffectsBottom = eb
-	o.EffectsTop    = et
+	local e   = {}
+	o.Effects = e
 	-- Random init
 	math.randomseed(os.time())
 	-- Create camera
@@ -87,13 +85,8 @@ function World:randomizeCloud(outside)
 end
 
 -- Add an effect behind nauts
-function World:createEffectBottom(name, x, y)
-	table.insert(self.EffectsBottom, Effect:new(name, x, y))
-end
-
--- Add an effect behind nauts
-function World:createEffectTop(name, x, y)
-	table.insert(self.EffectsTop, Effect:new(name, x, y))
+function World:createEffect(name, x, y)
+	table.insert(self.Effects, Effect:new(name, x, y))
 end
 
 -- Update ZU WARUDO
@@ -123,14 +116,9 @@ function World:update(dt)
 		end
 	end
 	-- Effects
-	for _,effect in pairs(self.EffectsBottom) do
+	for _,effect in pairs(self.Effects) do
 		if effect:update(dt) then
-			table.remove(self.EffectsBottom, _)
-		end
-	end
-	for _,effect in pairs(self.EffectsTop) do
-		if effect:update(dt) then
-			table.remove(self.EffectsTop, _)
+			table.remove(self.Effects, _)
 		end
 	end
 end
@@ -166,8 +154,8 @@ function World:draw()
 		cloud:draw(offset_x, offset_y, scale)
 	end
 	
-	-- Draw effects bottom
-	for _,effect in pairs(self.EffectsBottom) do
+	-- Draw effects
+	for _,effect in pairs(self.Effects) do
 		effect:draw(offset_x,offset_y, scale)
 	end
 	
@@ -180,11 +168,6 @@ function World:draw()
 	for _,naut in pairs(self.Nauts) do
 		naut:draw(offset_x, offset_y, scale, debug)
 	end
-	
-	-- Draw effects top
-	for _,effect in pairs(self.EffectsTop) do
-		effect:draw(offset_x,offset_y, scale)
-	end
 end
 
 -- beginContact
@@ -194,7 +177,7 @@ function World.beginContact(a, b, coll)
 		print(b:getUserData().name .. " is not in air")
 		b:getUserData().inAir = false
 		b:getUserData().jumpdouble = true
-		w:createEffectBottom("land", b:getBody():getX()-12, b:getBody():getY()-15)
+		w:createEffect("land", b:getBody():getX()-12, b:getBody():getY()-15)
 	end
 end
 
