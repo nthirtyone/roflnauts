@@ -138,7 +138,7 @@ function Player:keypressed (key)
 	-- Jumping
 	if key == self.key_jump then
 		if not self.inAir then
-			self.world:createEffect("jump", self.body:getX()-12, self.body:getY()-15)
+			self:createEffect("jump")
 			self.jumpactive = true
 			if (self.current == self.animations.attack) or 
 			   (self.current == self.animations.attack_up) or
@@ -146,7 +146,7 @@ function Player:keypressed (key)
 				self:changeAnimation("idle")
 			end
 		elseif self.jumpdouble then
-			self.world:createEffect("doublejump", self.body:getX()-12, self.body:getY()-15)
+			self:createEffect("doublejump")
 			self.jumpactive = true
 			self.jumpdouble = false
 		end
@@ -219,6 +219,17 @@ function Player:changeAnimation(animation)
 	self.current = self.animations[animation]
 end
 
+-- Spawn `Effect` relative to `Player`
+function Player:createEffect(name)
+	if name == "trail" or name == "hit" then
+		-- 16px effect: -4 -7
+		self.world:createEffect(name, self.body:getX()-4, self.body:getY()-7)
+	elseif name ~= nil then
+		-- 24px effect: -12 -15
+		self.world:createEffect(name, self.body:getX()-12, self.body:getY()-15)
+	end
+end
+
 -- Punch of `Player`
 -- REWORK NEEDED Issue #8
 function Player:hit (horizontal, vertical)
@@ -256,7 +267,7 @@ end
 
 -- Taking damage of `Player` by successful hit test
 function Player:damage (horizontal, vertical)
-	self.world:createEffect("hit", self.body:getX()-4, self.body:getY()-7)
+	self:createEffect("hit")
 	self.body:applyLinearImpulse((34+12*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 end
