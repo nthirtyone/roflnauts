@@ -6,11 +6,11 @@
 Effect = {
 	x = 0,
 	y = 0,
-	delay = 0.08,
+	delay = 0.06,
 	initial = nil,
 	frame = 1,
 	animation = nil,
-	sprite = love.graphics.newImage("assets/effects.png"),
+	sprite = nil,
 	quads = require "effects"
 }
 
@@ -20,11 +20,9 @@ function Effect:new(name, x, y)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
-	-- Set filter
-	local min, mag = self.sprite:getFilter()
-	if min ~= "nearest" or
-	   mag ~= "nearest" then
-		self.sprite:setFilter("nearest", "nearest")
+	-- Load spritesheet to metatable if not yet loaded
+	if self.sprite == nil then
+		self.sprite = love.graphics.newImage("assets/effects.png")
 	end
 	-- Init
 	o.initial = o.delay

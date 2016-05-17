@@ -4,12 +4,13 @@
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
 -- Metatable of `Cloud`
+-- nils initialized in constructor
 Cloud = {
 	x = 0,  -- position horizontal
 	y = 0,  -- position vertical
 	t = 1,  -- type (sprite number)
 	v = 13, -- velocity
-	sprite = love.graphics.newImage("assets/clouds.png"),
+	sprite = nil,
 	quads = {
 		[1] = love.graphics.newQuad(  1,  1, 158,47, 478,49),
 		[2] = love.graphics.newQuad(160,  1, 158,47, 478,49),
@@ -23,11 +24,9 @@ function Cloud:new(x, y, t, v)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
-	-- Set filter
-	local min, mag = self.sprite:getFilter()
-	if min ~= "nearest" or
-	   mag ~= "nearest" then
-		self.sprite:setFilter("nearest", "nearest")
+	-- Load spritesheet to metatable if not yet loaded
+	if self.sprite == nil then
+		self.sprite = love.graphics.newImage("assets/clouds.png")
 	end
 	-- Init
 	o.x = x or self.x
