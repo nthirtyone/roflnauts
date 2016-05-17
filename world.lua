@@ -57,7 +57,7 @@ end
 
 -- Add new naut to the world
 function World:createNaut(x, y, sprite)
-	table.insert(self.Nauts, Player:new(self.world, x, y, sprite))
+	table.insert(self.Nauts, Player:new(self, self.world, x, y, sprite))
 end
 
 -- Add new cloud to the world

@@ -17,6 +17,7 @@ Player = {
 	facing = 1,
 	max_velocity = 105,
 	combo = 1,
+	world = nil, -- game world
 	-- Animation
 	animations = require "animations",
 	current = nil,
@@ -38,7 +39,7 @@ Player = {
 }
 
 -- Constructor of `Player`
-function Player:new (world, x, y, spritesheet)
+function Player:new (game, world, x, y, spritesheet)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
@@ -47,11 +48,13 @@ function Player:new (world, x, y, spritesheet)
 	o.body    = love.physics.newBody(world, x, y, "dynamic")
 	o.shape   = love.physics.newRectangleShape(10, 17)
 	o.fixture = love.physics.newFixture(o.body, o.shape, 8)
-	o.sprite  = love.graphics.newImage(spritesheet)
 	o.fixture:setUserData(o)
 	o.fixture:setCategory(2)
 	o.fixture:setMask(2)
 	o.body:setFixedRotation(true)
+	-- Misc
+	o.sprite = love.graphics.newImage(spritesheet)
+	o.world  = game
 	-- Animation
 	o.initial = o.delay
 	o.current = o.animations.idle
@@ -135,7 +138,7 @@ function Player:keypressed (key)
 	-- Jumping
 	if key == self.key_jump then
 		if not self.inAir then
-			w:createEffect("jump", self.body:getX()-12, self.body:getY()-15)
+			self.world:createEffect("jump", self.body:getX()-12, self.body:getY()-15)
 			self.jumpactive = true
 			if (self.current == self.animations.attack) or 
 			   (self.current == self.animations.attack_up) or
@@ -143,7 +146,7 @@ function Player:keypressed (key)
 				self:changeAnimation("idle")
 			end
 		elseif self.jumpdouble then
-			w:createEffect("doublejump", self.body:getX()-12, self.body:getY()-15)
+			self.world:createEffect("doublejump", self.body:getX()-12, self.body:getY()-15)
 			self.jumpactive = true
 			self.jumpdouble = false
 		end
@@ -227,8 +230,7 @@ function Player:hit (horizontal, vertical)
 		self:changeAnimation("attack")
 		self.body:applyLinearImpulse(10*self.facing, 0)
 	end
-	-- w.Nauts [!] temporary
-	for k,n in pairs(w.Nauts) do
+	for k,n in pairs(self.world.Nauts) do
 		if n ~= self then
 			local didHit = false
 			if n.fixture:testPoint(self.body:getX()+12*horizontal,self.body:getY()-2) then
@@ -254,7 +256,7 @@ end
 
 -- Taking damage of `Player` by successful hit test
 function Player:damage (horizontal, vertical)
-	w:createEffect("hit", self.body:getX()-4, self.body:getY()-7)
+	self.world:createEffect("hit", self.body:getX()-4, self.body:getY()-7)
 	self.body:applyLinearImpulse((34+12*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 end
