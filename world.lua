@@ -177,7 +177,7 @@ function World.beginContact(a, b, coll)
 		print(b:getUserData().name .. " is not in air")
 		b:getUserData().inAir = false
 		b:getUserData().jumpdouble = true
-		w:createEffect("land", b:getBody():getX()-12, b:getBody():getY()-15)
+		b:getUserData().world:createEffect("land", b:getBody():getX()-12, b:getBody():getY()-15)
 	end
 end
 
