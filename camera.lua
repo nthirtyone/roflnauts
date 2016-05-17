@@ -6,15 +6,17 @@ Camera = {
 	x = 0,
 	y = 0,
 	scale = 4,
+	world = nil, --  game world
 	follow = nil
 }
 
 -- Constructor of `Camera`
-function Camera:new ()
+function Camera:new (world)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
 	o.follow = {}
+	o.world = world
 	return o
 end
 
@@ -33,8 +35,7 @@ end
 -- Move follow
 function Camera:moveFollow ()
 	local x,y,i = 105, 120, 1
-	-- w.Nauts [!] temporary
-	for k,point in pairs(w.Nauts) do
+	for k,point in pairs(self.world.Nauts) do
 		i = i + 1
 		x = math.max(math.min(point.body:getX(),290),0) + x
 		y = math.max(math.min(point.body:getY(),180),20) + y

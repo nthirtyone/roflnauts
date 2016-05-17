@@ -41,7 +41,7 @@ function World:new()
 	-- Random init
 	math.randomseed(os.time())
 	-- Create camera
-	o.camera = Camera:new()
+	o.camera = Camera:new(o)
 	-- Cloud generator
 	o.clouds_initial = o.clouds_delay
 	for i=1,5 do
