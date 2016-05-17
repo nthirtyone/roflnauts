@@ -135,7 +135,7 @@ function Player:keypressed (key)
 	-- Jumping
 	if key == self.key_jump then
 		if not self.inAir then
-			w:createEffectBottom("jump", self.body:getX()-12, self.body:getY()-15)
+			w:createEffect("jump", self.body:getX()-12, self.body:getY()-15)
 			self.jumpactive = true
 			if (self.current == self.animations.attack) or 
 			   (self.current == self.animations.attack_up) or
@@ -143,7 +143,7 @@ function Player:keypressed (key)
 				self:changeAnimation("idle")
 			end
 		elseif self.jumpdouble then
-			w:createEffectBottom("doublejump", self.body:getX()-12, self.body:getY()-15)
+			w:createEffect("doublejump", self.body:getX()-12, self.body:getY()-15)
 			self.jumpactive = true
 			self.jumpdouble = false
 		end
@@ -254,6 +254,7 @@ end
 
 -- Taking damage of `Player` by successful hit test
 function Player:damage (horizontal, vertical)
+	w:createEffect("hit", self.body:getX()-4, self.body:getY()-7)
 	self.body:applyLinearImpulse((34+12*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 end
