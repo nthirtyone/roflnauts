@@ -94,7 +94,7 @@ function World:update(dt)
 	-- Physical world
 	self.world:update(dt)
 	-- Camera
-	self.camera:moveFollow()
+	self.camera:update(dt)
 	-- Nauts
 	for _,naut in pairs(self.Nauts) do
 		naut:update(dt)
