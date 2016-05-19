@@ -18,6 +18,7 @@ Player = {
 	max_velocity = 105,
 	combo = 1,
 	world = nil, -- game world
+	lives = 3,
 	-- Animation
 	animations = require "animations",
 	current = nil,
@@ -258,8 +259,6 @@ function Player:hit (horizontal, vertical)
 			end
 			if didHit then
 				n:damage(horizontal, vertical)
-				n.combo = n.combo + 1
-				print(n.combo)
 			end
 		end
 	end
@@ -268,6 +267,9 @@ end
 -- Taking damage of `Player` by successful hit test
 function Player:damage (horizontal, vertical)
 	self:createEffect("hit")
+	local x,y = self.body:getLinearVelocity()
+	self.body:setLinearVelocity(x,0)
 	self.body:applyLinearImpulse((34+12*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
+	self.combo = math.min(10, self.combo + 1)
 end
