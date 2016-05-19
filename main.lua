@@ -48,6 +48,9 @@ function love.keypressed (key)
 	if key == "x" then
 		debug = not debug
 	end
+	if key == "escape" then
+		love.event.quit()
+	end
 end
 
 -- KeyReleased
