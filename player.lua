@@ -19,6 +19,8 @@ Player = {
 	combo = 1,
 	world = nil, -- game world
 	lives = 3,
+	spawntimer = 0,
+	alive = true,
 	-- Animation
 	animations = require "animations",
 	current = nil,
@@ -59,6 +61,7 @@ function Player:new (game, world, x, y, spritesheet)
 	-- Animation
 	o.initial = o.delay
 	o.current = o.animations.idle
+	o:createEffect("respawn")
 	return o
 end
 
@@ -132,9 +135,26 @@ function Player:update (dt)
 			self:changeAnimation("idle")
 		end
 	end
+	
+	-- # DEATH
+	-- We all die in the end.
+	if (self.body:getX() < -600 or self.body:getX() > 780  or
+	    self.body:getY() < -800 or self.body:getY() > 500) and
+	    self.alive
+	then
+		self:die()
+	end
+
+	-- respawn
+	if self.spawntimer > 0 then
+		self.spawntimer = self.spawntimer - dt
+	end
+	if self.spawntimer <= 0 and not self.alive and self.lives >= 0 then
+		self:respawn()
+	end
 end
 
--- Keypressed callback of `Player`
+-- Keypressed callback (I think?) of `Player`
 function Player:keypressed (key)
 	-- Jumping
 	if key == self.key_jump then
@@ -173,7 +193,7 @@ function Player:keypressed (key)
 	end
 end
 
--- Keyreleased callback of `Player`
+-- Keyreleased callback (I think?) of `Player`
 function Player:keyreleased (key)
 	-- Jumping
 	if key == self.key_jump then
@@ -223,8 +243,8 @@ end
 -- Spawn `Effect` relative to `Player`
 function Player:createEffect(name)
 	if name == "trail" or name == "hit" then
-		-- 16px effect: -4 -7
-		self.world:createEffect(name, self.body:getX()-4, self.body:getY()-7)
+		-- 16px effect: -6 -7
+		self.world:createEffect(name, self.body:getX()-6, self.body:getY()-7)
 	elseif name ~= nil then
 		-- 24px effect: -12 -15
 		self.world:createEffect(name, self.body:getX()-12, self.body:getY()-15)
@@ -272,4 +292,20 @@ function Player:damage (horizontal, vertical)
 	self.body:applyLinearImpulse((34+12*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 	self.combo = math.min(10, self.combo + 1)
+end
+
+-- DIE
+function Player:die ()
+	self.combo = 1
+	self.lives = self.lives - 1
+	self.alive = false
+	self.spawntimer = 1
+end
+
+-- And then respawn. Like Jon Snow.
+function Player:respawn ()
+	self.alive = true
+	self.body:setLinearVelocity(0,0)
+	self.body:setPosition(290/2, 180/2-80)
+	self:createEffect("respawn")
 end
