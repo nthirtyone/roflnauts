@@ -45,7 +45,7 @@ end
 	
 -- Move follow
 function Camera:follow ()
-	local x,y,i = 105, 120, 1
+	local x,y,i = 145, 90, 1
 	for k,point in pairs(self.world.Nauts) do
 		if point.body:getX() > -20 and point.body:getX() < 310 and
 		   point.body:getY() > -70 and point.body:getY() < 200 then
@@ -63,7 +63,7 @@ end
 function Camera:update (dt)
 	self:follow()
 	local dx, dy = self:getDestination()
-	dx = (dx - self.x) * 8 * dt
-	dy = (dy - self.y) * 8 * dt
+	dx = (dx - self.x) * 6 * dt
+	dy = (dy - self.y) * 6 * dt
 	self:setPosition(self.x + dx, self.y + dy)
 end
