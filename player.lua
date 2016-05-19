@@ -323,6 +323,7 @@ function Player:die ()
 	self.lives = self.lives - 1
 	self.alive = false
 	self.spawntimer = 1
+	self.world.camera:startShake()
 end
 
 -- And then respawn. Like Jon Snow.
