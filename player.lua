@@ -16,11 +16,15 @@ Player = {
 	rotate = 0, -- "angle" would sound better
 	facing = 1,
 	max_velocity = 105,
-	combo = 1,
 	world = nil, -- game world
+	-- Combat
+	combo = 1,
 	lives = 3,
 	spawntimer = 0,
 	alive = true,
+	punchcd = 0,
+	punchinitial = 0.28,
+	punchdir = 0,
 	-- Animation
 	animations = require "animations",
 	current = nil,
@@ -126,20 +130,18 @@ function Player:update (dt)
 		-- Thank you De Morgan!
 		if self.current.repeated or not (self.frame == self.current.frames) then
 			self.frame = (self.frame % self.current.frames) + 1
-		elseif love.keyboard.isDown(self.key_right) or
-			   love.keyboard.isDown(self.key_left)
-		then
+		elseif love.keyboard.isDown(self.key_right) or love.keyboard.isDown(self.key_left) then
 			-- If nonrepeatable animation is finished and player is walking
 			self:changeAnimation("walk")
 		elseif self.current == self.animations.damage then
 			self:changeAnimation("idle")
 		end
 	end
-	
+		
 	-- # DEATH
 	-- We all die in the end.
 	if (self.body:getX() < -600 or self.body:getX() > 780  or
-	    self.body:getY() < -800 or self.body:getY() > 500) and
+	    self.body:getY() < -500 or self.body:getY() > 500) and
 	    self.alive
 	then
 		self:die()
@@ -151,6 +153,25 @@ function Player:update (dt)
 	end
 	if self.spawntimer <= 0 and not self.alive and self.lives >= 0 then
 		self:respawn()
+	end
+	
+	-- # PUNCH
+	-- Cooldown
+	if self.punchcd > 0 then
+		self.punchcd = self.punchcd - dt
+	end
+	
+	-- Stop vertical
+	if self.punchcd > 0 then
+		if self.punchdir == 0 then
+			self.body:setLinearVelocity(0,0)
+		else
+			self.body:setLinearVelocity(25*self.facing,0)
+		end
+	end
+		
+	if self.punchcd <= 0 and self.punchdir == 1 then
+		self.punchdir = 0
 	end
 end
 
@@ -179,7 +200,7 @@ function Player:keypressed (key)
 	end
 	
 	-- Punching
-	if key == self.key_hit then
+	if key == self.key_hit and self.punchcd <= 0 then
 		-- Punch up
 		if love.keyboard.isDown(self.key_up) then
 			self:hit(0, -1)
@@ -254,13 +275,15 @@ end
 -- Punch of `Player`
 -- REWORK NEEDED Issue #8
 function Player:hit (horizontal, vertical)
+	self.punchcd = self.punchinitial
+	-- Resolve hit direction
 	if vertical == -1 then
 		self:changeAnimation("attack_up")
 	elseif vertical == 1 then
 		self:changeAnimation("attack_down")
 	else
 		self:changeAnimation("attack")
-		self.body:applyLinearImpulse(10*self.facing, 0)
+		self.punchdir = 1
 	end
 	for k,n in pairs(self.world.Nauts) do
 		if n ~= self then
@@ -289,7 +312,7 @@ function Player:damage (horizontal, vertical)
 	self:createEffect("hit")
 	local x,y = self.body:getLinearVelocity()
 	self.body:setLinearVelocity(x,0)
-	self.body:applyLinearImpulse((34+12*self.combo)*horizontal, (50+10*self.combo)*vertical + 15)
+	self.body:applyLinearImpulse((28+12*self.combo)*horizontal, (60+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 	self.combo = math.min(10, self.combo + 1)
 end
@@ -308,4 +331,5 @@ function Player:respawn ()
 	self.body:setLinearVelocity(0,0)
 	self.body:setPosition(290/2, 180/2-80)
 	self:createEffect("respawn")
+	self:changeAnimation("idle")
 end
