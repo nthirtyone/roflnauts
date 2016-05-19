@@ -159,14 +159,14 @@ function World:draw()
 		effect:draw(offset_x,offset_y, scale)
 	end
 	
-	-- Draw ground
-	for _,platform in pairs(self.Platforms) do
-		platform:draw(offset_x, offset_y, scale, debug)
-	end
-	
 	-- Draw player
 	for _,naut in pairs(self.Nauts) do
 		naut:draw(offset_x, offset_y, scale, debug)
+	end
+	
+	-- Draw ground
+	for _,platform in pairs(self.Platforms) do
+		platform:draw(offset_x, offset_y, scale, debug)
 	end
 end
 
