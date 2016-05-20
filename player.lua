@@ -8,7 +8,7 @@
 -- nils initialized in constructor
 Player = {
 	-- General and physics
-	name = "Player",
+	name = "empty",
 	body = nil,
 	shape = nil,
 	fixture = nil,
@@ -24,7 +24,7 @@ Player = {
 	alive = true,
 	punchcd = 0,
 	punchinitial = 0.25,
-	punchdir = 0,
+	punchdir = 0, -- a really bad thing
 	-- Animation
 	animations = require "animations",
 	current = nil,
@@ -33,6 +33,7 @@ Player = {
 	initial = nil,
 	-- Movement
 	inAir = true,
+	salto = false,
 	jumpactive = false,
 	jumpdouble = true,
 	jumptimer = 0.14,
@@ -42,11 +43,14 @@ Player = {
 	key_right = "right",
 	key_up    = "up",
 	key_down  = "down",
-	key_hit   = "return"
+	key_hit   = "return",
+	-- HUD
+	portrait_sprite = nil,
+	portrait_sheet  = require "portraits"
 }
 
 -- Constructor of `Player`
-function Player:new (game, world, x, y, spritesheet)
+function Player:new (game, world, x, y, name)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
@@ -60,12 +64,17 @@ function Player:new (game, world, x, y, spritesheet)
 	o.fixture:setMask(2)
 	o.body:setFixedRotation(true)
 	-- Misc
-	o.sprite = love.graphics.newImage(spritesheet)
+	o.name   = name or "empty"
+	o.sprite = love.graphics.newImage("assets/"..o.name..".png")
 	o.world  = game
 	-- Animation
 	o.initial = o.delay
 	o.current = o.animations.idle
 	o:createEffect("respawn")
+	-- Portrait load for first object created
+	if self.portrait_sprite == nil then
+		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
+	end
 	return o
 end
 
@@ -80,7 +89,7 @@ function Player:update (dt)
 	end
 	
 	-- Salto
-	if not self.jumpdouble and self.inAir and (self.current == self.animations.walk or self.current == self.animations.idle) then
+	if self.salto and (self.current == self.animations.walk or self.current == self.animations.idle) then
 		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
 	elseif self.rotate ~= 0 then
 		self.rotate = 0
@@ -157,16 +166,15 @@ function Player:update (dt)
 	
 	-- # PUNCH
 	-- Cooldown
-	if self.punchcd > 0 then
-		self.punchcd = self.punchcd - dt
-	end
+	self.punchcd = self.punchcd - dt
 	
 	-- Stop vertical
-	if self.punchcd > 0.1 then
+	local c,a = self.current, self.animations
+	if (c == a.attack_up or c == a.attack_down or c == a.attack) and self.frame < c.frames then
 		if self.punchdir == 0 then
 			self.body:setLinearVelocity(0,0)
 		else
-			self.body:setLinearVelocity(28*self.facing,0)
+			self.body:setLinearVelocity(32*self.facing,0)
 		end
 	end
 		
@@ -191,6 +199,7 @@ function Player:keypressed (key)
 			self:createEffect("doublejump")
 			self.jumpactive = true
 			self.jumpdouble = false
+			self.salto = true
 		end
 	end
 	
@@ -202,17 +211,24 @@ function Player:keypressed (key)
 	-- Punching
 	if key == self.key_hit and self.punchcd <= 0 then
 		local f = self.facing
+		self.salto = false
 		if love.keyboard.isDown(self.key_up) then
 			-- Punch up
-			self:changeAnimation("attack_up")
+			if self.current ~= self.animations.damage then
+				self:changeAnimation("attack_up")
+			end
 			self:hit(2*f,-10,3*f,7, 0, -1)
 		elseif love.keyboard.isDown(self.key_down) and self.inAir then
 			-- Punch down
-			self:changeAnimation("attack_down")
+			if self.current ~= self.animations.damage then
+				self:changeAnimation("attack_down")
+			end
 			self:hit(-4,-2,4,7, 0, 1)
 		else
 			-- Punch horizontal
-			self:changeAnimation("attack")
+			if self.current ~= self.animations.damage then
+				self:changeAnimation("attack")
+			end
 			self:hit(2*f,-4,8*f,4, f, 0)
 			self.punchdir = 1
 		end
@@ -252,6 +268,11 @@ function Player:draw (offset_x, offset_y, scale, debug)
 		love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
 		love.graphics.setColor(255,255,255,255)
 	end
+end
+
+-- Draw HUD of `Player`
+function Player:drawHUD (x,y,scale)
+	love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name].normal, x*scale, y*scale, 0, scale, scale)
 end
 
 -- Change animation of `Player`

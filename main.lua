@@ -23,11 +23,10 @@ function love.load ()
 	w:createPlatform(290/2+140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png")
 	w:createPlatform(290/2-140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png")
 	w:createPlatform(290/2, 180/2-50, {-17,1, 17,1, 17,16, -17,16}, "assets/platform_top.png")
-	w:createNaut(290/2-10, 180/2 - 80, "assets/leon.png")
-	w:createNaut(290/2+10, 180/2 - 80, "assets/lonestar.png")
+	w:createNaut(290/2-10, 180/2 - 80, "leon")
+	w:createNaut(290/2+10, 180/2 - 80, "lonestar")
 	
 	-- Temporary settings for second player
-	w.Nauts[2].name = "Player2"
 	w.Nauts[2].key_left = "a"
 	w.Nauts[2].key_right = "d"
 	w.Nauts[2].key_up = "w"

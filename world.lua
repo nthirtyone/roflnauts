@@ -56,8 +56,8 @@ function World:createPlatform(x, y, polygon, sprite)
 end
 
 -- Add new naut to the world
-function World:createNaut(x, y, sprite)
-	table.insert(self.Nauts, Player:new(self, self.world, x, y, sprite))
+function World:createNaut(x, y, name)
+	table.insert(self.Nauts, Player:new(self, self.world, x, y, name))
 end
 
 -- Add new cloud to the world
@@ -168,6 +168,11 @@ function World:draw()
 	for _,platform in pairs(self.Platforms) do
 		platform:draw(offset_x, offset_y, scale, debug)
 	end
+	
+	-- Draw HUDs
+	for _,naut in pairs(self.Nauts) do
+		naut:drawHUD(1, 1+(_-1)*33, scale)
+	end
 end
 
 -- beginContact
@@ -178,6 +183,7 @@ function World.beginContact(a, b, coll)
 			print(b:getUserData().name .. " is not in air")
 			b:getUserData().inAir = false
 			b:getUserData().jumpdouble = true
+			b:getUserData().salto = false
 			b:getUserData():createEffect("land")
 		end
 	end
