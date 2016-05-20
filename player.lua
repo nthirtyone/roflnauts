@@ -23,7 +23,7 @@ Player = {
 	spawntimer = 0,
 	alive = true,
 	punchcd = 0,
-	punchinitial = 0.28,
+	punchinitial = 0.25,
 	punchdir = 0,
 	-- Animation
 	animations = require "animations",
@@ -42,7 +42,7 @@ Player = {
 	key_right = "right",
 	key_up    = "up",
 	key_down  = "down",
-	key_hit   = "return" -- don't ask
+	key_hit   = "return"
 }
 
 -- Constructor of `Player`
@@ -307,6 +307,11 @@ function Player:hit (horizontal, vertical)
 	end
 end
 
+-- Hittest
+function Player:testHit (caller, direction)
+	
+end
+
 -- Taking damage of `Player` by successful hit test
 function Player:damage (horizontal, vertical)
 	self:createEffect("hit")
@@ -324,6 +329,7 @@ function Player:die ()
 	self.alive = false
 	self.spawntimer = 1
 	self.world.camera:startShake()
+	self.body:setActive(false)
 end
 
 -- And then respawn. Like Jon Snow.
@@ -331,6 +337,7 @@ function Player:respawn ()
 	self.alive = true
 	self.body:setLinearVelocity(0,0)
 	self.body:setPosition(290/2, 180/2-80)
+	self.body:setActive(true)
 	self:createEffect("respawn")
 	self:changeAnimation("idle")
 end
