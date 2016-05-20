@@ -201,15 +201,19 @@ function Player:keypressed (key)
 	
 	-- Punching
 	if key == self.key_hit and self.punchcd <= 0 then
-		-- Punch up
+		local f = self.facing
 		if love.keyboard.isDown(self.key_up) then
-			self:hit(0, -1)
-		-- Punch down
+			-- Punch up
+			self:changeAnimation("attack_up")
+			self:hit(2*f,-8,3*f,6, 0, -1)
 		elseif love.keyboard.isDown(self.key_down) and self.inAir then
-			self:hit(0, 1)
-		-- Punch horizontal
+			-- Punch down
+			self:changeAnimation("attack_down")
+			self:hit(-4,-2,4,7, 0, 1)
 		else
-			self:hit(self.facing, 0)
+			-- Punch horizontal
+			self:changeAnimation("attack")
+			self:hit(3*f,-4,6*f,4, f, 0)
 		end
 	end
 end
@@ -246,10 +250,6 @@ function Player:draw (offset_x, offset_y, scale, debug)
 		love.graphics.setColor(50, 255, 50, 100)
 		love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.points(self.body:getX()+12*self.facing,self.body:getY()-2)
-		love.graphics.points(self.body:getX()+ 6*self.facing,self.body:getY()+2)
-		love.graphics.points(self.body:getX()+18*self.facing,self.body:getY()+2)
-		love.graphics.points(self.body:getX()+12*self.facing,self.body:getY()+6)
 	end
 end
 
@@ -273,43 +273,29 @@ function Player:createEffect(name)
 end
 
 -- Punch of `Player`
--- REWORK NEEDED Issue #8
-function Player:hit (horizontal, vertical)
+-- offset_x, offset_y, step_x, step_y, vector_x, vector_y
+function Player:hit (ox, oy, sx, sy, vx, vy)
+	-- start cooldown
 	self.punchcd = self.punchinitial
-	-- Resolve hit direction
-	if vertical == -1 then
-		self:changeAnimation("attack_up")
-	elseif vertical == 1 then
-		self:changeAnimation("attack_down")
-	else
-		self:changeAnimation("attack")
-		self.punchdir = 1
-	end
+	-- actual punch
 	for k,n in pairs(self.world.Nauts) do
 		if n ~= self then
-			local didHit = false
-			if n.fixture:testPoint(self.body:getX()+12*horizontal,self.body:getY()-2) then
-				didHit = true
-			end
-			if n.fixture:testPoint(self.body:getX()+7*horizontal,self.body:getY()+2) then
-				didHit = true
-			end
-			if n.fixture:testPoint(self.body:getX()+17*horizontal,self.body:getY()+2) then
-				didHit = true
-			end
-			if n.fixture:testPoint(self.body:getX()+12*horizontal,self.body:getY()+6) then
-				didHit = true
-			end
-			if didHit then
-				n:damage(horizontal, vertical)
+			if self:testHit(n, ox, oy, sx, sy) then
+				n:damage(vx, vy)
 			end
 		end
 	end
 end
 
 -- Hittest
-function Player:testHit (caller, direction)
-	
+function Player:testHit (target, ox, oy, sx, sy)
+	local x, y = self.body:getPosition()
+	for v=0,2 do
+		for h=0,2,1+v%2 do
+			if target.fixture:testPoint(x+ox+h*sx, y+oy+v*sy) then return true end
+		end
+	end
+	return false
 end
 
 -- Taking damage of `Player` by successful hit test
