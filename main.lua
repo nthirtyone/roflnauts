@@ -27,8 +27,6 @@ function love.load ()
 	w:createPlatform(290/2, 180/2-50, {-17,1, 17,1, 17,16, -17,16}, "assets/platform_top.png")
 	w:createNaut(290/2-15, 180/2 - 80, "leon")
 	w:createNaut(290/2+15, 180/2 - 80, "lonestar")
-	w:createNaut(290/2+05, 180/2 - 80, "clunk")
-	w:createNaut(290/2-05, 180/2 - 80, "yuri")
 	
 	-- Temporary settings for second player
 	w.Nauts[2].key_left = "a"
@@ -40,6 +38,7 @@ function love.load ()
 	
 	-- Temporary settings for third player
 	if third then
+	w:createNaut(290/2+05, 180/2 - 80, "clunk")
 	w.Nauts[3].key_left = "kp4"
 	w.Nauts[3].key_right = "kp6"
 	w.Nauts[3].key_up = "kp8"
@@ -50,6 +49,7 @@ function love.load ()
 	
 	-- Temporary settings for fourth player
 	if fourth then
+	w:createNaut(290/2-05, 180/2 - 80, "yuri")
 	w.Nauts[4].key_left = "b"
 	w.Nauts[4].key_right = "m"
 	w.Nauts[4].key_up = "h"
