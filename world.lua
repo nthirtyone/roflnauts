@@ -78,7 +78,7 @@ function World:randomizeCloud(outside)
 	else
 		x = math.random(-200,250)
 	end
-	y = math.random(0, 160)
+	y = math.random(-20, 170)
 	t = math.random(1,3)
 	v = math.random(8,18)
 	self:createCloud(x, y, t, v)
@@ -104,7 +104,7 @@ function World:update(dt)
 	local n = table.getn(self.Clouds)
 	self.clouds_delay = self.clouds_delay - dt
 	if self.clouds_delay < 0 and
-	   n < 12
+	   n < 14
 	then
 		self:randomizeCloud()
 		self.clouds_delay = self.clouds_delay + self.clouds_initial
@@ -175,8 +175,8 @@ function World:draw()
 		-- let's do: bottom-left, bottom-right, top-left, top-right
 		-- equation that gives 0 with 1,2 and 1 with 3,4 -- fffs lets make statement
 		local y = 1
-		if _ < 3 then y = 147 end
-		naut:drawHUD(1+(_%2)*256, y, scale)
+		if _ < 3 then y = 180-33 end
+		naut:drawHUD(1+(_%2)*(290-34), y, scale)
 	end
 end
 
