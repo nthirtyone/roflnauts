@@ -162,11 +162,11 @@ function Player:update (dt)
 	end
 	
 	-- Stop vertical
-	if self.punchcd > 0 then
+	if self.punchcd > 0.1 then
 		if self.punchdir == 0 then
 			self.body:setLinearVelocity(0,0)
 		else
-			self.body:setLinearVelocity(25*self.facing,0)
+			self.body:setLinearVelocity(28*self.facing,0)
 		end
 	end
 		
@@ -205,7 +205,7 @@ function Player:keypressed (key)
 		if love.keyboard.isDown(self.key_up) then
 			-- Punch up
 			self:changeAnimation("attack_up")
-			self:hit(2*f,-8,3*f,6, 0, -1)
+			self:hit(2*f,-10,3*f,7, 0, -1)
 		elseif love.keyboard.isDown(self.key_down) and self.inAir then
 			-- Punch down
 			self:changeAnimation("attack_down")
@@ -213,7 +213,8 @@ function Player:keypressed (key)
 		else
 			-- Punch horizontal
 			self:changeAnimation("attack")
-			self:hit(3*f,-4,6*f,4, f, 0)
+			self:hit(2*f,-4,8*f,4, f, 0)
+			self.punchdir = 1
 		end
 	end
 end
@@ -264,8 +265,8 @@ end
 -- Spawn `Effect` relative to `Player`
 function Player:createEffect(name)
 	if name == "trail" or name == "hit" then
-		-- 16px effect: -6 -7
-		self.world:createEffect(name, self.body:getX()-6, self.body:getY()-7)
+		-- 16px effect: -7 -7
+		self.world:createEffect(name, self.body:getX()-8, self.body:getY()-8)
 	elseif name ~= nil then
 		-- 24px effect: -12 -15
 		self.world:createEffect(name, self.body:getX()-12, self.body:getY()-15)

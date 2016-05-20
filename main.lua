@@ -22,7 +22,7 @@ function love.load ()
 	w:createPlatform(290/2, 180/2, {-91,1, 90,1, 90,10, 5,76, -5,76, -91,10}, "assets/platform_big.png")
 	w:createPlatform(290/2+140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png")
 	w:createPlatform(290/2-140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png")
-	w:createPlatform(290/2, 180/2-50, {-17,1, 17,1, 17,17, -17,17}, "assets/platform_top.png")
+	w:createPlatform(290/2, 180/2-50, {-17,1, 17,1, 17,16, -17,16}, "assets/platform_top.png")
 	w:createNaut(290/2-10, 180/2 - 80, "assets/leon.png")
 	w:createNaut(290/2+10, 180/2 - 80, "assets/lonestar.png")
 	
