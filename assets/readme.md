@@ -2,6 +2,13 @@
 ### Awesomenauts
 Nauts are from Awesomenauts game made by Ronimo Games. [Read more](https://www.awesomenauts.com/forum/viewtopic.php?f=12&t=22402) about using nauts in fan-made games/animations.
 
+### Portraits
+Portraits sheet is a mix of ripped graphics from original game and new art made by community.
+- [Vlambeer](http://www.vlambeer.com/) (original)
+- ParaDox
+- Seltzy
+- Bronkey
+
 ### Original
 Some sprites are ripped by Colton/Saltonara.
 All original Roflnauts sprites are made by [Vlambeer](http://www.vlambeer.com/):
