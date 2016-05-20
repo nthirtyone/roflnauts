@@ -171,7 +171,12 @@ function World:draw()
 	
 	-- Draw HUDs
 	for _,naut in pairs(self.Nauts) do
-		naut:drawHUD(1, 1+(_-1)*33, scale)
+		-- I have no idea where to place them T_T
+		-- let's do: bottom-left, bottom-right, top-left, top-right
+		-- equation that gives 0 with 1,2 and 1 with 3,4 -- fffs lets make statement
+		local y = 1
+		if _ < 3 then y = 147 end
+		naut:drawHUD(1+(_%2)*256, y, scale)
 	end
 end
 
