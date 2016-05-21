@@ -38,5 +38,9 @@ return {
 	clunk = {
 		normal = love.graphics.newQuad(232,  1,32,32,w,h),
 		active = love.graphics.newQuad(232, 34,32,32,w,h)
+	},
+	ayla = {
+		normal = love.graphics.newQuad(199,  1,32,32,w,h),
+		active = love.graphics.newQuad(199, 34,32,32,w,h)
 	}
 }
