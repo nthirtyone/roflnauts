@@ -10,7 +10,7 @@ require "effect"
 
 -- Temporary debug
 debug = false
-third = false
+third = true
 fourth = false
 
 -- Load
@@ -18,6 +18,11 @@ function love.load ()
 	-- Graphics
 	love.graphics.setBackgroundColor(189, 95, 93)
 	love.graphics.setDefaultFilter("nearest", "nearest")
+	
+	-- Font
+	Font = love.graphics.newImageFont("assets/font2.png", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-,!:()[]{}<>", -1)
+	Font:setLineHeight(1)
+	love.graphics.setFont(Font)
 	
 	-- ZU WARUDO!
 	w = World:new()

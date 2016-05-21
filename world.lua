@@ -173,10 +173,9 @@ function World:draw()
 	for _,naut in pairs(self.Nauts) do
 		-- I have no idea where to place them T_T
 		-- let's do: bottom-left, bottom-right, top-left, top-right
-		-- equation that gives 0 with 1,2 and 1 with 3,4 -- fffs lets make statement
-		local y = 1
-		if _ < 3 then y = 180-33 end
-		naut:drawHUD(1+(_%2)*(290-34), y, scale)
+		local y, e = 1, 1
+		if _ < 3 then y, e = 180-33, 0 end
+		naut:drawHUD(1+(_%2)*(290-34), y, scale, e)
 	end
 end
 
