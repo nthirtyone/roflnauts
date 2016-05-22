@@ -71,6 +71,11 @@ function love.keypressed (key)
 	if key == "escape" then
 		love.event.quit()
 	end
+	if key == "f5" and debug then
+		local new = World:new("default", "leon", "lonestar", third, fourth)
+		w = nil
+		w = new
+	end
 end
 
 -- KeyReleased

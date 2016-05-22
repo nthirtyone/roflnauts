@@ -60,9 +60,9 @@ end
 -- Load map from file
 function World:loadMap(name)
 	local name = name or "default"
-	name = "maps/" .. name
-	local map = require(name)
-	self.map = map
+	name = "maps/" .. name .. ".lua"
+	local map = love.filesystem.load(name)
+	self.map = map()
 	for _,platform in pairs(self.map.platforms) do
 		self:createPlatform(platform.x, platform.y, platform.shape, platform.sprite)
 	end
