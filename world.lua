@@ -42,6 +42,11 @@ function World:new(map, ...)
 	o.Effects = e
 	-- Random init
 	math.randomseed(os.time())
+	-- Map
+	local map = map or "default"
+	o:loadMap(map)
+	-- Nauts
+	o:spawnNauts(...)
 	-- Create camera
 	o.camera = Camera:new(o)
 	-- Cloud generator
@@ -49,11 +54,6 @@ function World:new(map, ...)
 	for i=1,5 do
 		o:randomizeCloud(false)
 	end
-	-- Map
-	local map = map or "default"
-	o:loadMap(map)
-	-- Nauts
-	o:spawnNauts(...)
 	return o
 end
 
@@ -106,12 +106,13 @@ function World:randomizeCloud(outside)
 		outside = outside
 	end
 	local x,y,t,v
+	local m = self.map
 	if outside then
-		x = -250+math.random(-30,30)
+		x = m.center_x-m.width+math.random(-30,30)
 	else
-		x = math.random(-200,250)
+		x = math.random(m.center_x-m.width/2,m.center_x+m.width/2)
 	end
-	y = math.random(-20, 170)
+	y = math.random(m.center_y-m.height/3, m.center_y+m.height/3)
 	t = math.random(1,3)
 	v = math.random(8,18)
 	self:createCloud(x, y, t, v)
