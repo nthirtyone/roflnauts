@@ -10,8 +10,8 @@ require "effect"
 
 -- Temporary debug
 debug = false
-third = true
-fourth = false
+third = "clunk"
+fourth = nil --"yuri"
 
 -- Load
 function love.load ()
@@ -25,13 +25,7 @@ function love.load ()
 	love.graphics.setFont(Font)
 	
 	-- ZU WARUDO!
-	w = World:new()
-	w:createPlatform(290/2, 180/2, {-91,1, 90,1, 90,10, 5,76, -5,76, -91,10}, "assets/platform_big.png")
-	w:createPlatform(290/2+140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png")
-	w:createPlatform(290/2-140, 180/2+50, {-26,1, 26,1, 26,30, -26,30}, "assets/platform_small.png")
-	w:createPlatform(290/2, 180/2-50, {-17,1, 17,1, 17,16, -17,16}, "assets/platform_top.png")
-	w:createNaut(290/2-15, 180/2 - 80, "leon")
-	w:createNaut(290/2+15, 180/2 - 80, "lonestar")
+	w = World:new("default", "leon", "lonestar", third, fourth)
 	
 	-- Temporary settings for second player
 	w.Nauts[2].key_left = "a"
@@ -42,8 +36,7 @@ function love.load ()
 	w.Nauts[2].key_hit = "f"
 	
 	-- Temporary settings for third player
-	if third then
-	w:createNaut(290/2+05, 180/2 - 80, "clunk")
+	if third ~= nil then
 	w.Nauts[3].key_left = "kp4"
 	w.Nauts[3].key_right = "kp6"
 	w.Nauts[3].key_up = "kp8"
@@ -53,8 +46,7 @@ function love.load ()
 	end
 	
 	-- Temporary settings for fourth player
-	if fourth then
-	w:createNaut(290/2-05, 180/2 - 80, "yuri")
+	if fourth ~= nil then
 	w.Nauts[4].key_left = "b"
 	w.Nauts[4].key_right = "m"
 	w.Nauts[4].key_up = "h"

@@ -149,8 +149,9 @@ function Player:update (dt)
 		
 	-- # DEATH
 	-- We all die in the end.
-	if (self.body:getX() < -600 or self.body:getX() > 780  or
-	    self.body:getY() < -500 or self.body:getY() > 500) and
+	local m = self.world.map
+	if (self.body:getX() < m.center_x - m.width*1.5 or self.body:getX() > m.center_x + m.width*1.5  or
+	    self.body:getY() < m.center_y - m.height*1.5 or self.body:getY() > m.center_y + m.height*1.5) and
 	    self.alive
 	then
 		self:die()
@@ -349,7 +350,7 @@ end
 function Player:respawn ()
 	self.alive = true
 	self.body:setLinearVelocity(0,0)
-	self.body:setPosition(290/2, 180/2-80)
+	self.body:setPosition(self.world:getSpawnPosition())
 	self.body:setActive(true)
 	self:createEffect("respawn")
 	self:changeAnimation("idle")

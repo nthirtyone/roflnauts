@@ -16,11 +16,13 @@ World = {
 	camera = nil,
 	-- cloud generator
 	clouds_delay = 6,
-	clouds_initial = nil
+	clouds_initial = nil,
+	-- Map
+	map = nil
 }
 
 -- Constructor of `World` ZA WARUDO!
-function World:new()
+function World:new(map, ...)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
@@ -47,7 +49,38 @@ function World:new()
 	for i=1,5 do
 		o:randomizeCloud(false)
 	end
+	-- Map
+	local map = map or "default"
+	o:loadMap(map)
+	-- Nauts
+	o:spawnNauts(...)
 	return o
+end
+
+-- Load map from file
+function World:loadMap(name)
+	local name = name or "default"
+	name = "maps/" .. name
+	local map = require(name)
+	self.map = map
+	for _,platform in pairs(self.map.platforms) do
+		self:createPlatform(platform.x, platform.y, platform.shape, platform.sprite)
+	end
+end
+
+-- Spawn all the nauts for the round
+function World:spawnNauts(...)
+	local nauts = {...}
+	for _,naut in pairs(nauts) do
+		local x,y = self:getSpawnPosition()
+		self:createNaut(x, y, naut)
+	end
+end
+
+-- Get respawn location
+function World:getSpawnPosition()
+	local n = math.random(1, #self.map.respawns)
+	return self.map.respawns[n].x, self.map.respawns[n].y
 end
 
 -- Add new platform to the world
@@ -140,10 +173,12 @@ end
 -- Draw
 function World:draw()
 	-- Hard-coded background (for now)
-	love.graphics.setColor(193, 100, 99, 255)
-	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.25)
-	love.graphics.setColor(179, 82, 80, 255)
-	love.graphics.rectangle("fill", 0, love.graphics.getHeight()*0.8, love.graphics.getWidth(), love.graphics.getHeight()*0.2)
+	love.graphics.setColor(self.map.color_bot)
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	love.graphics.setColor(self.map.color_mid)
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.8)
+	love.graphics.setColor(self.map.color_top)
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.25)	
 	
 	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
