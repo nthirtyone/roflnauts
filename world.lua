@@ -85,7 +85,7 @@ end
 
 -- Add new platform to the world
 function World:createPlatform(x, y, polygon, sprite)
-	table.insert(self.Platforms, Ground:new(self.world, x, y, polygon, sprite))
+	table.insert(self.Platforms, Ground:new(self, self.world, x, y, polygon, sprite))
 end
 
 -- Add new naut to the world
@@ -203,6 +203,22 @@ function World:draw()
 	-- Draw ground
 	for _,platform in pairs(self.Platforms) do
 		platform:draw(offset_x, offset_y, scale, debug)
+	end
+	
+	-- draw center
+	if debug then
+		local c = self.camera
+		local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+		love.graphics.setColor(130,130,130)
+		love.graphics.setLineWidth(1)
+		love.graphics.setLineStyle("rough")
+		local cx, cy = c:getPositionScaled()
+		local x1, y1 = c:translatePosition(self.map.center_x, cy)
+		local x2, y2 = c:translatePosition(self.map.center_x, cy+h)
+		love.graphics.line(x1,y1,x2,y2)
+		local x1, y1 = c:translatePosition(cx, self.map.center_y)
+		local x2, y2 = c:translatePosition(cx+w, self.map.center_y)
+		love.graphics.line(x1,y1,x2,y2)
 	end
 	
 	-- Draw HUDs

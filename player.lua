@@ -266,7 +266,7 @@ function Player:draw (offset_x, offset_y, scale, debug)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(50, 255, 50, 100)
-		love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+		love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(self.shape:getPoints())))
 		love.graphics.setColor(255,255,255,255)
 	end
 end

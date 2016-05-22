@@ -10,10 +10,11 @@ Ground = {
 	body = nil,
 	shape = nil,
 	fixture = nil,
+	world = nil,
 	sprite = nil
 }
 -- Constructor of `Ground`
-function Ground:new (world, x, y, shape, sprite)
+function Ground:new (game, world, x, y, shape, sprite)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -23,6 +24,7 @@ function Ground:new (world, x, y, shape, sprite)
 	o.sprite  = love.graphics.newImage(sprite)
 	o.fixture:setCategory(1)
 	o.fixture:setFriction(0.2)
+	o.world = game
 	return o
 end
 
@@ -39,6 +41,6 @@ function Ground:draw (offset_x, offset_y, scale, debug)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(220, 220, 220, 100)
-		love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+		love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(self.shape:getPoints())))
 	end
 end

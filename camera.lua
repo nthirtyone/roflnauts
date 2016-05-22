@@ -43,6 +43,10 @@ function Camera:getPosition ()
 	return self.x, self.y
 end
 
+function Camera:getPositionScaled ()
+	return self.x*self.scale, self.y*self.scale
+end
+
 -- Destination
 function Camera:setDestination (x, y)
 	local x = x or 0
@@ -52,6 +56,27 @@ end
 
 function Camera:getDestination ()
 	return self.dest_x, self.dest_y
+end
+
+-- Translate points
+function Camera:translatePosition(x, y)
+	local x = x or 0
+	local y = y or 0
+	return x-self.x*self.scale, y-self.y*self.scale
+end
+
+function Camera:translatePoints(...)
+	local a = {...}
+	local r = {}
+	local x,y = self:getOffsets()
+	for k,v in pairs(a) do
+		if k%2 == 1 then
+			table.insert(r, (v + x) * self.scale)
+		else
+			table.insert(r, (v + y) * self.scale)
+		end
+	end
+	return r
 end
 	
 -- Shake it

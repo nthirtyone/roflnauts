@@ -1,7 +1,7 @@
 -- Default map from original roflnauts
 return {
 	center_x = 0,
-	center_y = 0,
+	center_y = 30,
 	width  = 320,
 	height = 240,
 	color_top = {193, 100,  99, 255},
