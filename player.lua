@@ -333,7 +333,7 @@ function Player:damage (horizontal, vertical)
 	self.body:setLinearVelocity(x,0)
 	self.body:applyLinearImpulse((28+12*self.combo)*horizontal, (60+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
-	self.combo = math.min(10, self.combo + 1)
+	self.combo = math.min(20, self.combo + 1)
 end
 
 -- DIE
