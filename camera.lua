@@ -24,6 +24,8 @@ function Camera:new (world)
 	setmetatable(o, self)
 	self.__index = self
 	o.world = world
+	o:setPosition(o:follow())
+	o:setDestination(o:follow())
 	return o
 end
 
@@ -118,9 +120,9 @@ function Camera:follow ()
 			y = point.body:getY() + y
 		end
 	end
-	x = x / i - love.graphics.getWidth()/2/self.scale
-	y = y / i - love.graphics.getHeight()/2/self.scale
-	self:setDestination(x,y)
+	x = x / i - love.graphics.getWidth()/self.scale/2
+	y = y / i - love.graphics.getHeight()/self.scale/2
+	return x,y
 end
 
 -- Update
@@ -134,7 +136,7 @@ function Camera:update (dt)
 			self.delay = self.delay - dt
 		end
 	else
-		self:follow()
+		self:setDestination(self:follow())
 	end
 	local dx, dy = self:getDestination()
 	dx = (dx - self.x) * 6 * dt
