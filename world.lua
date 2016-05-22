@@ -219,6 +219,15 @@ function World:draw()
 		local x1, y1 = c:translatePosition(cx, self.map.center_y)
 		local x2, y2 = c:translatePosition(cx+w, self.map.center_y)
 		love.graphics.line(x1,y1,x2,y2)
+		love.graphics.setColor(200,200,200)
+		love.graphics.setLineStyle("rough")
+		local cx, cy = c:getPositionScaled()
+		local x1, y1 = c:translatePosition(0, cy)
+		local x2, y2 = c:translatePosition(0, cy+h)
+		love.graphics.line(x1,y1,x2,y2)
+		local x1, y1 = c:translatePosition(cx, 0)
+		local x2, y2 = c:translatePosition(cx+w, 0)
+		love.graphics.line(x1,y1,x2,y2)
 	end
 	
 	-- Draw HUDs
