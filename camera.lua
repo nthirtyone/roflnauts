@@ -7,7 +7,7 @@ Camera = {
 	y = 0,
 	dest_x = 0,
 	dest_y = 0,
-	scale = 2,
+	scale = 4,
 	shake = 0,
 	timer = 0,
 	delay = 0,
@@ -112,7 +112,6 @@ end
 function Camera:follow ()
 	local m = self.world.map
 	local x,y,i = m.center_x, m.center_y, 1
-	print(x,y, love.graphics.getHeight(), self.scale, (love.graphics.getHeight()/2)/self.scale)
 	for k,point in pairs(self.world.Nauts) do
 		if point.body:getX() > m.center_x - m.width/2 and point.body:getX() < m.center_x + m.width/2 and
 		   point.body:getY() > m.center_y - m.height/2 and point.body:getY() < m.center_y + m.height/2 then
@@ -122,7 +121,7 @@ function Camera:follow ()
 		end
 	end
 	x = x / i - love.graphics.getWidth()/self.scale/2
-	y = y / i - (love.graphics.getHeight()/2)/self.scale
+	y = y / i - love.graphics.getHeight()/self.scale/2 + 10*self.scale -- hotfix
 	return x,y
 end
 
@@ -137,7 +136,7 @@ function Camera:update (dt)
 			self.delay = self.delay - dt
 		end
 	else
-		--self:setDestination(self:follow())
+		self:setDestination(self:follow())
 	end
 	local dx, dy = self:getDestination()
 	dx = (dx - self.x) * 6 * dt
