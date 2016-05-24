@@ -80,7 +80,7 @@ function Camera:translatePoints(...)
 	end
 	return r
 end
-	
+
 -- Shake it
 -- Really bad script, but for now it works
 function Camera:shake ()
@@ -121,7 +121,7 @@ function Camera:follow ()
 		end
 	end
 	x = x / i - love.graphics.getWidth()/self.scale/2
-	y = y / i - love.graphics.getHeight()/self.scale/2 + 10*self.scale -- hotfix
+	y = y / i - love.graphics.getHeight()/self.scale/2 + 4*self.scale -- hotfix
 	return x,y
 end
 
