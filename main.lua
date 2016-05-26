@@ -55,10 +55,10 @@ function love.keypressed (key)
 	end
 	if key == "f5" and debug then
 		local new = World:new("default", "leon", "lonestar", third, fourth)
-		w.Nauts[1]:assignController(cont1)
-		w.Nauts[2]:assignController(cont2)
 		w = nil
 		w = new
+		w.Nauts[1]:assignController(cont1)
+		w.Nauts[2]:assignController(cont2)
 	end
 end
 
