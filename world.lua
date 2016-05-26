@@ -3,6 +3,11 @@
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
+require "ground"
+require "player"
+require "cloud"
+require "effect"
+
 -- Metatable of `World`
 -- nils initialized in constructor
 World = {
@@ -160,14 +165,14 @@ end
 -- Keypressed
 function World:keypressed(key)
 	for _,naut in pairs(self.Nauts) do
-		naut:keypressed(key)
+		--naut:keypressed(key)
 	end
 end
 
 -- Keyreleased
 function World:keyreleased(key)
 	for _,naut in pairs(self.Nauts) do
-		naut:keyreleased(key)
+		--naut:keyreleased(key)
 	end
 end
 
@@ -179,32 +184,32 @@ function World:draw()
 	love.graphics.setColor(self.map.color_mid)
 	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.8)
 	love.graphics.setColor(self.map.color_top)
-	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.25)	
-	
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.25)
+
 	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
 	local scale = self.camera.scale
-	
+
 	-- Draw clouds
 	for _,cloud in pairs(self.Clouds) do
 		cloud:draw(offset_x, offset_y, scale)
 	end
-	
+
 	-- Draw effects
 	for _,effect in pairs(self.Effects) do
 		effect:draw(offset_x,offset_y, scale)
 	end
-	
+
 	-- Draw player
 	for _,naut in pairs(self.Nauts) do
 		naut:draw(offset_x, offset_y, scale, debug)
 	end
-	
+
 	-- Draw ground
 	for _,platform in pairs(self.Platforms) do
 		platform:draw(offset_x, offset_y, scale, debug)
 	end
-	
+
 	-- draw center
 	if debug then
 		local c = self.camera
@@ -229,7 +234,7 @@ function World:draw()
 		local x2, y2 = c:translatePosition(cx+w, 0)
 		love.graphics.line(x1,y1,x2,y2)
 	end
-	
+
 	-- Draw HUDs
 	for _,naut in pairs(self.Nauts) do
 		-- I have no idea where to place them T_T

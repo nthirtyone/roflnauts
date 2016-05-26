@@ -38,12 +38,7 @@ Player = {
 	jumpdouble = true,
 	jumptimer = 0.14,
 	-- Keys
-	key_jump  = "rshift",
-	key_left  = "left",
-	key_right = "right",
-	key_up    = "up",
-	key_down  = "down",
-	key_hit   = "return",
+	controller = nil,
 	-- HUD
 	portrait_sprite = nil,
 	portrait_sheet  = require "portraits"
@@ -78,6 +73,11 @@ function Player:new (game, world, x, y, name)
 	return o
 end
 
+function Player:assignController(controller)
+	self.controller = controller or nil
+	controller:setParent(self)
+end
+
 -- Update callback of `Player`
 function Player:update (dt)
 	-- # VERTICAL MOVEMENT
@@ -87,38 +87,38 @@ function Player:update (dt)
 		self.body:setLinearVelocity(x,-160)
 		self.jumptimer = self.jumptimer - dt
 	end
-	
+
 	-- Salto
 	if self.salto and (self.current == self.animations.walk or self.current == self.animations.idle) then
 		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
 	elseif self.rotate ~= 0 then
 		self.rotate = 0
 	end
-	
+
 	-- # HORIZONTAL MOVEMENT
 	-- Walking
 	local x,y = self.body:getLinearVelocity()
-	if love.keyboard.isDown(self.key_left) then
+	local controller = self.controller
+	if controller:isDown("left") then
 		self.facing = -1
-		self.body:applyForce(-200, 0)
+		self.body:applyForce(-250, 0)
 		-- Controlled speed limit
 		if x < -self.max_velocity then
-			self.body:applyForce(200, 0)
+			self.body:applyForce(250, 0)
 		end
 	end
-	if love.keyboard.isDown(self.key_right) then
+	if controller:isDown("right") then
 		self.facing = 1
-		self.body:applyForce(200, 0)
+		self.body:applyForce(250, 0)
 		-- Controlled speed limit
 		if x > self.max_velocity then
-			self.body:applyForce(-200, 0)
+			self.body:applyForce(-250, 0)
 		end
 	end
-	
+
 	-- Custom linear damping
-	if  not self.inAir and
-		not love.keyboard.isDown(self.key_left) and
-		not love.keyboard.isDown(self.key_right)
+	if  not controller:isDown("left") and
+		not controller:isDown("right")
 	then
 		local face = nil
 		if x < -12 then
@@ -128,9 +128,12 @@ function Player:update (dt)
 		else
 			face = 0
 		end
-		self.body:applyForce(120*face,0)
+		self.body:applyForce(40*face,0)
+		if not self.inAir then
+			self.body:applyForce(80*face,0)
+		end
 	end
-	
+
 	-- # ANIMATIONS
 	-- Animation
 	self.delay = self.delay - dt
@@ -139,14 +142,14 @@ function Player:update (dt)
 		-- Thank you De Morgan!
 		if self.current.repeated or not (self.frame == self.current.frames) then
 			self.frame = (self.frame % self.current.frames) + 1
-		elseif love.keyboard.isDown(self.key_right) or love.keyboard.isDown(self.key_left) then
+		elseif controller:isDown("right") or controller:isDown("left") then
 			-- If nonrepeatable animation is finished and player is walking
 			self:changeAnimation("walk")
 		elseif self.current == self.animations.damage then
 			self:changeAnimation("idle")
 		end
 	end
-		
+
 	-- # DEATH
 	-- We all die in the end.
 	local m = self.world.map
@@ -164,11 +167,11 @@ function Player:update (dt)
 	if self.spawntimer <= 0 and not self.alive and self.lives >= 0 then
 		self:respawn()
 	end
-	
+
 	-- # PUNCH
 	-- Cooldown
 	self.punchcd = self.punchcd - dt
-	
+
 	-- Stop vertical
 	local c,a = self.current, self.animations
 	if (c == a.attack_up or c == a.attack_down or c == a.attack) and self.frame < c.frames then
@@ -178,20 +181,21 @@ function Player:update (dt)
 			self.body:setLinearVelocity(32*self.facing,0)
 		end
 	end
-		
+
 	if self.punchcd <= 0 and self.punchdir == 1 then
 		self.punchdir = 0
 	end
 end
 
 -- Keypressed callback (I think?) of `Player`
-function Player:keypressed (key)
+function Player:controllerPressed (key)
+	local controller = self.controller
 	-- Jumping
-	if key == self.key_jump then
+	if key == "jump" then
 		if not self.inAir then
 			self:createEffect("jump")
 			self.jumpactive = true
-			if (self.current == self.animations.attack) or 
+			if (self.current == self.animations.attack) or
 			   (self.current == self.animations.attack_up) or
 			   (self.current == self.animations.attack_down) then
 				self:changeAnimation("idle")
@@ -203,23 +207,23 @@ function Player:keypressed (key)
 			self.salto = true
 		end
 	end
-	
+
 	-- Walking
-	if key == self.key_left or key == self.key_right then
+	if key == "left" or key == "right" then
 		self:changeAnimation("walk")
 	end
-	
+
 	-- Punching
-	if key == self.key_hit and self.punchcd <= 0 then
+	if key == "attack" and self.punchcd <= 0 then
 		local f = self.facing
 		self.salto = false
-		if love.keyboard.isDown(self.key_up) then
+		if controller:isDown("up") then
 			-- Punch up
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack_up")
 			end
 			self:hit(2*f,-10,3*f,7, 0, -1)
-		elseif love.keyboard.isDown(self.key_down) and self.inAir then
+		elseif controller:isDown("down") and self.inAir then
 			-- Punch down
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack_down")
@@ -237,16 +241,17 @@ function Player:keypressed (key)
 end
 
 -- Keyreleased callback (I think?) of `Player`
-function Player:keyreleased (key)
+function Player:controllerReleased (key)
+	local controller = self.controller
 	-- Jumping
-	if key == self.key_jump then
+	if key == "jump" then
 		self.jumpactive = false
 		self.jumptimer = 0.12
 	end
-	
+
 	-- Walking
-	if (key == self.key_left or key == self.key_right) and not
-	   (love.keyboard.isDown(self.key_left) or love.keyboard.isDown(self.key_right)) and
+	if (key == "left" or key == "right") and not
+	   (controller:isDown("left") or controller:isDown("right")) and
 	   self.current == self.animations.walk
 	then
 		self:changeAnimation("idle")
@@ -331,7 +336,7 @@ function Player:damage (horizontal, vertical)
 	self:createEffect("hit")
 	local x,y = self.body:getLinearVelocity()
 	self.body:setLinearVelocity(x,0)
-	self.body:applyLinearImpulse((28+12*self.combo)*horizontal, (60+10*self.combo)*vertical + 15)
+	self.body:applyLinearImpulse((32+12*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 	self.combo = math.min(20, self.combo + 1)
 end
