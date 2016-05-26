@@ -31,34 +31,6 @@ function love.load ()
 	w.Nauts[1]:assignController(cont1)
 	w.Nauts[2]:assignController(cont2)
 
-	-- Temporary settings for second player
-	w.Nauts[2].key_left = "a"
-	w.Nauts[2].key_right = "d"
-	w.Nauts[2].key_up = "w"
-	w.Nauts[2].key_down = "s"
-	w.Nauts[2].key_jump = "g"
-	w.Nauts[2].key_hit = "f"
-
-	-- Temporary settings for third player
-	if third ~= nil then
-	w.Nauts[3].key_left = "kp4"
-	w.Nauts[3].key_right = "kp6"
-	w.Nauts[3].key_up = "kp8"
-	w.Nauts[3].key_down = "kp5"
-	w.Nauts[3].key_jump = "kp2"
-	w.Nauts[3].key_hit = "kp3"
-	end
-
-	-- Temporary settings for fourth player
-	if fourth ~= nil then
-	w.Nauts[4].key_left = "b"
-	w.Nauts[4].key_right = "m"
-	w.Nauts[4].key_up = "h"
-	w.Nauts[4].key_down = "n"
-	w.Nauts[4].key_jump = "k"
-	w.Nauts[4].key_hit = "l"
-	end
-
 	-- Menu bijaczes
 	--m = Menu:new()
 	--m:newSelector()
@@ -83,6 +55,8 @@ function love.keypressed (key)
 	end
 	if key == "f5" and debug then
 		local new = World:new("default", "leon", "lonestar", third, fourth)
+		w.Nauts[1]:assignController(cont1)
+		w.Nauts[2]:assignController(cont2)
 		w = nil
 		w = new
 	end

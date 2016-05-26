@@ -15,6 +15,7 @@ Controller = {
 }
 
 -- Constructor
+-- joystick, left, right, up, down, attack, jump
 function Controller:new(joystick, ...)
 	local o = {}
 	setmetatable(o, self)
