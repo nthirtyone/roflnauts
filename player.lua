@@ -39,6 +39,7 @@ Player = {
 	jumptimer = 0.14,
 	-- Keys
 	controller = nil,
+	controller_empty = {isDown = function () return false end},
 	-- HUD
 	portrait_sprite = nil,
 	portrait_sheet  = require "portraits"
@@ -78,6 +79,14 @@ function Player:assignController(controller)
 	controller:setParent(self)
 end
 
+function Player:getController()
+	if self.controller ~= nil then
+		return self.controller
+	else
+		return self.controller_empty
+	end
+end
+
 -- Update callback of `Player`
 function Player:update (dt)
 	-- # VERTICAL MOVEMENT
@@ -98,7 +107,7 @@ function Player:update (dt)
 	-- # HORIZONTAL MOVEMENT
 	-- Walking
 	local x,y = self.body:getLinearVelocity()
-	local controller = self.controller
+	local controller = self:getController()
 	if controller:isDown("left") then
 		self.facing = -1
 		self.body:applyForce(-250, 0)
@@ -189,7 +198,7 @@ end
 
 -- Keypressed callback (I think?) of `Player`
 function Player:controllerPressed (key)
-	local controller = self.controller
+	local controller = self:getController()
 	-- Jumping
 	if key == "jump" then
 		if not self.inAir then
@@ -242,7 +251,7 @@ end
 
 -- Keyreleased callback (I think?) of `Player`
 function Player:controllerReleased (key)
-	local controller = self.controller
+	local controller = self:getController()
 	-- Jumping
 	if key == "jump" then
 		self.jumpactive = false

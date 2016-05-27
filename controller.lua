@@ -62,7 +62,7 @@ function Controller:keypressed(key, scancode)
 	if self.parent ~= nil and self.joystick == nil then
 		local control = self:testControl(key)
 		if control ~= nil then
-			self.parent:controllerPressed(control)
+			self.parent:controllerPressed(control, self)
 		end
 	end
 end
@@ -71,7 +71,7 @@ function Controller:keyreleased(key, scancode)
 	if self.parent ~= nil and self.joystick == nil then
 		local control = self:testControl(key)
 		if control ~= nil then
-			self.parent:controllerReleased(control)
+			self.parent:controllerReleased(control, self)
 		end
 	end
 end
@@ -80,6 +80,6 @@ function Controller:isDown(control)
 	if self.joystick == nil then
 		return love.keyboard.isDown(self[control])
 	else
-		return self.joystick:isGamepadDown(self[control])
+		return self.joystick:isGamepadDown(self[control], self)
 	end
 end
