@@ -225,9 +225,10 @@ function World:draw()
 	for _,naut in pairs(self.Nauts) do
 		-- I have no idea where to place them T_T
 		-- let's do: bottom-left, bottom-right, top-left, top-right
+		local w, h = love.graphics.getWidth()/scale, love.graphics.getHeight()/scale
 		local y, e = 1, 1
-		if _ < 3 then y, e = 180-33, 0 end
-		naut:drawHUD(1+(_%2)*(290-34), y, scale, e)
+		if _ < 3 then y, e = h-33, 0 end
+		naut:drawHUD(1+(_%2)*(w-34), y, scale, e)
 	end
 end
 
