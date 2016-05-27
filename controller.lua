@@ -10,8 +10,7 @@ Controller = {
 	down = "down",
 	attack = "return", -- accept
 	jump = "rshift", -- cancel
-	parent = nil,
-	down = nil
+	parent = nil
 }
 
 -- Constructor

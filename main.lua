@@ -3,7 +3,7 @@
 
 require "world"
 require "camera"
---require "menu"
+-- require "menu"
 require "controller"
 
 -- Temporary debug
@@ -26,14 +26,17 @@ function love.load ()
 	w = World:new("default", "leon", "lonestar", third, fourth)
 
 	-- Controllers
-	cont1 = Controller:new()
-	cont2 = Controller:new(nil, "a", "d", "w", "s", "g", "h")
-	w.Nauts[1]:assignController(cont1)
-	w.Nauts[2]:assignController(cont2)
+	Controllers = {}
+	table.insert(Controllers, Controller:new())
+	table.insert(Controllers, Controller:new(nil, "a", "d", "w", "s", "g", "h"))
+	w.Nauts[1]:assignController(Controllers[1])
+	w.Nauts[2]:assignController(Controllers[2])
 
 	-- Menu bijaczes
-	--m = Menu:new()
-	--m:newSelector()
+	-- m = Menu:new()
+	-- m:newSelector()
+	-- m:newSelector()
+	-- m.selectors[2]:setPosition(33,33)
 end
 
 -- Update
@@ -43,14 +46,15 @@ end
 
 -- KeyPressed
 function love.keypressed (key)
-	w:keypressed(key)
-	cont1:keypressed(key)
-	cont2:keypressed(key)
-	-- Switch hitbox display on/off
+	-- Controllers
+	for _,controller in pairs(Controllers) do
+		controller:keypressed(key)
+	end
+	-- Misc global input
 	if key == "x" then
 		debug = not debug
 	end
-	if key == "escape" then
+	if key == "escape" or key == "f1" then
 		love.event.quit()
 	end
 	if key == "f5" and debug then
@@ -64,15 +68,16 @@ end
 
 -- KeyReleased
 function love.keyreleased(key)
-	w:keyreleased(key)
-	cont1:keyreleased(key)
-	cont2:keyreleased(key)
+	-- Controllers
+	for _,controller in pairs(Controllers) do
+		controller:keyreleased(key)
+	end
 end
 
 -- Draw
 function love.draw ()
 	w:draw()
-	--m.selectors[1]:draw()
+	-- m:draw()
 	if debug then
 		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 	end

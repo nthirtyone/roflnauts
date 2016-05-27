@@ -162,20 +162,6 @@ function World:update(dt)
 	end
 end
 
--- Keypressed
-function World:keypressed(key)
-	for _,naut in pairs(self.Nauts) do
-		--naut:keypressed(key)
-	end
-end
-
--- Keyreleased
-function World:keyreleased(key)
-	for _,naut in pairs(self.Nauts) do
-		--naut:keyreleased(key)
-	end
-end
-
 -- Draw
 function World:draw()
 	-- Hard-coded background (for now)
