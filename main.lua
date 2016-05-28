@@ -3,7 +3,7 @@
 
 require "world"
 require "camera"
--- require "menu"
+require "menu"
 require "controller"
 
 -- Temporary debug
@@ -25,6 +25,17 @@ function love.load ()
 	-- ZU WARUDO!
 	w = World:new("default", "leon", "lonestar", third, fourth)
 
+	-- Menu bijaczes
+	-- m = Menu:new()
+	-- m:newSelector()
+	-- m:newSelector()
+	-- m:newSelector()
+	-- m:newSelector()
+	-- m.selectors[1]:setPosition(40+33*1,33)
+	-- m.selectors[2]:setPosition(40+33*2,33)
+	-- m.selectors[3]:setPosition(40+33*3,33)
+	-- m.selectors[4]:setPosition(40+33*4,33)
+
 	-- Controllers
 	Controllers = {}
 	table.insert(Controllers, Controller:new())
@@ -32,16 +43,15 @@ function love.load ()
 	w.Nauts[1]:assignController(Controllers[1])
 	w.Nauts[2]:assignController(Controllers[2])
 
-	-- Menu bijaczes
-	-- m = Menu:new()
-	-- m:newSelector()
-	-- m:newSelector()
-	-- m.selectors[2]:setPosition(33,33)
+	-- Menu Controllers
+	-- m:assignController(Controllers[1])
+	-- m:assignController(Controllers[2])
 end
 
 -- Update
 function love.update (dt)
 	w:update(dt)
+	-- m:update(dt)
 end
 
 -- KeyPressed

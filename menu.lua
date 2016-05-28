@@ -4,9 +4,98 @@
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
+require "selector"
+
 -- Metatable of `Menu`
-Menu = {}
+Menu = {
+	logo = nil,
+	selectors = nil,
+	selected = nil,
+	nauts = require "nautslist",
+	portrait_sprite = nil,
+	portrait_sheet  = require "portraits",
+	scale = 4,
+	countdown = 3
+}
 
 -- Constructor of `Menu`
 function Menu:new ()
+	-- Meta
+	local o = {}
+	setmetatable(o, self)
+	self.__index = self
+	-- initialize
+	o.logo = nil
+	o.selectors = {}
+	o.selected  = {}
+	o.portrait_sprite = love.graphics.newImage("assets/portraits.png")
+	return o
+end
+
+-- Naut selector
+function Menu:newSelector()
+	table.insert(self.selectors,Selector:new(self))
+end
+
+--
+function Menu:draw()
+	for _,selector in pairs(self.selectors) do
+		selector:draw()
+	end
+	for _,selector in pairs(self.selected) do
+		selector:draw()
+	end
+	love.graphics.print(self.countdown,2,2,0,self.scale,self.scale)
+end
+
+function Menu:update(dt)
+	local state = true
+	if #self.selected > 1 then
+		for _,selector in pairs(self.selected) do
+			state = state and selector.state
+		end
+	else
+		state = false
+	end
+	if state then
+		self.countdown = self.countdown - dt
+	else
+		self.countdown = 3
+	end
+end
+
+--
+function Menu:unselectSelector(selector)
+	local i = 0
+	for _,v in pairs(self.selected) do
+		if v == selector then
+			i = _
+			break
+		end
+	end
+	if i ~= 0 then
+		table.remove(self.selected, i)
+		table.insert(self.selectors, selector)
+		self:assignController(selector:getController())
+		selector:clear()
+	end
+end
+
+-- Controllers
+function Menu:assignController(controller)
+	controller:setParent(self)
+end
+
+function Menu:controllerPressed(control, controller)
+	local selector = self.selectors[1]
+	if selector ~= nil then
+		table.remove(self.selectors, 1)
+		table.insert(self.selected, selector)
+		selector:assignController(controller)
+		selector:controllerPressed(control)
+	end
+end
+
+-- It just must be here
+function Menu:controllerReleased(control, controller)
 end
