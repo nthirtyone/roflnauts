@@ -9,6 +9,7 @@ require "selector"
 -- Metatable of `Menu`
 Menu = {
 	logo = nil,
+	-- move selectors to one table; make functions to retrieve selectors w or w/o controller
 	selectors = nil,
 	selected = nil,
 	nauts = require "nautslist",
@@ -34,7 +35,13 @@ end
 
 -- Naut selector
 function Menu:newSelector()
-	table.insert(self.selectors,Selector:new(self))
+	local selector = Selector:new(self)
+	local w, h = love.graphics.getWidth()/self.scale, love.graphics.getHeight()/self.scale
+	local n = #self.selectors - 1
+	table.insert(self.selectors, selector)
+	local x = (w-79)/2+n*38
+	local y = h/2-16
+	selector:setPosition(x, y)
 end
 
 --
