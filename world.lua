@@ -75,10 +75,17 @@ end
 
 -- Spawn all the nauts for the round
 function World:spawnNauts(...)
-	local nauts = {...}
+	local params = {...}
+	local nauts = nil
+	if type(params[1][1]) == "table" then
+		nauts = params[1]
+	else
+		nauts = params
+	end
 	for _,naut in pairs(nauts) do
 		local x,y = self:getSpawnPosition()
-		self:createNaut(x, y, naut)
+		local spawn = self:createNaut(x, y, naut[1])
+		spawn:assignController(naut[2])
 	end
 end
 
@@ -95,7 +102,9 @@ end
 
 -- Add new naut to the world
 function World:createNaut(x, y, name)
-	table.insert(self.Nauts, Player:new(self, self.world, x, y, name))
+	local naut = Player:new(self, self.world, x, y, name)
+	table.insert(self.Nauts, naut)
+	return naut
 end
 
 -- Add new cloud to the world

@@ -45,6 +45,9 @@ function Selector:clear()
 	self.naut = 1
 	self.state = false
 end
+function Selector:getSelectionName()
+	return self.parent.nauts[self.naut]
+end
 function Selector:controllerPressed(control, controller)
 	local n = #self.parent.nauts
 	if control == "left" and not self.state then
