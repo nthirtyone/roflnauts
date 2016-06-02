@@ -7,6 +7,7 @@ require "ground"
 require "player"
 require "cloud"
 require "effect"
+require "decoration"
 
 -- Metatable of `World`
 -- nils initialized in constructor
@@ -16,8 +17,8 @@ World = {
 	Nauts = nil,
 	Platforms = nil,
 	Clouds = nil,
-	EffectsBottom = nil,
-	EffectsTop = nil,
+	Decorations = nil,
+	Effects = nil,
 	camera = nil,
 	-- cloud generator
 	clouds_delay = 6,
@@ -45,6 +46,8 @@ function World:new(map, ...)
 	o.Clouds = c
 	local e   = {}
 	o.Effects = e
+	local d = {}
+	o.Decorations = d
 	-- Random init
 	math.randomseed(os.time())
 	-- Map
@@ -70,6 +73,9 @@ function World:loadMap(name)
 	self.map = map()
 	for _,platform in pairs(self.map.platforms) do
 		self:createPlatform(platform.x, platform.y, platform.shape, platform.sprite)
+	end
+	for _,decoration in pairs(self.map.decorations) do
+		self:createDecoration(decoration.x, decoration.y, decoration.sprite)
 	end
 end
 
@@ -105,6 +111,11 @@ function World:createNaut(x, y, name)
 	local naut = Player:new(self, self.world, x, y, name)
 	table.insert(self.Nauts, naut)
 	return naut
+end
+
+-- Add new decoration to the world
+function World:createDecoration(x, y, sprite)
+	table.insert(self.Decorations, Decoration:new(x, y, sprite))
 end
 
 -- Add new cloud to the world
@@ -188,6 +199,11 @@ function World:draw()
 	-- Draw clouds
 	for _,cloud in pairs(self.Clouds) do
 		cloud:draw(offset_x, offset_y, scale)
+	end
+
+	-- Draw decorations
+	for _,decoration in pairs(self.Decorations) do
+		decoration:draw(offset_x, offset_y, scale)
 	end
 
 	-- Draw effects

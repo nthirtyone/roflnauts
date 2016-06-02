@@ -38,5 +38,6 @@ return {
 			shape = {0,1, 34,1, 34,16, 0,16},
 			sprite = "assets/platform_top.png"
 		}
-	}
+	},
+	decorations = {}
 }
