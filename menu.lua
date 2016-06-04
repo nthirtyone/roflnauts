@@ -70,7 +70,7 @@ function Menu:update(dt)
 		self.countdown = 3
 	end
 	if state and self.countdown < 0 then
-		self.__index = self:startGame()
+		self:startGame()
 	end
 end
 
@@ -110,12 +110,16 @@ end
 function Menu:controllerReleased(control, controller)
 end
 
--- WARUDO
-function Menu:startGame()
+function Menu:getNauts()
 	local nauts = {}
 	for _,selector in pairs(self.selected) do
 		table.insert(nauts, {selector:getSelectionName(), selector:getController()})
 	end
-	local world = World:new("default", nauts)
-	return world
+	return nauts
+end
+
+-- WARUDO
+function Menu:startGame()
+	local world = World:new("default", self:getNauts())
+	changeScene(world)
 end

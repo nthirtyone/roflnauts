@@ -9,6 +9,12 @@ require "controller"
 -- Temporary debug
 debug = false
 
+-- Pretend you didn't see this
+Scene = nil
+function changeScene(scene)
+	Scene = scene
+end
+
 -- Load
 function love.load ()
 	-- Graphics
@@ -34,14 +40,13 @@ function love.load ()
 	m:assignController(Controllers[1])
 	m:assignController(Controllers[2])
 
-	-- ZU WARUDO!
-	w = World:new("default", {"leon", Controllers[1]}, {"lonestar", Controllers[2]})
+	-- Scene
+	changeScene(m)
 end
 
 -- Update
 function love.update (dt)
-	w:update(dt)
-	-- m:update(dt)
+	Scene:update(dt)
 end
 
 -- KeyPressed
@@ -59,13 +64,7 @@ function love.keypressed (key)
 	end
 	if key == "f5" and debug then
 		local new = World:new("default", {"leon", Controllers[1]}, {"lonestar", Controllers[2]})
-		-- m = nil
-		-- m = new
-		w = nil
-		w = new
-	end
-	if key == "f6" then
-		m = m:startGame()
+		changeScene(new)
 	end
 end
 
@@ -79,8 +78,7 @@ end
 
 -- Draw
 function love.draw ()
-	w:draw()
-	-- m:draw()
+	Scene:draw()
 	if debug then
 		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 	end
