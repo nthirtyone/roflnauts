@@ -44,6 +44,27 @@ function love.load ()
 	changeScene(m)
 end
 
+-- Gamepad
+function love.joystickadded(joystick)
+	love.joystick.loadGamepadMappings("gamecontrollerdb.txt")
+	table.insert(Controllers, Controller:new(joystick, "dpleft", "dpright", "dpup", "dpdown", "a", "b"))
+	m:assignController(Controllers[#Controllers])
+end
+
+function love.gamepadpressed(joystick, button)
+	print(button, "pressed")
+	for _,controller in pairs(Controllers) do
+		controller:gamepadpressed(joystick, button)
+	end
+end
+
+function love.gamepadreleased(joystick, button)
+	print(button, "released")
+	for _,controller in pairs(Controllers) do
+		controller:gamepadreleased(joystick, button)
+	end
+end
+
 -- Update
 function love.update (dt)
 	Scene:update(dt)
