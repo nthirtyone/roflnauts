@@ -59,7 +59,9 @@ function Selector:controllerPressed(control, controller)
 	elseif control == "right" and not self.state then
 		self.naut = (self.naut % n) + 1
 	elseif control == "attack" then
-		self.state = true
+		if self.naut ~= 1 then
+			self.state = true
+		end
 	elseif control == "jump" then
 		if self.state == true then
 			self.state = false
