@@ -23,12 +23,23 @@ function Selector:getPosition ()
 	return self.x, self.y
 end
 function Selector:draw ()
+	-- portrait, sprite
 	local p = self.parent.portrait_sheet[self.parent.nauts[self.naut]]
+	local sprite = self.parent.portrait_sprite
+	-- scale, position
 	local scale = self.parent.scale
+	local x,y = self:getPosition()
+	-- arrows
+	local arrowl = self.parent.portrait_sheet.arrow_left
+	local arrowr = self.parent.portrait_sheet.arrow_right
 	if not self.state then
-		love.graphics.draw(self.parent.portrait_sprite, p.normal, self.x*scale, self.y*scale, 0, 1*scale, 1*scale)
+		love.graphics.draw(sprite, p.normal, x*scale, y*scale, 0, 1*scale, 1*scale)
+		if self.controller ~= nil then
+			love.graphics.draw(sprite, arrowl, (x-5)* scale, (y+13)*scale, 0, scale, scale)
+			love.graphics.draw(sprite, arrowr, (x+33)*scale, (y+13)*scale, 0, scale, scale)
+		end
 	else
-		love.graphics.draw(self.parent.portrait_sprite, p.active, self.x*scale, self.y*scale, 0, 1*scale, 1*scale)
+		love.graphics.draw(sprite, p.active, x*scale, y*scale, 0, 1*scale, 1*scale)
 	end
 end
 function Selector:assignController(controller)

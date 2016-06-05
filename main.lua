@@ -23,6 +23,7 @@ function love.load ()
 
 	-- Font
 	Font = love.graphics.newImageFont("assets/font2.png", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-,!:()[]{}<>", -1)
+	Bold = love.graphics.newImageFont("assets/font3.png", " 0123456789", 0)
 	Font:setLineHeight(1)
 	love.graphics.setFont(Font)
 

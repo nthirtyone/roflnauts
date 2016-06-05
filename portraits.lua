@@ -118,5 +118,8 @@ return {
 	ix = {
 		normal = love.graphics.newQuad(265,133,32,32,w,h),
 		active = love.graphics.newQuad(265,166,32,32,w,h)
-	}
+	},
+	-- ARROWS
+	arrow_left  = love.graphics.newQuad(298,1,4,6,w,h),
+	arrow_right = love.graphics.newQuad(303,1,4,6,w,h)
 }
