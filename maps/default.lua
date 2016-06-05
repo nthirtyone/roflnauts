@@ -2,7 +2,7 @@
 return {
 	center_x = 0,
 	center_y = 0,
-	width  = 320,
+	width  = 360,
 	height = 240,
 	color_top = {193, 100,  99, 255},
 	color_mid = {189,  95,  93, 255},

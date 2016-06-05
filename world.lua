@@ -21,7 +21,7 @@ World = {
 	Effects = nil,
 	camera = nil,
 	-- cloud generator
-	clouds_delay = 6,
+	clouds_delay = 5,
 	clouds_initial = nil,
 	-- Map
 	map = nil
@@ -59,7 +59,7 @@ function World:new(map, ...)
 	o.camera = Camera:new(o)
 	-- Cloud generator
 	o.clouds_initial = o.clouds_delay
-	for i=1,5 do
+	for i=1,6 do
 		o:randomizeCloud(false)
 	end
 	return o
@@ -133,11 +133,11 @@ function World:randomizeCloud(outside)
 	local x,y,t,v
 	local m = self.map
 	if outside then
-		x = m.center_x-m.width+math.random(-30,30)
+		x = m.center_x-m.width*1.2+math.random(-50,20)
 	else
 		x = math.random(m.center_x-m.width/2,m.center_x+m.width/2)
 	end
-	y = math.random(m.center_y-m.height/3, m.center_y+m.height/3)
+	y = math.random(m.center_y-m.height/2, m.center_y+m.height/2)
 	t = math.random(1,3)
 	v = math.random(8,18)
 	self:createCloud(x, y, t, v)
@@ -163,7 +163,7 @@ function World:update(dt)
 	local n = table.getn(self.Clouds)
 	self.clouds_delay = self.clouds_delay - dt
 	if self.clouds_delay < 0 and
-	   n < 14
+	   n < 18
 	then
 		self:randomizeCloud()
 		self.clouds_delay = self.clouds_delay + self.clouds_initial
