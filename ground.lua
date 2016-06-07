@@ -28,6 +28,12 @@ function Ground:new (game, world, x, y, shape, sprite)
 	return o
 end
 
+-- Destructor of `Ground`
+function Ground:delete ()
+	-- body deletion is handled by world deletion
+	self.sprite = nil
+end
+
 -- Draw of `Ground`
 function Ground:draw (offset_x, offset_y, scale, debug)
 	-- defaults

@@ -65,6 +65,18 @@ function World:new(map, ...)
 	return o
 end
 
+-- The end of the world
+function World:delete()
+	self.world:destroy()
+	for _,platform in pairs(self.Platforms) do
+	 	platform:delete()
+	end
+	for _,naut in pairs(self.Nauts) do
+		naut:delete()
+	end
+	self = nil
+end
+
 -- Load map from file
 function World:loadMap(name)
 	local name = name or "default"

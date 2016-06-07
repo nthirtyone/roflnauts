@@ -86,6 +86,7 @@ function love.keypressed (key)
 	end
 	if key == "f5" and debug then
 		local new = World:new("default", {"leon", Controllers[1]}, {"lonestar", Controllers[2]})
+		Scene:delete()
 		changeScene(new)
 	end
 end

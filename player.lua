@@ -74,6 +74,12 @@ function Player:new (game, world, x, y, name)
 	return o
 end
 
+-- Destructor of `Player`
+function Player:delete()
+	-- body deletion is handled by world deletion
+	self.sprite = nil
+end
+
 function Player:assignController(controller)
 	self.controller = controller or nil
 	controller:setParent(self)

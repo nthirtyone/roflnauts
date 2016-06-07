@@ -33,6 +33,10 @@ function Menu:new ()
 	return o
 end
 
+-- Destructor
+function Menu:delete()
+end
+
 -- Naut selector
 function Menu:newSelector()
 	local selector = Selector:new(self)
