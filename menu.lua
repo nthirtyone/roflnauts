@@ -30,6 +30,10 @@ function Menu:new ()
 	o.selectors = {}
 	o.selected  = {}
 	o.portrait_sprite = love.graphics.newImage("assets/portraits.png")
+	-- selectors
+	for i=0,3 do
+		o:newSelector()
+	end
 	return o
 end
 

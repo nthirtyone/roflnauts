@@ -29,10 +29,6 @@ function love.load ()
 
 	-- Menu bijaczes
 	m = Menu:new()
-	m:newSelector()
-	m:newSelector()
-	m:newSelector()
-	m:newSelector()
 
 	-- Controllers
 	Controllers = {}
