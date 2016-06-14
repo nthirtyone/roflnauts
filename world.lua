@@ -24,7 +24,9 @@ World = {
 	clouds_delay = 5,
 	clouds_initial = nil,
 	-- Map
-	map = nil
+	map = nil,
+	-- Gameplay status
+	lastNaut = false
 }
 
 -- Constructor of `World` ZA WARUDO!
@@ -158,6 +160,42 @@ end
 -- Add an effect behind nauts
 function World:createEffect(name, x, y)
 	table.insert(self.Effects, Effect:new(name, x, y))
+end
+
+-- get Nauts functions
+function World:getNautsPlayable()
+	local nauts = {}
+	for _,naut in pairs(self.Nauts) do
+		if naut.lives > -1 then
+			table.insert(nauts, naut)
+		end
+	end
+	return nauts
+end
+
+function World:getNautsAlive()
+	local nauts = {}
+	for _,naut in self.Nauts do
+		if naut.alive then
+			table.insert(nauts, naut)
+		end
+	end
+	return nauts
+end
+
+-- Event: when player is killed
+function World:onNautKilled(naut)
+	self.camera:startShake()
+	local nauts = self:getNautsPlayable()
+	if self.lastNaut then
+		local m = Menu:new()
+		for _,controller in pairs(Controllers) do
+			m:assignController(controller)
+		end
+		changeScene(m)
+	elseif #nauts < 2 then
+		self.lastNaut = true
+	end
 end
 
 -- Update ZU WARUDO
