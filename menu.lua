@@ -88,6 +88,13 @@ function Menu:update(dt)
 	end
 end
 
+-- Speed up countdown
+function Menu:countdownJump()
+	if self.countdown ~= 6 then
+		self.countdown = self.countdown - 1
+	end
+end
+
 --
 function Menu:unselectSelector(selector)
 	local i = 0

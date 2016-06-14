@@ -80,6 +80,8 @@ function Selector:controllerPressed(control, controller)
 			self.parent:unselectSelector(self)
 		end
 	end
+	-- Speed up countdown
+	self.parent:countdownJump()
 end
 -- It just must be here
 function Selector:controllerReleased(control, controller)
