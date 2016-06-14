@@ -1,3 +1,4 @@
 *.xcf
 assets/font.png
 maps/emo.lua
+.project
