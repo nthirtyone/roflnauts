@@ -35,8 +35,8 @@ function Selector:draw ()
 	if not self.state then
 		love.graphics.draw(sprite, p.normal, x*scale, y*scale, 0, 1*scale, 1*scale)
 		if self.controller ~= nil then
-			love.graphics.draw(sprite, arrowl, (x-5)* scale, (y+13)*scale, 0, scale, scale)
-			love.graphics.draw(sprite, arrowr, (x+33)*scale, (y+13)*scale, 0, scale, scale)
+			love.graphics.draw(sprite, arrowl, (x-2)* scale, (y+13)*scale, 0, scale, scale)
+			love.graphics.draw(sprite, arrowr, (x+30)*scale, (y+13)*scale, 0, scale, scale)
 		end
 	else
 		love.graphics.draw(sprite, p.active, x*scale, y*scale, 0, 1*scale, 1*scale)
