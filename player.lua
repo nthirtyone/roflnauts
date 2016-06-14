@@ -373,5 +373,4 @@ function Player:respawn ()
 	self.body:setPosition(self.world:getSpawnPosition())
 	self.body:setActive(true)
 	self:createEffect("respawn")
-	self:changeAnimation("idle")
 end
