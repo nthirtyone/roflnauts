@@ -24,7 +24,8 @@ function Selector:getPosition ()
 end
 function Selector:draw ()
 	-- portrait, sprite
-	local p = self.parent.portrait_sheet[self.parent.nauts[self.naut]]
+	local name = self.parent.nauts[self.naut]
+	local p = self.parent.portrait_sheet[name]
 	local sprite = self.parent.portrait_sprite
 	-- scale, position
 	local scale = self.parent.scale
@@ -40,6 +41,9 @@ function Selector:draw ()
 		end
 	else
 		love.graphics.draw(sprite, p.active, x*scale, y*scale, 0, 1*scale, 1*scale)
+	end
+	if self.naut ~= 1 then
+		love.graphics.printf(name, (x-6)*scale, (y+33)*scale, 44, "center", 0, scale, scale)
 	end
 end
 function Selector:assignController(controller)
