@@ -66,13 +66,17 @@ end
 function Selector:controllerPressed(control, controller)
 	local n = #self.parent.nauts
 	if control == "left" and not self.state then
-		if self.naut == 1 then
+		if self.naut == 2 or self.naut == 1 then
 			self.naut = n
 		else
 			self.naut = self.naut - 1
 		end
 	elseif control == "right" and not self.state then
-		self.naut = (self.naut % n) + 1
+		if self.naut == n then
+			self.naut = 2
+		else
+			self.naut = self.naut + 1
+		end
 	elseif control == "attack" then
 		if self.naut ~= 1 then
 			self.state = true
