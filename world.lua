@@ -312,7 +312,7 @@ function World:draw()
 	if self.lastNaut then
 		local w, h = love.graphics.getWidth()/scale, love.graphics.getHeight()/scale
 		love.graphics.setFont(Bold)
-		love.graphics.printf("WINNER",(w*0.25)*scale,(20)*scale,(w/2)*scale,"center",0,scale,scale)
+		love.graphics.printf("WINNER",(w*0.25)*scale,(20)*scale,w/2,"center",0,scale,scale)
 		love.graphics.setFont(Font)
 	end
 end
