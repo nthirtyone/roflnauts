@@ -64,7 +64,7 @@ function Menu:draw()
 	local w, h = love.graphics.getWidth()/self.scale, love.graphics.getHeight()/self.scale
 	if self.countdown < 6 then
 		love.graphics.setFont(Bold)
-		love.graphics.print(countdown,(w/2-6.5)*self.scale,(h/2+20)*self.scale,0,2,2)
+		love.graphics.print(countdown,(w/2-6.5)*self.scale,(h/2+30)*self.scale,0,self.scale,self.scale)
 		love.graphics.setFont(Font)
 	end
 end
