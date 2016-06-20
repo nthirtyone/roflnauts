@@ -163,6 +163,7 @@ function World:createEffect(name, x, y)
 end
 
 -- get Nauts functions
+-- more than -1 lives
 function World:getNautsPlayable()
 	local nauts = {}
 	for _,naut in pairs(self.Nauts) do
@@ -173,6 +174,7 @@ function World:getNautsPlayable()
 	return nauts
 end
 
+-- are alive
 function World:getNautsAlive()
 	local nauts = {}
 	for _,naut in self.Nauts do
@@ -304,6 +306,14 @@ function World:draw()
 		local y, e = 1, 1
 		if _ < 3 then y, e = h-33, 0 end
 		naut:drawHUD(1+(_%2)*(w-34), y, scale, e)
+	end
+	
+	-- Draw winner
+	if self.lastNaut then
+		local w, h = love.graphics.getWidth()/scale, love.graphics.getHeight()/scale
+		love.graphics.setFont(Bold)
+		love.graphics.printf("WINNER",(w*0.25)*scale,(20)*scale,(w/2)*scale,"center",0,scale,scale)
+		love.graphics.setFont(Font)
 	end
 end
 
