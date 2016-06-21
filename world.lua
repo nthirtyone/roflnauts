@@ -26,7 +26,10 @@ World = {
 	-- Map
 	map = nil,
 	-- Gameplay status
-	lastNaut = false
+	lastNaut = false,
+	-- "WINNER"
+	win_angle = 0,
+	win_dir = 1
 }
 
 -- Constructor of `World` ZA WARUDO!
@@ -232,6 +235,12 @@ function World:update(dt)
 			table.remove(self.Effects, _)
 		end
 	end
+	-- Bounce `winner`
+	if self.lastNaut then
+		if self.win_angle > 5 then self.win_dir = -1
+		elseif self.win_angle < -5 then self.win_dir = 1 end
+		self.win_angle = self.win_angle + dt * self.win_dir * 16
+	end
 end
 
 -- Draw
@@ -312,7 +321,7 @@ function World:draw()
 	if self.lastNaut then
 		local w, h = love.graphics.getWidth()/scale, love.graphics.getHeight()/scale
 		love.graphics.setFont(Bold)
-		love.graphics.printf("WINNER",(w*0.25)*scale,(20)*scale,w/2,"center",0,scale,scale)
+		love.graphics.printf("WINNER",(w/2)*scale,(40)*scale,336,"center",self.win_angle*math.pi/180,scale,scale,168,12)
 		love.graphics.setFont(Font)
 	end
 end

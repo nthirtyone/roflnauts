@@ -62,11 +62,16 @@ function Menu:draw()
 	end
 	local countdown, _ = math.modf(self.countdown)
 	local w, h = love.graphics.getWidth()/self.scale, love.graphics.getHeight()/self.scale
+	local scale = self.scale
 	if self.countdown < 6 then
 		love.graphics.setFont(Bold)
 		love.graphics.print(countdown,(w/2-6.5)*self.scale,(h/2+30)*self.scale,0,self.scale,self.scale)
 		love.graphics.setFont(Font)
 	end
+	-- header
+	love.graphics.setFont(Bold)
+	love.graphics.printf("ROFLNAUTS2",(w/2)*scale,(30)*scale,336,"center",0,scale/2,scale/2,168,12)
+	love.graphics.setFont(Font)
 end
 
 function Menu:update(dt)
