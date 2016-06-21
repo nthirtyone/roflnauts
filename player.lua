@@ -354,6 +354,7 @@ function Player:damage (horizontal, vertical)
 	self.body:applyLinearImpulse((32+12*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 	self.combo = math.min(20, self.combo + 1)
+	self.punchcd = 0.08
 end
 
 -- DIE
