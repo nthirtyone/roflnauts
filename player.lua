@@ -42,7 +42,10 @@ Player = {
 	controller_empty = {isDown = function () return false end},
 	-- HUD
 	portrait_sprite = nil,
-	portrait_sheet  = require "portraits"
+	portrait_sheet  = require "portraits",
+	-- Sounds
+	sfx_death = love.sound.newSoundData("sounds/death.wav"),
+	sfx_hit   = love.sound.newSoundData("sounds/hit.wav")
 }
 
 -- Constructor of `Player`
@@ -355,6 +358,7 @@ function Player:damage (horizontal, vertical)
 	self:changeAnimation("damage")
 	self.combo = math.min(20, self.combo + 1)
 	self.punchcd = 0.08
+	self:playSoundHit()
 end
 
 -- DIE
@@ -365,6 +369,7 @@ function Player:die ()
 	self.spawntimer = 1
 	self.body:setActive(false)
 	self.world:onNautKilled(self)
+	self:playSoundDeath()
 end
 
 -- And then respawn. Like Jon Snow.
@@ -374,4 +379,15 @@ function Player:respawn ()
 	self.body:setPosition(self.world:getSpawnPosition())
 	self.body:setActive(true)
 	self:createEffect("respawn")
+end
+
+-- Sounds
+function Player:playSoundHit()
+	local source = love.audio.newSource(self.sfx_hit)
+	source:play()
+end
+
+function Player:playSoundDeath()
+	local source = love.audio.newSource(self.sfx_death)
+	source:play()
 end
