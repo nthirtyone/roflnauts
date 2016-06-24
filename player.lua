@@ -44,8 +44,7 @@ Player = {
 	portrait_sprite = nil,
 	portrait_sheet  = require "portraits",
 	-- Sounds
-	sfx_death = love.sound.newSoundData("sounds/death.wav"),
-	sfx_hit   = love.sound.newSoundData("sounds/hit.wav")
+	sfx = require "sounds"
 }
 
 -- Constructor of `Player`
@@ -336,6 +335,8 @@ function Player:hit (ox, oy, sx, sy, vx, vy)
 			end
 		end
 	end
+	-- sound
+	self:playSound(4)
 end
 
 -- Hittest
@@ -358,7 +359,7 @@ function Player:damage (horizontal, vertical)
 	self:changeAnimation("damage")
 	self.combo = math.min(20, self.combo + 1)
 	self.punchcd = 0.08
-	self:playSoundHit()
+	self:playSound(2)
 end
 
 -- DIE
@@ -369,7 +370,7 @@ function Player:die ()
 	self.spawntimer = 1
 	self.body:setActive(false)
 	self.world:onNautKilled(self)
-	self:playSoundDeath()
+	self:playSound(1)
 end
 
 -- And then respawn. Like Jon Snow.
@@ -382,12 +383,7 @@ function Player:respawn ()
 end
 
 -- Sounds
-function Player:playSoundHit()
-	local source = love.audio.newSource(self.sfx_hit)
-	source:play()
-end
-
-function Player:playSoundDeath()
-	local source = love.audio.newSource(self.sfx_death)
+function Player:playSound(sfx)
+	local source = love.audio.newSource(self.sfx[sfx])
 	source:play()
 end

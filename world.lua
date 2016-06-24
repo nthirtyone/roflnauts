@@ -336,6 +336,7 @@ function World.beginContact(a, b, coll)
 			b:getUserData().jumpdouble = true
 			b:getUserData().salto = false
 			b:getUserData():createEffect("land")
+			b:getUserData():playSound(3)
 		end
 	end
 end
