@@ -15,7 +15,7 @@ Menu = {
 	nauts = require "nautslist",
 	portrait_sprite = nil,
 	portrait_sheet  = require "portraits",
-	scale = 4,
+	scale = getScale(),
 	countdown = 6
 }
 

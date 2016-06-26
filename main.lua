@@ -1,6 +1,17 @@
 -- "NOTNAUTS"
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
+-- Pretend you didn't see this
+Scene = nil
+function changeScene(scene)
+	Scene = scene
+end
+
+function getScale()
+	return math.max(1, math.floor(love.graphics.getWidth() / 320)-1, math.floor(love.graphics.getHeight() / 180)-1)
+end
+
+-- Require
 require "world"
 require "camera"
 require "menu"
@@ -8,12 +19,6 @@ require "controller"
 
 -- Temporary debug
 debug = false
-
--- Pretend you didn't see this
-Scene = nil
-function changeScene(scene)
-	Scene = scene
-end
 
 -- Load
 function love.load ()
@@ -99,6 +104,6 @@ end
 function love.draw ()
 	Scene:draw()
 	if debug then
-		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 	end
 end
