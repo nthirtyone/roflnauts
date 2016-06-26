@@ -10,6 +10,9 @@ end
 function getScale()
 	return math.max(1, math.floor(love.graphics.getWidth() / 320)-1, math.floor(love.graphics.getHeight() / 180)-1)
 end
+function getRealScale()
+	return math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180)
+end
 
 -- Require
 require "world"

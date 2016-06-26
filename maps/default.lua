@@ -4,9 +4,7 @@ return {
 	center_y = 0,
 	width  = 360,
 	height = 240,
-	color_top = {193, 100,  99, 255},
-	color_mid = {189,  95,  93, 255},
-	color_bot = {179,  82,  80, 255},
+	background = "assets/background-default.png",
 	respawns = {
 		{x = -15, y = -80},
 		{x =  -5, y = -80},

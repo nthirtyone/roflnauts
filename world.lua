@@ -25,6 +25,7 @@ World = {
 	clouds_initial = nil,
 	-- Map
 	map = nil,
+	background = nil,
 	-- Gameplay status
 	lastNaut = false,
 	-- "WINNER"
@@ -94,6 +95,7 @@ function World:loadMap(name)
 	for _,decoration in pairs(self.map.decorations) do
 		self:createDecoration(decoration.x, decoration.y, decoration.sprite)
 	end
+	self.background = love.graphics.newImage(self.map.background)
 end
 
 -- Spawn all the nauts for the round
@@ -245,18 +247,14 @@ end
 
 -- Draw
 function World:draw()
-	-- Hard-coded background (for now)
-	love.graphics.setColor(self.map.color_bot)
-	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-	love.graphics.setColor(self.map.color_mid)
-	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.8)
-	love.graphics.setColor(self.map.color_top)
-	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight()*0.25)
-
 	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
 	local scale = self.camera.scale
-
+	local scaler = self.camera.scaler
+	
+	-- Background
+	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
+	
 	-- Draw clouds
 	for _,cloud in pairs(self.Clouds) do
 		cloud:draw(offset_x, offset_y, scale)

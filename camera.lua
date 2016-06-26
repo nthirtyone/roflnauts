@@ -8,6 +8,7 @@ Camera = {
 	dest_x = 0,
 	dest_y = 0,
 	scale = getScale(),
+	scaler = getRealScale(),
 	shake = 0,
 	timer = 0,
 	delay = 0,
