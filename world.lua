@@ -29,8 +29,7 @@ World = {
 	-- Gameplay status
 	lastNaut = false,
 	-- "WINNER"
-	win_angle = 0,
-	win_dir = 1
+	win_move = 0
 }
 
 -- Constructor of `World` ZA WARUDO!
@@ -238,11 +237,15 @@ function World:update(dt)
 		end
 	end
 	-- Bounce `winner`
-	if self.lastNaut then
-		if self.win_angle > 5 then self.win_dir = -1
-		elseif self.win_angle < -5 then self.win_dir = 1 end
-		self.win_angle = self.win_angle + dt * self.win_dir * 16
+	self.win_move = self.win_move + dt
+	if self.win_move > 2 then
+		self.win_move = self.win_move - 2
 	end
+end
+
+function World:getBounce(f)
+	local f = f or 1
+	return math.sin(self.win_move*f*math.pi)
 end
 
 -- Draw
@@ -318,9 +321,12 @@ function World:draw()
 	-- Draw winner
 	if self.lastNaut then
 		local w, h = love.graphics.getWidth()/scale, love.graphics.getHeight()/scale
+		local angle = self:getBounce(2)
+		local dy = self:getBounce()*3
 		love.graphics.setFont(Bold)
-		love.graphics.printf("WINNER",(w/2)*scale,(40)*scale,336,"center",self.win_angle*math.pi/180,scale,scale,168,12)
+		love.graphics.printf("WINNER",(w/2)*scale,(42+dy)*scale,336,"center",(angle*5)*math.pi/180,scale,scale,168,12)
 		love.graphics.setFont(Font)
+		love.graphics.printf("rofl, now kill yourself", w/2*scale, 18*scale, 160, "center", 0, scale, scale, 80, 3)
 	end
 end
 

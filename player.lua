@@ -19,7 +19,7 @@ Player = {
 	world = nil, -- game world
 	-- Combat
 	combo = 1,
-	lives = 3,
+	lives = 0,
 	spawntimer = 0,
 	alive = true,
 	punchcd = 0,
