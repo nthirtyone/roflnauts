@@ -3,3 +3,7 @@ assets/font.png
 maps/emo.lua
 .project
 *.sfs
+*.swp
+*.swo
+*~
+.backup/

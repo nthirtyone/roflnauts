@@ -24,7 +24,7 @@ require "controller"
 debug = false
 
 -- Load
-function love.load ()
+function love.load()
 	-- Graphics
 	love.graphics.setBackgroundColor(189, 95, 93)
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -71,12 +71,12 @@ function love.gamepadreleased(joystick, button)
 end
 
 -- Update
-function love.update (dt)
+function love.update(dt)
 	Scene:update(dt)
 end
 
 -- KeyPressed
-function love.keypressed (key)
+function love.keypressed(key)
 	-- Controllers
 	for _,controller in pairs(Controllers) do
 		controller:keypressed(key)
@@ -104,7 +104,7 @@ function love.keyreleased(key)
 end
 
 -- Draw
-function love.draw ()
+function love.draw()
 	Scene:draw()
 	if debug then
 		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
