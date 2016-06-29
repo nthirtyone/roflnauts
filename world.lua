@@ -8,6 +8,7 @@ require "player"
 require "cloud"
 require "effect"
 require "decoration"
+require "ray"
 
 -- Metatable of `World`
 -- nils initialized in constructor
@@ -19,6 +20,7 @@ World = {
 	Clouds = nil,
 	Decorations = nil,
 	Effects = nil,
+	Rays = nil,
 	camera = nil,
 	-- cloud generator
 	clouds_delay = 5,
@@ -53,6 +55,8 @@ function World:new(map, ...)
 	o.Effects = e
 	local d = {}
 	o.Decorations = d
+	local r = {}
+	o.Rays = r
 	-- Random init
 	math.randomseed(os.time())
 	-- Map
@@ -166,6 +170,11 @@ function World:createEffect(name, x, y)
 	table.insert(self.Effects, Effect:new(name, x, y))
 end
 
+-- Add a ray
+function World:createRay(naut)
+	table.insert(self.Rays, Ray:new(naut, self))
+end
+
 -- get Nauts functions
 -- more than -1 lives
 function World:getNautsPlayable()
@@ -192,6 +201,7 @@ end
 -- Event: when player is killed
 function World:onNautKilled(naut)
 	self.camera:startShake()
+	self:createRay(naut)
 	local nauts = self:getNautsPlayable()
 	if self.lastNaut then
 		local m = Menu:new()
@@ -234,6 +244,12 @@ function World:update(dt)
 	for _,effect in pairs(self.Effects) do
 		if effect:update(dt) then
 			table.remove(self.Effects, _)
+		end
+	end
+	-- Rays
+	for _,ray in pairs(self.Rays) do
+		if ray:update(dt) then
+			table.remove(self.Rays, _)
 		end
 	end
 	-- Bounce `winner`
@@ -281,6 +297,11 @@ function World:draw()
 	-- Draw ground
 	for _,platform in pairs(self.Platforms) do
 		platform:draw(offset_x, offset_y, scale, debug)
+	end
+
+	-- Draw rays
+	for _,ray in pairs(self.Rays) do
+		ray:draw(offset_x, offset_y, scale)
 	end
 
 	-- draw center

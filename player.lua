@@ -293,6 +293,11 @@ function Player:draw (offset_x, offset_y, scale, debug)
 	end
 end
 
+-- getPosition
+function Player:getPosition()
+	return self.body:getPosition()
+end
+
 -- Draw HUD of `Player`
 -- elevation: 1 bottom, 0 top
 function Player:drawHUD (x,y,scale,elevation)
