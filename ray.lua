@@ -6,6 +6,7 @@
 Ray = {
 	naut = nil,
 	world = nil,
+	canvas = nil,
 	delay = 0.3
 }
 function Ray:new(naut, world)
@@ -16,6 +17,10 @@ function Ray:new(naut, world)
 	-- Init
 	o.naut = naut
 	o.world = world
+	-- Cavas, this is temporary, I believe.
+	local scale = o.world.camera.scale
+	local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+	o.canvas = love.graphics.newCanvas(w/scale, h/scale)
 	return o
 end
 function Ray:update(dt)
@@ -26,14 +31,21 @@ function Ray:update(dt)
 	return false
 end
 function Ray:draw(offset_x, offset_y, scale)
+	love.graphics.setCanvas(self.canvas)
+	love.graphics.clear()
 	love.graphics.setLineStyle("rough")
-	love.graphics.setLineWidth(self.delay*160*scale)
+	love.graphics.setLineWidth(self.delay*160)
 	local x, y = self.naut:getPosition()
 	local m = self.world.map
 	local dy = m.height
 	if y > m.center_y then
 		dy = -dy
 	end
-	love.graphics.line((-x+offset_x)*scale,(-y+offset_y-dy*0.7)*scale,(x+offset_x)*scale,(y+dy*0.7+offset_y)*scale)
+	love.graphics.line(-x+offset_x,-y+offset_y-dy*0.7,x+offset_x,y+dy*0.7+offset_y)
+	-- reset
+	love.graphics.setCanvas()
 	love.graphics.setLineWidth(1)
+	love.graphics.setColor(255,255,255,255)
+	-- draw on screen
+	love.graphics.draw(self.canvas, 0, 0, 0, scale, scale)
 end
