@@ -34,10 +34,6 @@ function Ray:draw(offset_x, offset_y, scale)
 	if y > m.center_y then
 		dy = -dy
 	end
-	local dx = m.width
-	if x > m.center_x then
-		dx = -dx
-	end
-	love.graphics.line((m.center_x+offset_x+dx)*scale,(m.center_y+offset_y+dy)*scale,(x+offset_x)*scale,(y+dy*0.7+offset_y)*scale)
+	love.graphics.line((-x+offset_x)*scale,(-y+offset_y-dy*0.7)*scale,(x+offset_x)*scale,(y+dy*0.7+offset_y)*scale)
 	love.graphics.setLineWidth(1)
 end
