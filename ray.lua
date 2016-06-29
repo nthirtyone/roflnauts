@@ -33,6 +33,7 @@ end
 function Ray:draw(offset_x, offset_y, scale)
 	love.graphics.setCanvas(self.canvas)
 	love.graphics.clear()
+	love.graphics.setColor(255, 247, 228, 247)
 	love.graphics.setLineStyle("rough")
 	love.graphics.setLineWidth(self.delay*160)
 	local x, y = self.naut:getPosition()
