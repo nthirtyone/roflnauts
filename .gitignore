@@ -7,3 +7,4 @@ maps/emo.lua
 *.swo
 *~
 .backup/
+run.bat
