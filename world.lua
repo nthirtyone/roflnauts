@@ -361,6 +361,9 @@ function World.beginContact(a, b, coll)
 			b:getUserData().jumpdouble = true
 			b:getUserData().salto = false
 			b:getUserData():createEffect("land")
+		end
+		local vx, vy = b:getUserData().body:getLinearVelocity()
+		if math.abs(x) == 1 or y == -1 then
 			b:getUserData():playSound(3)
 		end
 	end

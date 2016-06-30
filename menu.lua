@@ -72,6 +72,7 @@ function Menu:draw()
 	love.graphics.setFont(Bold)
 	love.graphics.printf("ROFLNAUTS2",(w/2)*scale,(30)*scale,336,"center",0,scale/2,scale/2,168,12)
 	love.graphics.setFont(Font)
+	love.graphics.printf("Game made by Awesomenauts Community\nAyy lmao\n0123456789\nBased on game by Vlambeer and so on...", (w/2)*scale, (h-30)*scale, 336, "center", 0, scale, scale, 168, 4)
 end
 
 function Menu:update(dt)
