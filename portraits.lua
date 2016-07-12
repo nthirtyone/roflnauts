@@ -1,5 +1,5 @@
 -- Spritesheet for character portraits
--- Original size: 331x199 (say what?)
+-- Original size: 331x265 (say what?)
 -- Single size: 32x32 1px border merged between
 local w, h = 331, 220
 return {
@@ -118,6 +118,23 @@ return {
 	link = {
 		normal = love.graphics.newQuad(265,133,32,32,w,h),
 		active = love.graphics.newQuad(265,166,32,32,w,h)
+	},
+	-- 4. ROW
+	gorilla = {
+		normal = love.graphics.newQuad(  1,199,32,32,w,h),
+		active = love.graphics.newQuad(  1,232,32,32,w,h)
+	},
+	nemo = {
+		normal = love.graphics.newQuad( 34,199,32,32,w,h),
+		active = love.graphics.newQuad( 34,232,32,32,w,h)
+	},
+	rock = {
+		normal = love.graphics.newQuad( 67,199,32,32,w,h),
+		active = love.graphics.newQuad( 67,232,32,32,w,h)
+	},
+	boss = {
+		normal = love.graphics.newQuad(100,199,32,32,w,h),
+		active = love.graphics.newQuad(100,232,32,32,w,h)
 	},
 	-- ARROWS
 	arrow_left  = love.graphics.newQuad(298,1,4,6,w,h),
