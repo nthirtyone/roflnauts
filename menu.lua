@@ -16,7 +16,8 @@ Menu = {
 	portrait_sprite = nil,
 	portrait_sheet  = require "portraits",
 	scale = getScale(),
-	countdown = 6
+	countdown = 6,
+	header_move = 0
 }
 
 -- Constructor of `Menu`
@@ -52,6 +53,11 @@ function Menu:newSelector()
 	selector:setPosition(x, y)
 end
 
+function Menu:getBounce(f)
+	local f = f or 1
+	return math.sin(self.header_move*f*math.pi)
+end
+
 --
 function Menu:draw()
 	for _,selector in pairs(self.selectors) do
@@ -70,9 +76,11 @@ function Menu:draw()
 	end
 	-- header
 	love.graphics.setFont(Bold)
-	love.graphics.printf("ROFLNAUTS2",(w/2)*scale,(30)*scale,336,"center",0,scale/2,scale/2,168,12)
+	local angle = self:getBounce(2)
+	local dy = self:getBounce()*3
+	love.graphics.printf("ROFLNAUTS2",(w/2)*scale,(42+dy)*scale,336,"center",(angle*5)*math.pi/180,scale/2,scale/2,168,12)
 	love.graphics.setFont(Font)
-	love.graphics.printf("Game made by Awesomenauts Community\nAyy lmao\n0123456789\nBased on game by Vlambeer and so on...", (w/2)*scale, (h-30)*scale, 336, "center", 0, scale, scale, 168, 4)
+	love.graphics.printf("A game by Awesomenauts Community\nParaDoX, Burningdillo, MilkingChicken, Seltzy, Bronkey, Gnarlyman, Aki\nBased on a game by Jan Willem Nijman, Paul Veer and Bits_Beats XOXO", (w/2)*scale, (h-30)*scale, 336, "center", 0, scale, scale, 168, 4)
 end
 
 function Menu:update(dt)
@@ -91,6 +99,11 @@ function Menu:update(dt)
 	end
 	if state and self.countdown < 0 then
 		self:startGame()
+	end
+	-- Bounce header
+	self.header_move = self.header_move + dt
+	if self.header_move > 2 then
+		self.header_move = self.header_move - 2
 	end
 end
 
