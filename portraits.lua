@@ -1,7 +1,7 @@
 -- Spritesheet for character portraits
 -- Original size: 331x265 (say what?)
 -- Single size: 32x32 1px border merged between
-local w, h = 331, 220
+local w, h = 331, 265
 return {
 	-- EMPTY
 	empty = {
