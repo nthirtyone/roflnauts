@@ -239,13 +239,13 @@ function Player:controllerPressed (key)
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack_up")
 			end
-			self:hit(2*f,-10,3*f,7, 0, -1)
+			self:hit(-f,-18,4*f,10, 0, -1)
 		elseif controller:isDown("down") then
 			-- Punch down
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack_down")
 			end
-			self:hit(-4,-2,4,7, 0, 1)
+			self:hit(-4,-2,4,9, 0, 1)
 		else
 			-- Punch horizontal
 			if self.current ~= self.animations.damage then
