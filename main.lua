@@ -26,7 +26,7 @@ debug = false
 -- Load
 function love.load()
 	-- Graphics
-	love.graphics.setBackgroundColor(189, 95, 93)
+	love.graphics.setBackgroundColor(90, 90, 90)
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	-- Font
