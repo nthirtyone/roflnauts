@@ -227,7 +227,10 @@ function Player:controllerPressed (key)
 	end
 
 	-- Walking
-	if key == "left" or key == "right" then
+	if (key == "left" or key == "right") and 
+	   (self.current ~= self.animations.attack) and
+	   (self.current ~= self.animations.attack_up) and
+	   (self.current ~= self.animations.attack_down) then
 		self:changeAnimation("walk")
 	end
 
