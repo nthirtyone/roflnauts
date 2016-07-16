@@ -37,6 +37,7 @@ Player = {
 	jumpactive = false,
 	jumpdouble = true,
 	jumptimer = 0.14,
+	jumpnumber = 2,
 	-- Keys
 	controller = nil,
 	controller_empty = {isDown = function () return false end},
@@ -98,6 +99,10 @@ end
 
 -- Update callback of `Player`
 function Player:update (dt)
+	-- # LOCALS
+	-- velocity: x, y
+	local x,y = self.body:getLinearVelocity()
+
 	-- # VERTICAL MOVEMENT
 	-- Jumping
 	if self.jumpactive and self.jumptimer > 0 then
@@ -115,7 +120,6 @@ function Player:update (dt)
 
 	-- # HORIZONTAL MOVEMENT
 	-- Walking
-	local x,y = self.body:getLinearVelocity()
 	local controller = self:getController()
 	if controller:isDown("left") then
 		self.facing = -1
@@ -210,19 +214,27 @@ function Player:controllerPressed (key)
 	local controller = self:getController()
 	-- Jumping
 	if key == "jump" then
-		if not self.inAir then
-			self:createEffect("jump")
+		if self.jumpnumber > 0 then
+			-- General jump logics
 			self.jumpactive = true
+			-- Spawn proper effect
+			if not self.inAir then
+				self:createEffect("jump")
+			else
+				self:createEffect("doublejump")
+			end
+			-- Start salto if last jump
+			if self.jumpnumber == 1 then
+				self.salto = true
+			end
+			-- Animation clear
 			if (self.current == self.animations.attack) or
 			   (self.current == self.animations.attack_up) or
 			   (self.current == self.animations.attack_down) then
 				self:changeAnimation("idle")
 			end
-		elseif self.jumpdouble then
-			self:createEffect("doublejump")
-			self.jumpactive = true
-			self.jumpdouble = false
-			self.salto = true
+			-- Remove jump
+			self.jumpnumber = self.jumpnumber - 1
 		end
 	end
 
@@ -267,7 +279,7 @@ function Player:controllerReleased (key)
 	-- Jumping
 	if key == "jump" then
 		self.jumpactive = false
-		self.jumptimer = 0.12
+		self.jumptimer = Player.jumptimer -- take initial from metatable
 	end
 
 	-- Walking

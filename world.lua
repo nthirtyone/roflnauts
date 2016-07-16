@@ -358,12 +358,12 @@ function World.beginContact(a, b, coll)
 		if y == -1 then
 			print(b:getUserData().name .. " is not in air")
 			b:getUserData().inAir = false
-			b:getUserData().jumpdouble = true
+			b:getUserData().jumpnumber = 2
 			b:getUserData().salto = false
 			b:getUserData():createEffect("land")
 		end
 		local vx, vy = b:getUserData().body:getLinearVelocity()
-		if math.abs(x) == 1 or y == -1 then
+		if math.abs(x) == 1 or (y == -1 and x == 0) then
 			b:getUserData():playSound(3)
 		end
 	end
