@@ -2,16 +2,32 @@
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
 -- Pretend you didn't see this
+-- This is work for scene manager
 Scene = nil
 function changeScene(scene)
 	Scene = scene
 end
 
+-- Should be moved to scene/camera
 function getScale()
 	return math.max(1, math.floor(love.graphics.getWidth() / 320)-1, math.floor(love.graphics.getHeight() / 180)-1)
 end
 function getRealScale()
 	return math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180)
+end
+-- Should be moved anywhere; engine object
+function newImage(path)
+	local imagedata = love.image.newImageData(path)
+	local transparency = function(x, y, r, g, b, a)
+		if (r == 0 and g == 128 and b == 64) or
+		   (r == 0 and g == 240 and b ==  6) then
+			a = 0
+		end
+		return r, g, b, a
+	end
+	imagedata:mapPixel(transparency)
+	local image = love.graphics.newImage(imagedata)
+	return image
 end
 
 -- Require

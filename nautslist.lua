@@ -14,19 +14,19 @@ return {
 	"bison", -- skolldir
 	"bobito", -- yuri
 	"slugzor", -- derpl
-	--"capone", -- vinnie
-	--"nemo",  -- spike
-	--"bug", -- genji
+	"capone", -- vinnie
+	"nemo",  -- spike
+	"bug", -- genji
 	"calamari", -- swiggins
 	--"quack", -- rocco
 	"scissors", -- ksenia
 	"marine", -- ted
-	--"scooter", -- penny
-	--"phonebooth", -- sentry
+	"scooter", -- penny
+	"phonebooth", -- sentry
 	"weed", -- skree
-	--"gummybear", -- nibbs
-	--"gramps", -- yoolip
+	"gummybear", -- nibbs
+	"gramps", -- yoolip
 	"biker", -- chucho
-	--"vrooom", -- lux
-	--"link" -- ix
+	"vrooom", -- lux
+	"link", -- ix
 }

@@ -63,7 +63,7 @@ function Player:new (game, world, x, y, name)
 	o.body:setFixedRotation(true)
 	-- Misc
 	o.name   = name or "empty"
-	o.sprite = love.graphics.newImage("assets/"..o.name..".png")
+	o.sprite = newImage("assets/"..o.name..".png")
 	o.world  = game
 	-- Animation
 	o.initial = o.delay
@@ -82,6 +82,7 @@ function Player:delete()
 	self.sprite = nil
 end
 
+-- Controller
 function Player:assignController(controller)
 	self.controller = controller or nil
 	controller:setParent(self)
