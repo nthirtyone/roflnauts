@@ -18,7 +18,7 @@ return {
 	"nemo",  -- spike
 	"bug", -- genji
 	"calamari", -- swiggins
-	--"quack", -- rocco
+	"quack", -- rocco
 	"scissors", -- ksenia
 	"marine", -- ted
 	"scooter", -- penny
