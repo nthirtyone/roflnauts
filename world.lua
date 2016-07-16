@@ -357,6 +357,7 @@ function World.beginContact(a, b, coll)
 		local x,y = coll:getNormal()
 		if y == -1 then
 			print(b:getUserData().name .. " is not in air")
+			-- Move them to Player
 			b:getUserData().inAir = false
 			b:getUserData().jumpnumber = 2
 			b:getUserData().salto = false
@@ -373,6 +374,7 @@ end
 function World.endContact(a, b, coll)
 	if a:getCategory() == 1 then
 		print(b:getUserData().name .. " is in air")
+		-- Move them to Player
 		b:getUserData().inAir = true
 	end
 end

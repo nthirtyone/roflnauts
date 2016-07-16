@@ -30,7 +30,6 @@ Player = {
 	current = nil,
 	frame = 1,
 	delay = 0.10,
-	initial = nil,
 	-- Movement
 	inAir = true,
 	salto = false,
@@ -67,7 +66,6 @@ function Player:new (game, world, x, y, name)
 	o.sprite = newImage("assets/"..o.name..".png")
 	o.world  = game
 	-- Animation
-	o.initial = o.delay
 	o.current = o.animations.idle
 	o:createEffect("respawn")
 	-- Portrait load for first object created
@@ -160,7 +158,7 @@ function Player:update (dt)
 	-- Animation
 	self.delay = self.delay - dt
 	if self.delay < 0 then
-		self.delay = self.delay + self.initial
+		self.delay = self.delay + Player.delay -- INITIAL from metatable
 		-- Thank you De Morgan!
 		if self.current.repeated or not (self.frame == self.current.frames) then
 			self.frame = (self.frame % self.current.frames) + 1
@@ -328,7 +326,7 @@ end
 -- idle, walk, attack, attack_up, attack_down, damage
 function Player:changeAnimation(animation)
 	self.frame = 1
-	self.delay = self.initial
+	self.delay = Player.delay -- INITIAL from metatable
 	self.current = self.animations[animation]
 end
 
