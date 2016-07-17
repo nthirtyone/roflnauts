@@ -15,7 +15,7 @@ end
 function getRealScale()
 	return math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180)
 end
--- Should be moved anywhere; engine object
+-- Should be moved to Sprite metaclass (non-existent yet)
 function newImage(path)
 	local imagedata = love.image.newImageData(path)
 	local transparency = function(x, y, r, g, b, a)
