@@ -77,8 +77,8 @@ function Menu:draw()
 	-- header
 	love.graphics.setFont(Bold)
 	local angle = self:getBounce(2)
-	local dy = self:getBounce()*3
-	love.graphics.printf("ROFLNAUTS2",(w/2)*scale,(42+dy)*scale,336,"center",(angle*5)*math.pi/180,scale,scale,168,12)
+	local dy = self:getBounce()*4
+	love.graphics.printf("ROFLNAUTS2",(w/2)*scale,(32+dy)*scale,336,"center",(angle*5)*math.pi/180,scale,scale,168,12)
 	love.graphics.setFont(Font)
 	love.graphics.printf("Use W,S,A,D,G,H or Arrows,Enter,Rshift or Gamepad\n\nA game by Awesomenauts Community\nParaDoX, Burningdillo, MilkingChicken, Seltzy, Bronkey, Gnarlyman, Aki\nBased on a game by Jan Willem Nijman, Paul Veer and Bits_Beats XOXO", (w/2)*scale, (h-42)*scale, 336, "center", 0, scale, scale, 168, 4)
 end
