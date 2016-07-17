@@ -384,13 +384,13 @@ end
 
 -- DIE
 function Player:die ()
+	self:playSound(1)
 	self.combo = 1
 	self.lives = self.lives - 1
 	self.alive = false
 	self.spawntimer = 1
 	self.body:setActive(false)
 	self.world:onNautKilled(self)
-	self:playSound(1)
 end
 
 -- And then respawn. Like Jon Snow.
@@ -404,6 +404,8 @@ end
 
 -- Sounds
 function Player:playSound(sfx)
-	local source = love.audio.newSource(self.sfx[sfx])
-	source:play()
+	if self.alive then
+		local source = love.audio.newSource(self.sfx[sfx])
+		source:play()
+	end
 end
