@@ -35,7 +35,7 @@ Player = {
 	salto = false,
 	jumpactive = false,
 	jumpdouble = true,
-	jumptimer = 0.14,
+	jumptimer = 0.16,
 	jumpnumber = 2,
 	-- Keys
 	controller = nil,
@@ -198,7 +198,7 @@ function Player:update (dt)
 		if self.punchdir == 0 then
 			self.body:setLinearVelocity(0,0)
 		else
-			self.body:setLinearVelocity(32*self.facing,0)
+			self.body:setLinearVelocity(38*self.facing,0)
 		end
 	end
 
@@ -359,6 +359,7 @@ function Player:hit (ox, oy, sx, sy, vx, vy)
 end
 
 -- Hittest
+-- Should be replaced with actual sensor; after moving collision callbacks into Player
 function Player:testHit (target, ox, oy, sx, sy)
 	local x, y = self.body:getPosition()
 	for v=0,2 do
@@ -374,7 +375,7 @@ function Player:damage (horizontal, vertical)
 	self:createEffect("hit")
 	local x,y = self.body:getLinearVelocity()
 	self.body:setLinearVelocity(x,0)
-	self.body:applyLinearImpulse((32+12*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
+	self.body:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 	self.combo = math.min(20, self.combo + 1)
 	self.punchcd = 0.08
