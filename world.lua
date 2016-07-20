@@ -24,7 +24,6 @@ World = {
 	camera = nil,
 	-- cloud generator
 	clouds_delay = 5,
-	clouds_initial = nil,
 	-- Map
 	map = nil,
 	background = nil,
@@ -66,11 +65,6 @@ function World:new(map, ...)
 	o:spawnNauts(...)
 	-- Create camera
 	o.camera = Camera:new(o)
-	-- Cloud generator
-	o.clouds_initial = o.clouds_delay
-	for i=1,6 do
-		o:randomizeCloud(false)
-	end
 	return o
 end
 
@@ -92,13 +86,20 @@ function World:loadMap(name)
 	name = "maps/" .. name .. ".lua"
 	local map = love.filesystem.load(name)
 	self.map = map()
+	-- Platforms
 	for _,platform in pairs(self.map.platforms) do
 		self:createPlatform(platform.x, platform.y, platform.shape, platform.sprite)
 	end
+	-- Decorations
 	for _,decoration in pairs(self.map.decorations) do
 		self:createDecoration(decoration.x, decoration.y, decoration.sprite)
 	end
+	-- Background
 	self.background = love.graphics.newImage(self.map.background)
+	-- Clouds
+	for i=1,6 do
+		self:randomizeCloud(false)
+	end
 end
 
 -- Spawn all the nauts for the round
@@ -232,7 +233,7 @@ function World:update(dt)
 	   n < 18
 	then
 		self:randomizeCloud()
-		self.clouds_delay = self.clouds_delay + self.clouds_initial
+		self.clouds_delay = self.clouds_delay + World.clouds_delay -- World.clouds_delay is initial
 	end
 	-- movement
 	for _,cloud in pairs(self.Clouds) do
