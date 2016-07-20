@@ -16,7 +16,7 @@ Menu = {
 	portrait_sprite = nil,
 	portrait_sheet  = require "portraits",
 	scale = getScale(),
-	countdown = 6,
+	countdown = 10,
 	header_move = 0
 }
 
@@ -69,7 +69,7 @@ function Menu:draw()
 	local countdown, _ = math.modf(self.countdown)
 	local w, h = love.graphics.getWidth()/self.scale, love.graphics.getHeight()/self.scale
 	local scale = self.scale
-	if self.countdown < 6 then
+	if self.countdown < Menu.countdown then -- Menu.countdown is initial
 		love.graphics.setFont(Bold)
 		love.graphics.print(countdown,(w/2-6.5)*self.scale,(h/2+30)*self.scale,0,self.scale,self.scale)
 		love.graphics.setFont(Font)
@@ -95,7 +95,7 @@ function Menu:update(dt)
 	if state then
 		self.countdown = self.countdown - dt
 	else
-		self.countdown = 6
+		self.countdown = Menu.countdown -- Menu.countdown is initial
 	end
 	if state and self.countdown < 0 then
 		self:startGame()
@@ -109,7 +109,7 @@ end
 
 -- Speed up countdown
 function Menu:countdownJump()
-	if self.countdown ~= 6 then
+	if self.countdown ~= Menu.countdown then -- Menu.countdown is initial
 		self.countdown = self.countdown - 1
 	end
 end
@@ -160,6 +160,6 @@ end
 
 -- WARUDO
 function Menu:startGame()
-	local world = World:new("default", self:getNauts())
+	local world = World:new("emo", self:getNauts())
 	changeScene(world)
 end
