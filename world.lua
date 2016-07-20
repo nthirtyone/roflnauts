@@ -97,8 +97,10 @@ function World:loadMap(name)
 	-- Background
 	self.background = love.graphics.newImage(self.map.background)
 	-- Clouds
-	for i=1,6 do
-		self:randomizeCloud(false)
+	if self.map.clouds then
+		for i=1,6 do
+			self:randomizeCloud(false)
+		end
 	end
 end
 
@@ -226,19 +228,21 @@ function World:update(dt)
 		naut:update(dt)
 	end
 	-- Clouds
-	-- generator
-	local n = table.getn(self.Clouds)
-	self.clouds_delay = self.clouds_delay - dt
-	if self.clouds_delay < 0 and
-	   n < 18
-	then
-		self:randomizeCloud()
-		self.clouds_delay = self.clouds_delay + World.clouds_delay -- World.clouds_delay is initial
-	end
-	-- movement
-	for _,cloud in pairs(self.Clouds) do
-		if cloud:update(dt) > 340 then
-			table.remove(self.Clouds, _)
+	if self.map.clouds then
+		-- generator
+		local n = table.getn(self.Clouds)
+		self.clouds_delay = self.clouds_delay - dt
+		if self.clouds_delay < 0 and
+		   n < 18
+		then
+			self:randomizeCloud()
+			self.clouds_delay = self.clouds_delay + World.clouds_delay -- World.clouds_delay is initial
+		end
+		-- movement
+		for _,cloud in pairs(self.Clouds) do
+			if cloud:update(dt) > 340 then
+				table.remove(self.Clouds, _)
+			end
 		end
 	end
 	-- Effects
@@ -275,6 +279,8 @@ function World:draw()
 	-- Background
 	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
 	
+	
+	-- This needs to be reworked!
 	-- Draw clouds
 	for _,cloud in pairs(self.Clouds) do
 		cloud:draw(offset_x, offset_y, scale)

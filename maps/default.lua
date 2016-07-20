@@ -1,16 +1,20 @@
 -- Default map from original roflnauts
 return {
+	-- CENTER AND SIZE
 	center_x = 0,
 	center_y = 0,
 	width  = 360,
 	height = 240,
-	background = "assets/background-default.png",
+	-- RESPAWN POINTS
 	respawns = {
 		{x = -15, y = -80},
 		{x =  -5, y = -80},
 		{x =   5, y = -80},
 		{x =  15, y = -80}
 	},
+	-- GRAPHICS
+	clouds = true,
+	background = "assets/background-default.png",
 	platforms = {
 		{
 			x = -91,
