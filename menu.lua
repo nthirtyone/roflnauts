@@ -160,6 +160,6 @@ end
 
 -- WARUDO
 function Menu:startGame()
-	local world = World:new("emo", self:getNauts())
+	local world = World:new("default", self:getNauts())
 	changeScene(world)
 end
