@@ -46,7 +46,7 @@ function Ground:draw (offset_x, offset_y, scale, debug)
 	love.graphics.draw(self.sprite, (self.body:getX()+offset_x)*scale, (self.body:getY()+offset_y)*scale, 0, scale, scale)
 	-- debug draw
 	if debug then
-		love.graphics.setColor(220, 220, 220, 100)
+		love.graphics.setColor(180, 180, 180, 120)
 		love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(self.shape:getPoints())))
 	end
 end
