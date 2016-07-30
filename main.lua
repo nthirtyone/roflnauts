@@ -46,9 +46,10 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	-- Font
-	Font = love.graphics.newImageFont("assets/font2.png", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-,!:()[]{}<>", -1)
+	-- 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-,!:()[]{}<>
+	Font = love.graphics.newImageFont("assets/font4.png", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;-_/\\!@#$%^&*?=+~`|'\"()[]{}<>", -1)
 	Bold = love.graphics.newImageFont("assets/font3.png", " 0123456789AEFILNORSTUW", -2)
-	Font:setLineHeight(1)
+	Font:setLineHeight(9/16)
 	love.graphics.setFont(Font)
 
 	-- Menu bijaczes
@@ -98,14 +99,14 @@ function love.keypressed(key)
 		controller:keypressed(key)
 	end
 	-- Misc global input
-	if key == "x" then
+	if key == "f5" then
 		debug = not debug
 	end
 	if key == "escape" or key == "f1" then
 		love.event.quit()
 	end
-	if key == "f5" and debug then
-		local new = World:new("default", {"leon", Controllers[1]}, {"lonestar", Controllers[2]})
+	if key == "f6" and debug then
+		local new = World:new("default", {"link", Controllers[1]}, {"weed", Controllers[2]})
 		Scene:delete()
 		changeScene(new)
 	end

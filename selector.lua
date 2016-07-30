@@ -43,7 +43,7 @@ function Selector:draw ()
 		love.graphics.draw(sprite, p.active, x*scale, y*scale, 0, scale, scale)
 	end
 	if self.naut ~= 1 then
-		love.graphics.printf(name, (x-6)*scale, (y+33)*scale, 44, "center", 0, scale, scale)
+		love.graphics.printf(string.upper(name), (x-8)*scale, (y+33)*scale, 48, "center", 0, scale, scale)
 	end
 end
 function Selector:assignController(controller)

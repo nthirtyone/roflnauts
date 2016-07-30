@@ -130,7 +130,7 @@ function Menu:draw()
 	love.graphics.printf("ROFLNAUTS2",(w/2)*scale,(32+dy)*scale,336,"center",(angle*5)*math.pi/180,scale,scale,168,12)
 	-- footer
 	love.graphics.setFont(Font)
-	love.graphics.printf("Use W,S,A,D,G,H or Arrows,Enter,Rshift or Gamepad\n\nA game by Awesomenauts Community\nSeltzy, ParaDoX, MilkingChicken, Burningdillo, Bronkey, Aki\nBased on a game by Jan Willem Nijman, Paul Veer and Bits_Beats XOXO", (w/2)*scale, (h-42)*scale, 336, "center", 0, scale, scale, 168, 4)
+	love.graphics.printf("Use W,S,A,D,G,H or Arrows,Enter,Rshift or Gamepad\n\nA game by Awesomenauts Community\nSeltzy, ParaDoX, MilkingChicken, Burningdillo, Bronkey, Aki, 04font\nBased on a game by Jan Willem Nijman, Paul Veer and Bits_Beats XOXO", (w/2)*scale, (h-42)*scale, 336, "center", 0, scale, scale, 168, 4)
 end
 
 -- Upadte
@@ -186,11 +186,17 @@ function Menu:assignController(controller)
 end
 
 function Menu:controllerPressed(control, controller)
+	-- assign to character selection
 	if control == "attack" then
 		local selector = self:getSelectorsInactive()[1]
 		if selector ~= nil then
 			selector:assignController(controller)
 		end
+	end
+	-- map selection chaos!
+	if control == "left" then
+	end
+	if control == "right" then
 	end
 end
 
