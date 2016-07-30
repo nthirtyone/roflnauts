@@ -8,7 +8,6 @@ require "selector"
 
 -- Metatable of `Menu`
 Menu = {
-	logo = nil,
 	-- move selectors to one table; make functions to retrieve selectors w or w/o controller
 	selectors = nil,
 	nauts = require "nautslist",
@@ -28,7 +27,6 @@ function Menu:new ()
 	setmetatable(o, self)
 	self.__index = self
 	-- initialize
-	o.logo = nil
 	o.selectors = {}
 	o.portrait_sprite = love.graphics.newImage("assets/portraits.png")
 	-- selectors
