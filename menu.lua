@@ -11,7 +11,6 @@ Menu = {
 	logo = nil,
 	-- move selectors to one table; make functions to retrieve selectors w or w/o controller
 	selectors = nil,
-	selected = nil,
 	nauts = require "nautslist",
 	portrait_sprite = nil,
 	portrait_sheet  = require "portraits",
@@ -31,7 +30,6 @@ function Menu:new ()
 	-- initialize
 	o.logo = nil
 	o.selectors = {}
-	o.selected  = {}
 	o.portrait_sprite = love.graphics.newImage("assets/portraits.png")
 	-- selectors
 	for i=0,3 do
