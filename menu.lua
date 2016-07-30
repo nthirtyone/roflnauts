@@ -55,17 +55,62 @@ function Menu:newSelector()
 	selector:setPosition(x, y)
 end
 
+-- Selectors tables getters
+-- active: with controller; inactive: without controller
+function Menu:getSelectorsAll()
+	return self.selectors
+end
+function Menu:getSelectorsActive()
+	local t = {}
+	for _,selector in pairs(self.selectors) do
+		if selector:getController() ~= nil then
+			table.insert(t, selector)
+		end
+	end
+	return t
+end
+function Menu:getSelectorsInactive()
+	local t = {}
+	for _,selector in pairs(self.selectors) do
+		if selector:getController() == nil then
+			table.insert(t, selector)
+		end
+	end
+	return t
+end
+
+-- Selectors numbers getters
+function Menu:getSelectorsNumberAll()
+	return #self.selectors
+end
+function Menu:getSelectorsNumberActive()
+	local n = 0
+	for _,selector in pairs(self.selectors) do
+		if selector:getController() ~= nil then
+			n = n + 1
+		end
+	end
+	return n
+end
+function Menu:getSelectorsNumberInactive()
+	local n = 0
+	for _,selector in pairs(self.selectors) do
+		if selector:getController() == nil then
+			n = n + 1
+		end
+	end
+	return n
+end
+
+-- Header get bounce move
 function Menu:getBounce(f)
 	local f = f or 1
 	return math.sin(self.header_move*f*math.pi)
 end
 
---
+-- Draw
 function Menu:draw()
-	for _,selector in pairs(self.selectors) do
-		selector:draw()
-	end
-	for _,selector in pairs(self.selected) do
+	for _,selector in pairs(self:getSelectorsAll()) do
 		selector:draw()
 	end
 	local countdown, _ = math.modf(self.countdown)
@@ -85,10 +130,11 @@ function Menu:draw()
 	love.graphics.printf("Use W,S,A,D,G,H or Arrows,Enter,Rshift or Gamepad\n\nA game by Awesomenauts Community\nSeltzy, ParaDoX, MilkingChicken, Burningdillo, Bronkey, Aki\nBased on a game by Jan Willem Nijman, Paul Veer and Bits_Beats XOXO", (w/2)*scale, (h-42)*scale, 336, "center", 0, scale, scale, 168, 4)
 end
 
+-- Upadte
 function Menu:update(dt)
 	local state = true
-	if #self.selected > 1 then
-		for _,selector in pairs(self.selected) do
+	if self:getSelectorsNumberActive() > 1 then
+		for _,selector in pairs(self:getSelectorsActive()) do
 			state = state and selector.state
 		end
 	else
@@ -119,15 +165,13 @@ end
 --
 function Menu:unselectSelector(selector)
 	local i = 0
-	for _,v in pairs(self.selected) do
+	for _,v in pairs(self:getSelectorsActive()) do
 		if v == selector then
 			i = _
 			break
 		end
 	end
 	if i ~= 0 then
-		table.remove(self.selected, i)
-		table.insert(self.selectors, selector)
 		self:assignController(selector:getController())
 		selector:clear()
 	end
@@ -139,10 +183,8 @@ function Menu:assignController(controller)
 end
 
 function Menu:controllerPressed(control, controller)
-	local selector = self.selectors[1]
+	local selector = self:getSelectorsInactive()[1]
 	if selector ~= nil then
-		table.remove(self.selectors, 1)
-		table.insert(self.selected, selector)
 		selector:assignController(controller)
 		selector:controllerPressed(control)
 	end
@@ -154,7 +196,7 @@ end
 
 function Menu:getNauts()
 	local nauts = {}
-	for _,selector in pairs(self.selected) do
+	for _,selector in pairs(self:getSelectorsActive()) do
 		table.insert(nauts, {selector:getSelectionName(), selector:getController()})
 	end
 	return nauts
