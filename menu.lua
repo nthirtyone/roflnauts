@@ -47,7 +47,7 @@ function Menu:newSelector()
 	local n = #self.selectors - 1
 	table.insert(self.selectors, selector)
 	local x = (w-76)/2+n*44
-	local y = h/2-16
+	local y = h/2-8
 	selector:setPosition(x, y)
 end
 
@@ -106,12 +106,18 @@ end
 
 -- Draw
 function Menu:draw()
+	-- locals
+	local w, h = love.graphics.getWidth()/self.scale, love.graphics.getHeight()/self.scale
+	local scale = self.scale
+	-- map selection
+	love.graphics.setFont(Font)
+	love.graphics.printf("Map: " .. self.maplist[self.map], (w/2)*scale, (h/2-22)*scale, 150, "center", 0, scale, scale, 75, 4)
+	-- character selection
 	for _,selector in pairs(self:getSelectorsAll()) do
 		selector:draw()
 	end
+	-- countdown
 	local countdown, _ = math.modf(self.countdown)
-	local w, h = love.graphics.getWidth()/self.scale, love.graphics.getHeight()/self.scale
-	local scale = self.scale
 	if self.countdown < Menu.countdown then -- Menu.countdown is initial
 		love.graphics.setFont(Bold)
 		love.graphics.print(countdown,(w/2-6.5)*self.scale,(h/2+30)*self.scale,0,self.scale,self.scale)
@@ -122,6 +128,7 @@ function Menu:draw()
 	local angle = self:getBounce(2)
 	local dy = self:getBounce()*4
 	love.graphics.printf("ROFLNAUTS2",(w/2)*scale,(32+dy)*scale,336,"center",(angle*5)*math.pi/180,scale,scale,168,12)
+	-- footer
 	love.graphics.setFont(Font)
 	love.graphics.printf("Use W,S,A,D,G,H or Arrows,Enter,Rshift or Gamepad\n\nA game by Awesomenauts Community\nSeltzy, ParaDoX, MilkingChicken, Burningdillo, Bronkey, Aki\nBased on a game by Jan Willem Nijman, Paul Veer and Bits_Beats XOXO", (w/2)*scale, (h-42)*scale, 336, "center", 0, scale, scale, 168, 4)
 end
@@ -179,10 +186,11 @@ function Menu:assignController(controller)
 end
 
 function Menu:controllerPressed(control, controller)
-	local selector = self:getSelectorsInactive()[1]
-	if selector ~= nil then
-		selector:assignController(controller)
-		selector:controllerPressed(control)
+	if control == "attack" then
+		local selector = self:getSelectorsInactive()[1]
+		if selector ~= nil then
+			selector:assignController(controller)
+		end
 	end
 end
 

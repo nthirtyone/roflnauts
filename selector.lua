@@ -49,6 +49,7 @@ end
 function Selector:assignController(controller)
 	controller:setParent(self)
 	self.controller = controller
+	self.naut = 2
 end
 function Selector:getController()
 	if self.controller ~= nil then
