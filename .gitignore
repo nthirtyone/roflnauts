@@ -1,11 +1,10 @@
 *.xcf
-assets/font.png
-maps/emo.lua
-.project
 *.sfs
 *.swp
 *.swo
 *~
+*.wav
+.project
 .backup/
 run.bat
 run.sh
