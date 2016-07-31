@@ -1,6 +1,7 @@
 -- Default map from original roflnauts
 return {
-	-- CENTER AND SIZE
+	-- GENERAL
+	name = "default",
 	center_x = 0,
 	center_y = 0,
 	width  = 360,

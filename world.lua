@@ -189,7 +189,6 @@ function World:getNautsPlayable()
 	end
 	return nauts
 end
-
 -- are alive
 function World:getNautsAlive()
 	local nauts = {}
@@ -199,6 +198,15 @@ function World:getNautsAlive()
 		end
 	end
 	return nauts
+end
+-- all of them
+function World:getNautsAll()
+	return self.Nauts
+end
+
+-- get Map name
+function World:getMapName()
+	return self.map.name
 end
 
 -- Event: when player is killed

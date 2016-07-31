@@ -106,7 +106,12 @@ function love.keypressed(key)
 		love.event.quit()
 	end
 	if key == "f6" and debug then
-		local new = World:new("default", {"link", Controllers[1]}, {"weed", Controllers[2]})
+		local map = Scene:getMapName()
+		local nauts = {}
+		for _,naut in pairs(Scene:getNautsAll()) do
+			table.insert(nauts, {naut.name, naut.controller})
+		end
+		local new = World:new(map, nauts)
 		Scene:delete()
 		changeScene(new)
 	end
