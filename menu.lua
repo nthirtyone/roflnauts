@@ -195,8 +195,18 @@ function Menu:controllerPressed(control, controller)
 	end
 	-- map selection chaos!
 	if control == "left" then
+		if self.map ~= 1 then
+			self.map = self.map - 1
+		else
+			self.map = #self.maplist
+		end
 	end
 	if control == "right" then
+		if self.map ~= #self.maplist then
+			self.map = self.map + 1
+		else
+			self.map = 1
+		end
 	end
 end
 
@@ -214,6 +224,6 @@ end
 
 -- WARUDO
 function Menu:startGame()
-	local world = World:new("default", self:getNauts())
+	local world = World:new(self.maplist[self.map], self:getNauts())
 	changeScene(world)
 end
