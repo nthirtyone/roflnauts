@@ -301,7 +301,7 @@ function Player:draw (offset_x, offset_y, scale, debug)
 	love.graphics.draw(self.sprite, self.current[self.frame], (self.body:getX()+offset_x)*scale, (self.body:getY()+offset_y)*scale, self.rotate, self.facing*scale, 1*scale, 12, 15)
 	-- debug draw
 	if debug then
-		love.graphics.setColor(50, 255, 50, 100)
+		love.graphics.setColor(137, 255, 0, 140)
 		love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(self.shape:getPoints())))
 		love.graphics.setColor(255,255,255,255)
 	end
@@ -378,7 +378,7 @@ function Player:damage (horizontal, vertical)
 	self.body:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
 	self.combo = math.min(20, self.combo + 1)
-	self.punchcd = 0.08
+	self.punchcd = 0.07 + self.combo*0.005
 	self:playSound(2)
 end
 
