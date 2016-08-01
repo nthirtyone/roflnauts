@@ -15,7 +15,7 @@ return {
 	},
 	-- GRAPHICS
 	clouds = true,
-	background = "assets/background-default.png",
+	background = "assets/backgrounds/default.png",
 	platforms = {
 		{
 			x = -91,

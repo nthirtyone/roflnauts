@@ -14,7 +14,7 @@ return {
 	},
 	-- GRAPHICS
 	clouds = false,
-	background = "assets/background-rill.png",
+	background = "assets/backgrounds/rill.png",
 	platforms = {
 		{
 			x = -120,
