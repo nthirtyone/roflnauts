@@ -1,4 +1,5 @@
 return {
 	"default",
-	"rill"
+	"rill",
+	"ribbit"
 }
