@@ -287,7 +287,6 @@ function World:draw()
 	-- Background
 	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
 	
-	
 	-- This needs to be reworked!
 	-- Draw clouds
 	for _,cloud in pairs(self.Clouds) do
@@ -370,7 +369,7 @@ end
 function World.beginContact(a, b, coll)
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
-		if y == -1 then
+		if y < -0.6 then
 			print(b:getUserData().name .. " is not in air")
 			-- Move them to Player
 			b:getUserData().inAir = false
