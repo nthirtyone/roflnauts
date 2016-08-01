@@ -63,7 +63,7 @@ function Player:new (game, world, x, y, name)
 	o.body:setFixedRotation(true)
 	-- Misc
 	o.name   = name or "empty"
-	o.sprite = newImage("assets/"..o.name..".png")
+	o.sprite = newImage("assets/nauts/"..o.name..".png")
 	o.world  = game
 	-- Animation
 	o.current = o.animations.idle
