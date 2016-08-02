@@ -129,6 +129,10 @@ end
 function love.draw()
 	Scene:draw()
 	if debug then
-		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
+		local scale = getScale()
+		love.graphics.setColor(255, 0, 0, 255)
+		love.graphics.print("Debug ON", 10, 10, 0, scale, scale)
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10+9*scale, 0, scale, scale)
 	end
 end
