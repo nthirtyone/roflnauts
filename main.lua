@@ -10,7 +10,8 @@ end
 
 -- Should be moved to scene/camera
 function getScale()
-	return math.max(1, math.floor(love.graphics.getWidth() / 320)-1, math.floor(love.graphics.getHeight() / 180)-1)
+	return getRealScale()
+	--return math.max(1, math.floor(love.graphics.getWidth() / 320)-1, math.floor(love.graphics.getHeight() / 180)-1)
 end
 function getRealScale()
 	return math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180)
@@ -46,9 +47,8 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	-- Font
-	-- 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-,!:()[]{}<>
-	Font = love.graphics.newImageFont("assets/font4.png", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;-_/\\!@#$%^&*?=+~`|'\"()[]{}<>", -1)
-	Bold = love.graphics.newImageFont("assets/font3.png", " 0123456789AEFILNORSTUW", -2)
+	Font = love.graphics.newImageFont("assets/font-normal.png", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;-_/\\!@#$%^&*?=+~`|'\"()[]{}<>", -1)
+	Bold = love.graphics.newImageFont("assets/font-big.png", " 0123456789AEFILNORSTUW", -2)
 	Font:setLineHeight(9/16)
 	love.graphics.setFont(Font)
 
