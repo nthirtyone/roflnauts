@@ -33,11 +33,14 @@ function Menu:new ()
 	for i=0,3 do
 		o:newSelector()
 	end
+	-- music
+	o.music = Music:new("ROFLmenu.ogg")
 	return o
 end
 
 -- Destructor
 function Menu:delete()
+	self.music:delete()
 end
 
 -- Naut selector

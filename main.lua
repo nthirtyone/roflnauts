@@ -5,6 +5,9 @@
 -- This is work for scene manager
 Scene = nil
 function changeScene(scene)
+	if Scene ~= nil then
+		Scene:delete()
+	end
 	Scene = scene
 end
 
@@ -36,6 +39,7 @@ require "world"
 require "camera"
 require "menu"
 require "controller"
+require "music"
 
 -- Temporary debug
 debug = false
