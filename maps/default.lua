@@ -39,7 +39,7 @@ return {
 			x = -17,
 			y = -50,
 			shape = {0,1, 34,1, 34,16, 0,16},
-			sprite = "assets/platform/default-top.png"
+			sprite = "assets/platforms/default-top.png"
 		}
 	},
 	decorations = {}
