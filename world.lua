@@ -30,7 +30,9 @@ World = {
 	-- Gameplay status
 	lastNaut = false,
 	-- "WINNER"
-	win_move = 0
+	win_move = 0,
+	-- Music
+	music = nil
 }
 
 -- Constructor of `World` ZA WARUDO!
@@ -65,6 +67,8 @@ function World:new(map, ...)
 	o:spawnNauts(...)
 	-- Create camera
 	o.camera = Camera:new(o)
+	-- Play music
+	o.music = Music:new(o.map.theme)
 	return o
 end
 
@@ -77,6 +81,7 @@ function World:delete()
 	for _,naut in pairs(self.Nauts) do
 		naut:delete()
 	end
+	self.music:delete()
 	self = nil
 end
 
@@ -322,6 +327,7 @@ function World:draw()
 	if debug then
 		local c = self.camera
 		local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+		-- draw map center
 		love.graphics.setColor(130,130,130)
 		love.graphics.setLineWidth(1)
 		love.graphics.setLineStyle("rough")
@@ -332,6 +338,7 @@ function World:draw()
 		local x1, y1 = c:translatePosition(cx, self.map.center_y)
 		local x2, y2 = c:translatePosition(cx+w, self.map.center_y)
 		love.graphics.line(x1,y1,x2,y2)
+		-- draw ox, oy
 		love.graphics.setColor(200,200,200)
 		love.graphics.setLineStyle("rough")
 		local cx, cy = c:getPositionScaled()

@@ -1,10 +1,11 @@
 return {
 	-- CENTER AND SIZE
 	name = "rill",
+	theme = "rill.ogg",
 	center_x = 0,
-	center_y = 80,
-	width  = 320,
-	height = 240,
+	center_y = 65,
+	width  = 400,
+	height = 260,
 	-- RESPAWN POINTS
 	respawns = {
 		{x = -135, y = 10},
