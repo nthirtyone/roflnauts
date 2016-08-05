@@ -116,7 +116,6 @@ function love.keypressed(key)
 			table.insert(nauts, {naut.name, naut.controller})
 		end
 		local new = World:new(map, nauts)
-		Scene:delete()
 		changeScene(new)
 	end
 end
