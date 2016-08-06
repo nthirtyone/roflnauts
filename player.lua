@@ -318,7 +318,7 @@ function Player:drawHUD (x,y,scale,elevation)
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name].normal, x*scale, y*scale, 0, scale, scale)
 	local dy = 30 * elevation
-	love.graphics.print(self.combo.."0x",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
+	love.graphics.print(self.combo.."0%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
 	love.graphics.print(math.max(0, self.lives),(x+24)*scale,(y-3+dy)*scale,0,scale,scale)
 end
 
