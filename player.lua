@@ -97,6 +97,8 @@ end
 
 -- Update callback of `Player`
 function Player:update (dt)
+	-- hotfix? for destroyed bodies
+	if self.body:isDestroyed() then return end
 	-- # LOCALS
 	-- velocity: x, y
 	local x,y = self.body:getLinearVelocity()
@@ -377,7 +379,7 @@ function Player:damage (horizontal, vertical)
 	self.body:setLinearVelocity(x,0)
 	self.body:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
-	self.combo = math.min(20, self.combo + 1)
+	self.combo = math.min(80, self.combo + 1)
 	self.punchcd = 0.07 + self.combo*0.005
 	self:playSound(2)
 end
