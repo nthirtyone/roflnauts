@@ -18,9 +18,9 @@ Player = {
 	max_velocity = 105,
 	world = nil, -- game world
 	-- Combat
-	combo = 1,
+	combo = 0,
 	lives = 3,
-	spawntimer = 0,
+	spawntimer = 2,
 	alive = true,
 	punchcd = 0,
 	punchinitial = 0.25,
@@ -317,11 +317,14 @@ end
 -- Draw HUD of `Player`
 -- elevation: 1 bottom, 0 top
 function Player:drawHUD (x,y,scale,elevation)
-	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name].normal, x*scale, y*scale, 0, scale, scale)
-	local dy = 30 * elevation
-	love.graphics.print(self.combo.."0%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
-	love.graphics.print(math.max(0, self.lives),(x+24)*scale,(y-3+dy)*scale,0,scale,scale)
+	-- hud displays only if player is alive
+	if self.alive then
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name].normal, x*scale, y*scale, 0, scale, scale)
+		local dy = 30 * elevation
+		love.graphics.print((self.combo*10).."%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
+		love.graphics.print(math.max(0, self.lives),(x+24)*scale,(y-3+dy)*scale,0,scale,scale)
+	end
 end
 
 -- Change animation of `Player`
@@ -379,18 +382,18 @@ function Player:damage (horizontal, vertical)
 	self.body:setLinearVelocity(x,0)
 	self.body:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:changeAnimation("damage")
-	self.combo = math.min(80, self.combo + 1)
-	self.punchcd = 0.07 + self.combo*0.005
+	self.combo = math.min(27, self.combo + 1)
+	self.punchcd = 0.08 + self.combo*0.006
 	self:playSound(2)
 end
 
 -- DIE
 function Player:die ()
 	self:playSound(1)
-	self.combo = 1
+	self.combo = Player.combo
 	self.lives = self.lives - 1
 	self.alive = false
-	self.spawntimer = 1
+	self.spawntimer = Player.spawntimer
 	self.body:setActive(false)
 	self.world:onNautKilled(self)
 end
