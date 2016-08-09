@@ -111,18 +111,19 @@ end
 
 -- Move follow
 function Camera:follow ()
-	local m = self.world.map
-	local x,y,i = m.center_x, m.center_y, 1
-	for k,point in pairs(self.world.Nauts) do
-		if point.body:getX() > m.center_x - m.width/2 and point.body:getX() < m.center_x + m.width/2 and
-		   point.body:getY() > m.center_y - m.height/2 and point.body:getY() < m.center_y + m.height/2 then
+	local map = self.world.map
+	local sum_x,sum_y,i = map.center_x, map.center_y, 1
+	for k,naut in pairs(self.world.Nauts) do
+		local naut_x,naut_y = naut:getPosition()
+		if math.abs(naut_x - map.center_x) < map.width/2 and
+		   math.abs(naut_y - map.center_y) < map.height/2 then
 			i = i + 1
-			x = point.body:getX() + x
-			y = point.body:getY() + y
+			sum_x = naut_x + sum_x
+			sum_y = naut_y + sum_y
 		end
 	end
-	x = x / i - love.graphics.getWidth()/self.scale/2
-	y = y / i - love.graphics.getHeight()/self.scale/2 + 4*self.scale -- hotfix
+	local x = sum_x / i - love.graphics.getWidth()/self.scale/2
+	local y = sum_y / i - love.graphics.getHeight()/self.scale/2 + 4*self.scale -- hotfix
 	return x,y
 end
 
