@@ -1,5 +1,6 @@
 return {
 	"default",
 	"rill",
-	"ribbit"
+	"ribbit",
+	"starstorm"
 }
