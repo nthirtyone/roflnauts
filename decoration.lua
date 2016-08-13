@@ -29,6 +29,5 @@ function Decoration:draw(offset_x, offset_y, scale)
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- draw
 	love.graphics.setColor(255,255,255,255)
-	local x, y = self:getPosition()
 	love.graphics.draw(self.sprite, draw_x, draw_y, 0, scale, scale)
 end
