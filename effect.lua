@@ -33,7 +33,7 @@ function Effect:new(name, x, y)
 end
 
 -- Position
-function Cloud:getPosition()
+function Effect:getPosition()
 	return self.x, self.y
 end
 
