@@ -14,7 +14,7 @@ return {
 		{x =  15, y = -80}
 	},
 	-- GRAPHICS
-	clouds = true,
+	clouds = false,
 	background = "assets/backgrounds/ribbit.png",
 	platforms = {
 		{
