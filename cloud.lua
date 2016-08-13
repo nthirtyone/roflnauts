@@ -36,6 +36,11 @@ function Cloud:new(x, y, t, v)
 	return o
 end
 
+-- Position
+function Cloud:getPosition()
+	return self.x, self.y
+end
+
 -- Update of `Cloud`, returns x for world to delete cloud after reaching right corner
 function Cloud:update(dt)
 	self.x = self.x + self.v*dt
@@ -44,11 +49,15 @@ end
 
 -- Draw `Cloud`
 function Cloud:draw(offset_x, offset_y, scale)
-	-- defaults
+	-- locals
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
 	local scale = scale or 1
+	local x, y = self:getPosition()
+	-- pixel grid
+	local draw_x = (math.floor(x) + offset_x) * scale
+	local draw_y = (math.floor(y) + offset_y) * scale
 	-- draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.quads[self.t], (self.x+offset_x)*scale, (self.y+offset_y)*scale, 0, scale, scale)
+	love.graphics.draw(self.sprite, self.quads[self.t], draw_x, draw_y, 0, scale, scale)
 end
