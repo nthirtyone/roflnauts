@@ -18,12 +18,26 @@ function Ground:new (game, world, x, y, shape, sprite)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
-	o.body    = love.physics.newBody(world, x, y)
-	o.shape   = love.physics.newPolygonShape(shape)
-	o.fixture = love.physics.newFixture(o.body, o.shape)
+	o.body  = love.physics.newBody(world, x, y)
+	-- MULTIPLE SHAPES NEED TO BE REWRITED!
+	o.shape = {}
+	if type(shape[1]) == "number" then
+		local poly = love.physics.newPolygonShape(shape)
+		table.insert(o.shape, poly)
+		o.fixture = love.physics.newFixture(o.body, poly)
+		o.fixture:setCategory(1)
+		o.fixture:setFriction(0.2)
+	else
+		for i,v in pairs(shape) do
+			local poly = love.physics.newPolygonShape(v)
+			table.insert(o.shape, poly)
+			local fixture = love.physics.newFixture(o.body, poly)
+			fixture:setCategory(1)
+			fixture:setFriction(0.2)
+		end
+	end
+	-- END HERE
 	o.sprite  = love.graphics.newImage(sprite)
-	o.fixture:setCategory(1)
-	o.fixture:setFriction(0.2)
 	o.world = game
 	return o
 end
@@ -56,6 +70,8 @@ function Ground:draw (offset_x, offset_y, scale, debug)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(255, 69, 0, 140)
-		love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(self.shape:getPoints())))
+		for i,v in pairs(self.shape) do
+			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(v:getPoints())))
+		end
 	end
 end
