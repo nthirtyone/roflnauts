@@ -7,5 +7,5 @@ function love.conf(t)
 	-- t.window.borderless = true
 	t.window.fullscreentype = "desktop"
 	t.window.fullscreen = true
-	t.console = true
+	t.console = false
 end
