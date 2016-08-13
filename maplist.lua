@@ -2,5 +2,6 @@ return {
 	"default",
 	"rill",
 	"ribbit",
-	"starstorm"
+	"starstorm",
+	"aiguillon"
 }
