@@ -17,7 +17,7 @@ function getScale()
 	--return math.max(1, math.floor(love.graphics.getWidth() / 320)-1, math.floor(love.graphics.getHeight() / 180)-1)
 end
 function getRealScale()
-	return math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180)
+	return math.max(1, math.floor(math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180)))
 end
 -- Should be moved to Sprite metaclass (non-existent yet)
 function newImage(path)

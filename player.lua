@@ -293,14 +293,18 @@ end
 
 -- Draw of `Player`
 function Player:draw (offset_x, offset_y, scale, debug)
-	-- defaults
+	-- locals
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
 	local scale = scale or 1
 	local debug = debug or false
+	local x, y = self:getPosition()
+	-- pixel grid
+	local draw_x = (math.floor(x) + offset_x) * scale
+	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.current[self.frame], (self.body:getX()+offset_x)*scale, (self.body:getY()+offset_y)*scale, self.rotate, self.facing*scale, 1*scale, 12, 15)
+	love.graphics.draw(self.sprite, self.current[self.frame], draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(137, 255, 0, 140)

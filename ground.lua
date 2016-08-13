@@ -34,16 +34,25 @@ function Ground:delete ()
 	self.sprite = nil
 end
 
+-- Position
+function Ground:getPosition()
+	return self.body:getPosition()
+end
+
 -- Draw of `Ground`
 function Ground:draw (offset_x, offset_y, scale, debug)
-	-- defaults
+	-- locals
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
 	local scale = scale or 1
 	local debug = debug or false
+	local x, y = self:getPosition()
+	-- pixel grid
+	local draw_x = (math.floor(x) + offset_x) * scale
+	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, (self.body:getX()+offset_x)*scale, (self.body:getY()+offset_y)*scale, 0, scale, scale)
+	love.graphics.draw(self.sprite, draw_x, draw_y, 0, scale, scale)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(255, 69, 0, 140)
