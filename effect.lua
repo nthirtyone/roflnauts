@@ -32,6 +32,11 @@ function Effect:new(name, x, y)
 	return o
 end
 
+-- Position
+function Cloud:getPosition()
+	return self.x, self.y
+end
+
 -- Animation and return flag for deletion after completion
 -- returns true if completed and ready to delete
 function Effect:update(dt)
@@ -49,11 +54,15 @@ end
 
 -- Draw me with scale and offsets, senpai
 function Effect:draw(offset_x, offset_y, scale)
-	-- defaults
+	-- locals
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
 	local scale = scale or 1
+	local x, y = self:getPosition()
+	-- pixel grid
+	local draw_x = (math.floor(x) + offset_x) * scale
+	local draw_y = (math.floor(y) + offset_y) * scale
 	-- draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.quads[self.animation][self.frame], (self.x+offset_x)*scale, (self.y+offset_y)*scale, 0, scale, scale)
+	love.graphics.draw(self.sprite, self.quads[self.animation][self.frame], draw_x, draw_y, 0, scale, scale)
 end
