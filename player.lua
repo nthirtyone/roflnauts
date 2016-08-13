@@ -304,7 +304,7 @@ function Player:draw (offset_x, offset_y, scale, debug)
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.current[self.frame], draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
+	love.graphics.draw(self.sprite, self.current[self.frame], draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 14)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(137, 255, 0, 140)
