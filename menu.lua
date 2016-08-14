@@ -201,7 +201,7 @@ function Menu:controlpressed(set, action, key)
 	end
 	-- speed up the countdown
 	if action ~= "jump" then
-		self:countdownJump()
+		self:countdownJump() -- that's funny isn't it? if not jump then jump
 	end
 end
 function Menu:controlreleased(set, action, key)

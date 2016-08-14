@@ -98,7 +98,7 @@ function Player:update(dt)
 	if self.body:isDestroyed() then return end
 	-- # LOCALS
 	local x,y = self.body:getLinearVelocity()
-	print(Controller.isDown(self:getControlSet(), "left"))
+	
 	-- # VERTICAL MOVEMENT
 	-- Jumping
 	if self.jumpactive and self.jumptimer > 0 then
