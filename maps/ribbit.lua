@@ -20,7 +20,7 @@ return {
 		{
 			x = -154,
 			y = 10,
-			shape = {1,13, 48,13, 48,32, 1,32},
+			shape = {1,12, 48,12, 48,32, 1,32},
 			sprite = "assets/platforms/ribbit-left.png"
 		},
 		{
@@ -38,7 +38,7 @@ return {
 		{
 			x = -54,
 			y = 63,
-			shape = {0,4, 108,4, 84,41, 24,41},
+			shape = {0,3, 108,3, 84,41, 24,41},
 			sprite = "assets/platforms/ribbit-bottom.png"
 		}
 	},
