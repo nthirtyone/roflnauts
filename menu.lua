@@ -107,6 +107,31 @@ function Menu:getBounce(f)
 	return math.sin(self.header_move*f*math.pi)
 end
 
+-- Update
+function Menu:update(dt)
+	local state = true
+	if self:getSelectorsNumberActive() > 1 then
+		for _,selector in pairs(self:getSelectorsActive()) do
+			state = state and selector.state
+		end
+	else
+		state = false
+	end
+	if state then
+		self.countdown = self.countdown - dt
+	else
+		self.countdown = Menu.countdown -- Menu.countdown is initial
+	end
+	if state and self.countdown < 0 then
+		self:startGame()
+	end
+	-- Bounce header
+	self.header_move = self.header_move + dt
+	if self.header_move > 2 then
+		self.header_move = self.header_move - 2
+	end
+end
+
 -- Draw
 function Menu:draw()
 	-- locals
@@ -135,31 +160,6 @@ function Menu:draw()
 	end
 end
 
--- Upadte
-function Menu:update(dt)
-	local state = true
-	if self:getSelectorsNumberActive() > 1 then
-		for _,selector in pairs(self:getSelectorsActive()) do
-			state = state and selector.state
-		end
-	else
-		state = false
-	end
-	if state then
-		self.countdown = self.countdown - dt
-	else
-		self.countdown = Menu.countdown -- Menu.countdown is initial
-	end
-	if state and self.countdown < 0 then
-		self:startGame()
-	end
-	-- Bounce header
-	self.header_move = self.header_move + dt
-	if self.header_move > 2 then
-		self.header_move = self.header_move - 2
-	end
-end
-
 -- Speed up countdown
 function Menu:countdownJump()
 	if self.countdown ~= Menu.countdown then -- Menu.countdown is initial
@@ -167,7 +167,7 @@ function Menu:countdownJump()
 	end
 end
 
---
+-- Called when selector is deactivated
 function Menu:unselectSelector(selector)
 	local i = 0
 	for _,v in pairs(self:getSelectorsActive()) do
@@ -182,12 +182,28 @@ function Menu:unselectSelector(selector)
 	end
 end
 
--- Controllers
+-- Get table of nauts currently selected by active selectors
+function Menu:getNauts()
+	local nauts = {}
+	for _,selector in pairs(self:getSelectorsActive()) do
+		table.insert(nauts, {selector:getSelectionName(), selector:getController()})
+	end
+	return nauts
+end
+
+-- WARUDO
+function Menu:startGame()
+	local world = World:new(self.maplist[self.map], self:getNauts())
+	changeScene(world)
+end
+
+-- Controllers stuff
 function Menu:assignController(controller)
 	controller:setParent(self)
 end
 
-function Menu:controllerPressed(control, controller)
+-- Controller callbacks
+function Menu:controlpressed(set, action, key)
 	-- assign to character selection
 	if control == "attack" then
 		local selector = self:getSelectorsInactive()[1]
@@ -211,21 +227,5 @@ function Menu:controllerPressed(control, controller)
 		end
 	end
 end
-
--- It just must be here
-function Menu:controllerReleased(control, controller)
-end
-
-function Menu:getNauts()
-	local nauts = {}
-	for _,selector in pairs(self:getSelectorsActive()) do
-		table.insert(nauts, {selector:getSelectionName(), selector:getController()})
-	end
-	return nauts
-end
-
--- WARUDO
-function Menu:startGame()
-	local world = World:new(self.maplist[self.map], self:getNauts())
-	changeScene(world)
+function Menu:controlreleased(set, action, key)
 end

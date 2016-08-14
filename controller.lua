@@ -70,37 +70,23 @@ end
 -- Gamepad input callbacks
 function Controller.gamepadpressed(joystick, button)
 	print(button, "pressed")
-	for _,controller in pairs(Controllers) do
-		controller:gamepadpressed(joystick, button)
-	end
+	local set, action, key = Controller.testSets(button, joystick)
+	Controller.controlpressed(set, action, key)
 end
 function Controller.gamepadreleased(joystick, button)
 	print(button, "released")
-	for _,controller in pairs(Controllers) do
-		controller:gamepadreleased(joystick, button)
-	end
+	local set, action, key = Controller.testSets(button, joystick)
+	Controller.controlreleased(set, action, key)
 end
 
 -- Keyboard input callbacks
-function Controller.keypressed(key)
-	print(key, "pressed")
-	for _,controller in pairs(Controllers) do
-		controller:keypressed(key)
-	end
-
-	if key == "f6" and debug then
-		local map = Scene:getMapName()
-		local nauts = {}
-		for _,naut in pairs(Scene:getNautsAll()) do
-			table.insert(nauts, {naut.name, naut.controller})
-		end
-		local new = World:new(map, nauts)
-		changeScene(new)
-	end
+function Controller.keypressed(button)
+	print(button, "pressed")
+	local set, action, key = Controller.testSets(button)
+	Controller.controlpressed(set, action, key)
 end
-function Controller.keyreleased(key)
-	print(key, "released")
-	for _,controller in pairs(Controllers) do
-		controller:keyreleased(key)
-	end
+function Controller.keyreleased(button)
+	print(button, "released")
+	local set, action, key = Controller.testSets(button)
+	Controller.controlreleased(set, action, key)
 end

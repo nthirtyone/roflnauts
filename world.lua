@@ -399,3 +399,18 @@ function World.endContact(a, b, coll)
 		b:getUserData().inAir = true
 	end
 end
+
+-- Controller callbacks
+function World:controlpressed(set, action, key)
+	if key == "f6" and debug then
+		local map = self:getMapName()
+		local nauts = {}
+		for _,naut in pairs(self:getNautsAll()) do
+			table.insert(nauts, {naut.name, naut.controller})
+		end
+		local new = World:new(map, nauts)
+		changeScene(new)
+	end
+end
+function World:controlreleased(set, action, key)
+end

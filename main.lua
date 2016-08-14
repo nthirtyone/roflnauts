@@ -87,7 +87,7 @@ function love.keyreleased(key) Controller.keyreleased(key) end
 function Controller.controlpressed(set, action, key)
 	-- pass to current Scene
 	Scene:controlpressed(set, action, key)
-	-- global quit
+	-- globals
 	if key == "escape" or key == "f1" then
 		love.event.quit()
 	end
