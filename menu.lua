@@ -114,21 +114,6 @@ function Menu:countdownJump()
 	end
 end
 
--- Called when selector is deactivated
-function Menu:unselectSelector(selector)
-	local i = 0
-	for _,v in pairs(self:getSelectorsActive()) do
-		if v == selector then
-			i = _
-			break
-		end
-	end
-	if i ~= 0 then
-		self:assignController(selector:getController())
-		selector:clear()
-	end
-end
-
 -- Get table of nauts currently selected by active selectors
 function Menu:getNauts()
 	local nauts = {}

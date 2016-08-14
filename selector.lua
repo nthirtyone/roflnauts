@@ -15,14 +15,34 @@ function Selector:new(menu)
 	o.parent = menu
 	return o
 end
-function Selector:setPosition (x,y)
+function Selector:setPosition(x,y)
 	self.x = x
 	self.y = y
 end
-function Selector:getPosition ()
+function Selector:getPosition()
 	return self.x, self.y
 end
-function Selector:draw ()
+function Selector:assignController(controller)
+	controller:setParent(self)
+	self.controller = controller
+	self.naut = 2
+end
+function Selector:getController()
+	if self.controller ~= nil then
+		return self.controller
+	end
+end
+function Selector:clear()
+	self.controller = nil
+	self.naut = 1
+	self.state = false
+end
+function Selector:getSelectionName()
+	return self.parent.nauts[self.naut]
+end
+
+-- LÖVE2D callbacks
+function Selector:draw()
 	-- portrait, sprite
 	local name = self.parent.nauts[self.naut]
 	local p = self.parent.portrait_sheet[name]
@@ -46,25 +66,9 @@ function Selector:draw ()
 		love.graphics.printf(string.upper(name), (x-8)*scale, (y+33)*scale, 48, "center", 0, scale, scale)
 	end
 end
-function Selector:assignController(controller)
-	controller:setParent(self)
-	self.controller = controller
-	self.naut = 2
-end
-function Selector:getController()
-	if self.controller ~= nil then
-		return self.controller
-	end
-end
-function Selector:clear()
-	self.controller = nil
-	self.naut = 1
-	self.state = false
-end
-function Selector:getSelectionName()
-	return self.parent.nauts[self.naut]
-end
-function Selector:controllerPressed(control, controller)
+
+-- Controller callbacks
+function Selector:controlpressed(set, action, key)
 	local n = #self.parent.nauts
 	if control == "left" and not self.state then
 		if self.naut == 2 or self.naut == 1 then
@@ -92,6 +96,5 @@ function Selector:controllerPressed(control, controller)
 	-- Speed up countdown
 	self.parent:countdownJump()
 end
--- It just must be here
-function Selector:controllerReleased(control, controller)
+function Selector:controlreleased(set, action, key)
 end
