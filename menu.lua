@@ -55,27 +55,49 @@ function Menu:newSelector()
 end
 
 -- Selectors tables getters
--- active: with controller; inactive: without controller
-function Menu:getSelectorsAll()
+-- all of them
+function Menu:getSelectors()
 	return self.selectors
 end
+-- with control set
 function Menu:getSelectorsActive()
 	local t = {}
 	for _,selector in pairs(self.selectors) do
-		if selector:getController() ~= nil then
+		if selector:getState() ~= 0 then
 			table.insert(t, selector)
 		end
 	end
 	return t
 end
+-- without control set
 function Menu:getSelectorsInactive()
 	local t = {}
 	for _,selector in pairs(self.selectors) do
-		if selector:getController() == nil then
+		if selector:getState() == 0 then
 			table.insert(t, selector)
 		end
 	end
 	return t
+end
+-- with locked character
+function Menu:getSelectorsLocked()
+	local t = {}
+	for _,selector in pairs(self.selectors) do
+		if selector:getState() == 2 then
+			table.insert(t, selector)
+		end
+	end
+	return t
+end
+
+-- Tests if Control set is assigned to any selector
+function Menu:isSetUsed(set)
+	for k,selector in pairs(self:getSelectorsActive()) do
+		if selector:getControlSet() == set then
+			return true
+		end
+	end
+	return false
 end
 
 -- Header get bounce move
@@ -91,11 +113,11 @@ function Menu:countdownJump()
 	end
 end
 
--- Get table of nauts currently selected by active selectors
+-- Get table of nauts currently selected by locked selectors
 function Menu:getNauts()
 	local nauts = {}
-	for _,selector in pairs(self:getSelectorsActive()) do
-		table.insert(nauts, {selector:getSelectionName(), selector:getController()})
+	for _,selector in pairs(self:getSelectorsLocked()) do
+		table.insert(nauts, {selector:getSelectionName(), selector:getControlSet()})
 	end
 	return nauts
 end
@@ -109,20 +131,12 @@ end
 -- LÖVE2D callbacks
 -- Update
 function Menu:update(dt)
-	local state = true
-	if #self:getSelectorsActive() > 1 then
-		for _,selector in pairs(self:getSelectorsActive()) do
-			state = state and selector.state
-		end
-	else
-		state = false
-	end
-	if state then
+	if #self:getSelectorsLocked() > 1 then
 		self.countdown = self.countdown - dt
 	else
 		self.countdown = Menu.countdown -- Menu.countdown is initial
 	end
-	if state and self.countdown < 0 then
+	if self.countdown < 0 then
 		self:startGame()
 	end
 	-- Bounce header
@@ -140,7 +154,7 @@ function Menu:draw()
 	love.graphics.setFont(Font)
 	love.graphics.printf("Map: " .. self.maplist[self.map], (w/2)*scale, (h/2-22)*scale, 150, "center", 0, scale, scale, 75, 4)
 	-- character selection
-	for _,selector in pairs(self:getSelectorsAll()) do
+	for _,selector in pairs(self:getSelectors()) do
 		selector:draw()
 	end
 	-- header
@@ -161,23 +175,28 @@ end
 
 -- Controller callbacks
 function Menu:controlpressed(set, action, key)
-	-- pass to selectors
-	for k,selector in pairs(Menu:getSelectorsAll()) do
+	-- Pass to active selectors
+	for k,selector in pairs(self:getSelectorsActive()) do
 		selector:controlpressed(set, action, key)
 	end
-	-- map selection chaos!
-	if action == "left" then
-		if self.map ~= 1 then
-			self.map = self.map - 1
-		else
-			self.map = #self.maplist
+	if not self:isSetUsed(set) then
+		if action == "attack" then
+			self:getSelectorsInactive()[1]:assignControlSet(set)
 		end
-	end
-	if action == "right" then
-		if self.map ~= #self.maplist then
-			self.map = self.map + 1
-		else
-			self.map = 1
+		-- map selection chaos!
+		if action == "left" then
+			if self.map ~= 1 then
+				self.map = self.map - 1
+			else
+				self.map = #self.maplist
+			end
+		end
+		if action == "right" then
+			if self.map ~= #self.maplist then
+				self.map = self.map + 1
+			else
+				self.map = 1
+			end
 		end
 	end
 	-- speed up the countdown

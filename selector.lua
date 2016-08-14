@@ -5,8 +5,8 @@ Selector = {
 	x = 0,
 	y = 0,
 	parent = nil,
-	controller = nil,
-	state = false
+	controlset = nil,
+	locked = false
 }
 function Selector:new(menu)
 	local o = {}
@@ -15,6 +15,7 @@ function Selector:new(menu)
 	o.parent = menu
 	return o
 end
+-- Position
 function Selector:setPosition(x,y)
 	self.x = x
 	self.y = y
@@ -22,20 +23,30 @@ end
 function Selector:getPosition()
 	return self.x, self.y
 end
-function Selector:assignController(controller)
-	controller:setParent(self)
-	self.controller = controller
+-- Control Sets
+function Selector:assignControlSet(set)
+	self.controlset = set
 	self.naut = 2
 end
-function Selector:getController()
-	if self.controller ~= nil then
-		return self.controller
+function Selector:getControlSet()
+	if self.controlset ~= nil then
+		return self.controlset
 	end
 end
+-- States
+function Selector:getState()
+	if self:getControlSet() ~= nil then
+		if self.locked then
+			return 2 -- has controls and locked
+		end
+		return 1 -- has controls but not locked
+	end
+	return 0 -- no controls and not locked
+end
 function Selector:clear()
-	self.controller = nil
+	self.controlset = nil
 	self.naut = 1
-	self.state = false
+	self.locked = 0
 end
 function Selector:getSelectionName()
 	return self.parent.nauts[self.naut]
@@ -53,9 +64,9 @@ function Selector:draw()
 	-- arrows
 	local arrowl = self.parent.portrait_sheet.arrow_left
 	local arrowr = self.parent.portrait_sheet.arrow_right
-	if not self.state then
+	if not self.locked then
 		love.graphics.draw(sprite, p.normal, x*scale, y*scale, 0, scale, scale)
-		if self.controller ~= nil then
+		if self.controlset ~= nil then
 			love.graphics.draw(sprite, arrowl, (x-2)* scale, (y+13)*scale, 0, scale, scale)
 			love.graphics.draw(sprite, arrowr, (x+30)*scale, (y+13)*scale, 0, scale, scale)
 		end
@@ -69,28 +80,31 @@ end
 
 -- Controller callbacks
 function Selector:controlpressed(set, action, key)
+	-- locals
 	local n = #self.parent.nauts
-	if control == "left" and not self.state then
-		if self.naut == 2 or self.naut == 1 then
-			self.naut = n
-		else
-			self.naut = self.naut - 1
-		end
-	elseif control == "right" and not self.state then
-		if self.naut == n then
-			self.naut = 2
-		else
-			self.naut = self.naut + 1
-		end
-	elseif control == "attack" then
-		if self.naut ~= 1 then
-			self.state = true
-		end
-	elseif control == "jump" then
-		if self.state == true then
-			self.state = false
-		else
-			self.parent:unselectSelector(self)
+	if set == self:getControlSet() then
+		if action == "left" and not self.locked then
+			if self.naut == 2 or self.naut == 1 then
+				self.naut = n
+			else
+				self.naut = self.naut - 1
+			end
+		elseif action == "right" and not self.locked then
+			if self.naut == n then
+				self.naut = 2
+			else
+				self.naut = self.naut + 1
+			end
+		elseif action == "attack" then
+			if self.naut ~= 1 then
+				self.locked = true
+			end
+		elseif action == "jump" then
+			if self.locked == true then
+				self.locked = false
+			else
+				self.parent:unselectSelector(self)
+			end
 		end
 	end
 end
