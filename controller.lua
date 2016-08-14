@@ -57,6 +57,15 @@ function Controller.testControl(set, key, joystick)
 	end
 end
 
+-- Checks if given action of given set is down
+function Controller.isDown(set, action)
+	if set.joystick == nil then
+		return love.keyboard.isDown(set[action])
+	else
+		return set.joystick:isGamepadDown(set[action])
+	end
+end
+
 -- Callbacks from LÖVE2D
 -- Create new sets when new joystick is added
 function Controller.joystickadded(joystick)
