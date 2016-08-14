@@ -37,6 +37,10 @@ Player = {
 	jumpdouble = true,
 	jumptimer = 0.16,
 	jumpnumber = 2,
+	down_left = false,
+	down_right = false,
+	down_up = false,
+	down_down = false,
 	-- Keys
 	controlset = nil,
 	-- HUD
@@ -82,7 +86,7 @@ end
 
 -- Control set managment
 function Player:assignControlSet(set)
-	self.controlset = set or nil
+	self.controlset = set
 end
 function Player:getControlSet()
 	return self.controlset
@@ -93,13 +97,11 @@ function Player:update(dt)
 	-- hotfix? for destroyed bodies
 	if self.body:isDestroyed() then return end
 	-- # LOCALS
-	-- velocity: x, y
 	local x,y = self.body:getLinearVelocity()
-
+	print(Controller.isDown(self:getControlSet(), "left"))
 	-- # VERTICAL MOVEMENT
 	-- Jumping
 	if self.jumpactive and self.jumptimer > 0 then
-		local x,y = self.body:getLinearVelocity()
 		self.body:setLinearVelocity(x,-160)
 		self.jumptimer = self.jumptimer - dt
 	end
@@ -342,7 +344,7 @@ end
 
 -- Punch of `Player`
 -- offset_x, offset_y, step_x, step_y, vector_x, vector_y
-function Player:hit (ox, oy, sx, sy, vx, vy)
+function Player:hit(ox, oy, sx, sy, vx, vy)
 	-- start cooldown
 	self.punchcd = self.punchinitial
 	-- actual punch
@@ -359,7 +361,7 @@ end
 
 -- Hittest
 -- Should be replaced with actual sensor; after moving collision callbacks into Player
-function Player:testHit (target, ox, oy, sx, sy)
+function Player:testHit(target, ox, oy, sx, sy)
 	local x, y = self.body:getPosition()
 	for v=0,2 do
 		for h=0,2,1+v%2 do
@@ -370,7 +372,7 @@ function Player:testHit (target, ox, oy, sx, sy)
 end
 
 -- Taking damage of `Player` by successful hit test
-function Player:damage (horizontal, vertical)
+function Player:damage(horizontal, vertical)
 	self:createEffect("hit")
 	local x,y = self.body:getLinearVelocity()
 	self.body:setLinearVelocity(x,0)
@@ -382,7 +384,7 @@ function Player:damage (horizontal, vertical)
 end
 
 -- DIE
-function Player:die ()
+function Player:die()
 	self:playSound(1)
 	self.combo = Player.combo
 	self.lives = self.lives - 1
@@ -393,7 +395,7 @@ function Player:die ()
 end
 
 -- And then respawn. Like Jon Snow.
-function Player:respawn ()
+function Player:respawn()
 	self.alive = true
 	self.body:setLinearVelocity(0,0)
 	self.body:setPosition(self.world:getSpawnPosition())
