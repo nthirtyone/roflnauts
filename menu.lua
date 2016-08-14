@@ -21,7 +21,7 @@ Menu = {
 }
 
 -- Constructor of `Menu`
-function Menu:new ()
+function Menu:new()
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
@@ -119,13 +119,6 @@ function Menu:draw()
 	for _,selector in pairs(self:getSelectorsAll()) do
 		selector:draw()
 	end
-	-- countdown
-	local countdown, _ = math.modf(self.countdown)
-	if self.countdown < Menu.countdown then -- Menu.countdown is initial
-		love.graphics.setFont(Bold)
-		love.graphics.print(countdown,(w/2-6.5)*self.scale,(h/2+30)*self.scale,0,self.scale,self.scale)
-		love.graphics.setFont(Font)
-	end
 	-- header
 	love.graphics.setFont(Bold)
 	local angle = self:getBounce(2)
@@ -134,6 +127,12 @@ function Menu:draw()
 	-- footer
 	love.graphics.setFont(Font)
 	love.graphics.printf("Use W,S,A,D,G,H or Arrows,Enter,Rshift or Gamepad\n\nA game by Awesomenauts Community\nSeltzy, ParaDoX, MilkingChicken, Burningdillo, Bronkey, Aki, 04font\nBased on a game by Jan Willem Nijman, Paul Veer and Bits_Beats XOXO", (w/2)*scale, (h-42)*scale, 336, "center", 0, scale, scale, 168, 4)
+	-- countdown
+	local countdown, _ = math.modf(self.countdown)
+	if self.countdown < Menu.countdown then -- Menu.countdown is initial
+		love.graphics.setFont(Bold)
+		love.graphics.print(countdown,(w/2-6.5)*self.scale,(h/2+30)*self.scale,0,self.scale,self.scale)
+	end
 end
 
 -- Upadte
