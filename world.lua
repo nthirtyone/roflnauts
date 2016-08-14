@@ -121,7 +121,7 @@ function World:spawnNauts(...)
 	for _,naut in pairs(nauts) do
 		local x,y = self:getSpawnPosition()
 		local spawn = self:createNaut(x, y, naut[1])
-		spawn:assignController(naut[2])
+		spawn:assignControlSet(naut[2])
 	end
 end
 
@@ -230,6 +230,12 @@ function World:onNautKilled(naut)
 	end
 end
 
+function World:getBounce(f)
+	local f = f or 1
+	return math.sin(self.win_move*f*math.pi)
+end
+
+-- LÖVE2D callbacks
 -- Update ZU WARUDO
 function World:update(dt)
 	-- Physical world
@@ -276,12 +282,6 @@ function World:update(dt)
 		self.win_move = self.win_move - 2
 	end
 end
-
-function World:getBounce(f)
-	local f = f or 1
-	return math.sin(self.win_move*f*math.pi)
-end
-
 -- Draw
 function World:draw()
 	-- Camera stuff
@@ -372,6 +372,7 @@ function World:draw()
 	end
 end
 
+-- Box2D callbacks
 -- beginContact
 function World.beginContact(a, b, coll)
 	if a:getCategory() == 1 then
@@ -390,7 +391,6 @@ function World.beginContact(a, b, coll)
 		end
 	end
 end
-
 -- endContact
 function World.endContact(a, b, coll)
 	if a:getCategory() == 1 then
@@ -406,11 +406,17 @@ function World:controlpressed(set, action, key)
 		local map = self:getMapName()
 		local nauts = {}
 		for _,naut in pairs(self:getNautsAll()) do
-			table.insert(nauts, {naut.name, naut.controller})
+			table.insert(nauts, {naut.name, naut:getControlSet()})
 		end
 		local new = World:new(map, nauts)
 		changeScene(new)
 	end
+	for k,naut in pairs(self:getNautsAll()) do
+		naut:controlpressed(set, action, key)
+	end
 end
 function World:controlreleased(set, action, key)
+	for k,naut in pairs(self:getNautsAll()) do
+		naut:controlpressed(set, action, key)
+	end
 end

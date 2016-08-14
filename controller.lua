@@ -59,6 +59,7 @@ end
 
 -- Checks if given action of given set is down
 function Controller.isDown(set, action)
+	if set == nil then return end
 	if set.joystick == nil then
 		return love.keyboard.isDown(set[action])
 	else
