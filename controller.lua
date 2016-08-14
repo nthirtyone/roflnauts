@@ -56,14 +56,14 @@ function Controller.testControl(set, key, joystick)
 		end
 	end
 end
-
+--love.keyboard.isDown(set[action])
+--set.joystick:isGamepadDown(set[action])
 -- Checks if given action of given set is down
 function Controller.isDown(set, action)
-	if set == nil then return end
-	if set.joystick == nil then
-		return love.keyboard.isDown(set[action])
-	else
-		return set.joystick:isGamepadDown(set[action])
+	if set ~= nil then
+		if set.joystick == nil then
+			return love.keyboard.isDown(set[action])
+		end
 	end
 end
 
