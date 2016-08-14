@@ -46,7 +46,7 @@ end
 function Selector:clear()
 	self.controlset = nil
 	self.naut = 1
-	self.locked = 0
+	self.locked = false
 end
 function Selector:getSelectionName()
 	return self.parent.nauts[self.naut]
@@ -103,7 +103,7 @@ function Selector:controlpressed(set, action, key)
 			if self.locked == true then
 				self.locked = false
 			else
-				self.parent:unselectSelector(self)
+				self:clear()
 			end
 		end
 	end
