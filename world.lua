@@ -417,6 +417,6 @@ function World:controlpressed(set, action, key)
 end
 function World:controlreleased(set, action, key)
 	for k,naut in pairs(self:getNautsAll()) do
-		naut:controlpressed(set, action, key)
+		naut:controlreleased(set, action, key)
 	end
 end
