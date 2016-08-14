@@ -3,7 +3,7 @@ return {
 	name = "aiguillon",
 	theme = "sorona.ogg",
 	center_x = 0,
-	center_y = -20,
+	center_y = -45,
 	width  = 370,
 	height = 290,
 	-- RESPAWN POINTS

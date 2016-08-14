@@ -3,7 +3,7 @@ return {
 	name = "starstorm",
 	theme = "starstorm.ogg",
 	center_x = 0,
-	center_y = -5,
+	center_y = -20,
 	width  = 400,
 	height = 260,
 	-- RESPAWN POINTS
