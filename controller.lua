@@ -31,10 +31,10 @@ function Controller.testSets(key, joystick)
 	for i,set in pairs(Controller.sets) do
 		local action = Controller.testControl(set, key, joystick)
 		if action ~= nil then
-			return set, action, key
+			return set, action
 		end
 	end
-	return nil, nil, key
+	return nil, nil
 end
 
 -- Tests given set if it has controll assigned to given key and joystick.
@@ -64,25 +64,25 @@ function Controller.joystickadded(joystick)
 end
 
 -- Gamepad input callbacks
-function Controller.gamepadpressed(joystick, button)
-	local set, action, key = Controller.testSets(button, joystick)
+function Controller.gamepadpressed(joystick, key)
+	local set, action = Controller.testSets(key, joystick)
 	print("Pressed:", set, action, key)
 	Controller.controlpressed(set, action, key)
 end
-function Controller.gamepadreleased(joystick, button)
-	local set, action, key = Controller.testSets(button, joystick)
+function Controller.gamepadreleased(joystick, key)
+	local set, action = Controller.testSets(key, joystick)
 	print("Released:", set, action, key)
 	Controller.controlreleased(set, action, key)
 end
 
 -- Keyboard input callbacks
-function Controller.keypressed(button)
-	local set, action, key = Controller.testSets(button, nil)
+function Controller.keypressed(key)
+	local set, action = Controller.testSets(key, nil)
 	print("Pressed:", set, action, key)
 	Controller.controlpressed(set, action, key)
 end
-function Controller.keyreleased(button)
-	local set, action, key = Controller.testSets(button, nil)
+function Controller.keyreleased(key)
+	local set, action = Controller.testSets(key, nil)
 	print("Released:", set, action, key)
 	Controller.controlreleased(set, action, key)
 end
