@@ -43,90 +43,28 @@ require "music"
 -- Temporary debug
 debug = false
 
+-- LÖVE2D callbacks
 -- Load
 function love.load()
 	-- Graphics
 	love.graphics.setBackgroundColor(90, 90, 90)
 	love.graphics.setDefaultFilter("nearest", "nearest")
-
 	-- Font
 	Font = love.graphics.newImageFont("assets/font-normal.png", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;-_/\\!@#$%^&*?=+~`|'\"()[]{}<>", -1)
 	Bold = love.graphics.newImageFont("assets/font-big.png", " 0123456789AEFILNORSTUW", -2)
 	Font:setLineHeight(9/16)
-	love.graphics.setFont(Font)
-
-	-- Menu bijaczes
-	m = Menu:new()
-
-	-- Controllers
-	Controllers = {}
-	table.insert(Controllers, Controller:new())
-	table.insert(Controllers, Controller:new(nil, "a", "d", "w", "s", "g", "h"))
-	m:assignController(Controllers[1])
-	m:assignController(Controllers[2])
-
-	-- Scene
-	changeScene(m)
-end
-
--- Gamepad
-function love.joystickadded(joystick)
+	love.graphics.setFont(Font) 
+	-- Controller
 	love.joystick.loadGamepadMappings("gamecontrollerdb.txt")
-	table.insert(Controllers, Controller:new(joystick, "dpleft", "dpright", "dpup", "dpdown", "a", "b"))
-	m:assignController(Controllers[#Controllers])
+	Controller.registerSet("left", "right", "up", "down", "return", "rshift")
+	Controller.registerSet("a", "d", "w", "s", "g", "h")
+	-- Scene
+	Scene = Menu:new()
 end
-
-function love.gamepadpressed(joystick, button)
-	print(button, "pressed")
-	for _,controller in pairs(Controllers) do
-		controller:gamepadpressed(joystick, button)
-	end
-end
-
-function love.gamepadreleased(joystick, button)
-	print(button, "released")
-	for _,controller in pairs(Controllers) do
-		controller:gamepadreleased(joystick, button)
-	end
-end
-
 -- Update
 function love.update(dt)
 	Scene:update(dt)
 end
-
--- KeyPressed
-function love.keypressed(key)
-	-- Controllers
-	for _,controller in pairs(Controllers) do
-		controller:keypressed(key)
-	end
-	-- Misc global input
-	if key == "f5" then
-		debug = not debug
-	end
-	if key == "escape" or key == "f1" then
-		love.event.quit()
-	end
-	if key == "f6" and debug then
-		local map = Scene:getMapName()
-		local nauts = {}
-		for _,naut in pairs(Scene:getNautsAll()) do
-			table.insert(nauts, {naut.name, naut.controller})
-		end
-		local new = World:new(map, nauts)
-		changeScene(new)
-	end
-end
-
--- KeyReleased
-function love.keyreleased(key)
-	-- Controllers
-	for _,controller in pairs(Controllers) do
-		controller:keyreleased(key)
-	end
-end
-
 -- Draw
 function love.draw()
 	Scene:draw()
@@ -138,3 +76,28 @@ function love.draw()
 		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10+9*scale, 0, scale, scale)
 	end
 end
+-- Pass input to Controller
+function love.joystickadded(joystick) Controller.joystickadded(joystick) end
+function love.gamepadpressed(joystick, button) Controller.gamepadpressed(joystick, button) end
+function love.gamepadreleased(joystick, button) Controller.gamepadreleased(joystick, button) end
+function love.keypressed(key) Controller.keypressed(key) end
+function love.keyreleased(key) Controller.keyreleased(key) end
+
+-- Controller callbacks
+function Controller.controlpressed(set, action, key)
+	-- pass to current Scene
+	Scene:controlpressed(set, action, key)
+	-- global quit
+	if key == "escape" or key == "f1" then
+		love.event.quit()
+	end
+	if key == "f5" then
+		debug = not debug
+	end
+end
+function Controller.controlreleased(set, action, key)
+	-- pass to current Scene
+	Scene:controlreleased(set, action, key)
+end
+
+

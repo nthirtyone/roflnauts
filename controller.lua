@@ -1,106 +1,106 @@
 -- `Controller`
--- Used to manage controls
+-- Module to manage player input. 
+-- It uses `love.keypressed`, `love.keyreleased`, `love.gamepadreleased`, `love.gamepadpressed`, `love.joystickadded`, so be sure not to use them by yourself.
+-- Rather than that use functions provided by this module: `Controller.controlpressed` and `Controller.controlreleased`.
+-- For information on additional functions, look below.
 
--- Metashit
+-- Metatable
 Controller = {
-	joystick = nil,
-	left = "left",
-	right = "right",
-	up = "up",
-	down = "down",
-	attack = "return", -- accept
-	jump = "rshift", -- cancel
-	parent = nil
+	sets = {}
 }
 
--- Constructor
--- joystick, left, right, up, down, attack, jump
-function Controller:new(joystick, ...)
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
-	if joystick ~= nil then
-		o.joystick = joystick
+-- Declared to avoid calling nil. Be sure to define yours after this line is performed.
+function Controller.controlpressed(set, action, key) end
+function Controller.controlreleased(set, action, key) end
+
+-- Create new controls set.
+function Controller.registerSet(left, right, up, down, attack, jump, joystick)
+	local set = {}
+	set.left = left or "left"
+	set.right = right or "right"
+	set.up = up or "up"
+	set.down = down or "down"
+	set.attack = attack or "return"
+	set.jump = jump or "rshift"
+	table.insert(Controller.sets, set)
+	return set
+end
+
+-- Tests all sets if they have control assigned to given key and joystick.
+function Controller.testSets(key, joystick)
+	for i,set in pairs(Controller.sets) do
+		local action = Controller.testControl(set, key, joystick)
+		if action ~= nil then
+			return set, action, key
+		end
 	end
-	o:setBindings(...)
-	return o
+	return nil, nil, key
 end
 
-function Controller:setBindings(...)
-	local left, right, up, down, attack, jump = ...
-	self.left = left or "left"
-	self.right = right or "right"
-	self.up = up or "up"
-	self.down = down or "down"
-	self.attack = attack or "return"
-	self.jump = jump or "rshift"
-end
-
-function Controller:setParent(parent)
-	self.parent = parent or nil
-end
-
-function Controller:testControl(control)
-	if control == self.left then
-		return "left"
-	elseif control == self.right then
-		return "right"
-	elseif control == self.up then
-		return "up"
-	elseif control == self.down then
-		return "down"
-	elseif control == self.attack then
-		return "attack"
-	elseif control == self.jump then
-		return "jump"
+-- Tests given set if it has controll assigned to given key and joystick.
+function Controller.testControl(set, key, joystick)
+	-- First test if it is joystick and if it is correct one
+	if joystick == set.joystick then
+		if control == set.left then
+			return "left"
+		elseif control == set.right then
+			return "right"
+		elseif control == set.up then
+			return "up"
+		elseif control == set.down then
+			return "down"
+		elseif control == set.attack then
+			return "attack"
+		elseif control == set.jump then
+			return "jump"
+		else
+			return nil
+		end
 	else
 		return nil
 	end
 end
 
--- Gamepad
-function Controller:gamepadpressed(joystick, button)
-	if self.parent ~= nil and self.joystick == joystick then
-		local control = self:testControl(button)
-		if control ~= nil then
-			self.parent:controllerPressed(control, self)
-		end
+-- Callbacks from LÖVE2D
+-- Create new sets when new joystick is added
+function Controller.joystickadded(joystick)
+	Controller.registerSet("dpleft", "dpright", "dpup", "dpdown", "a", "b", joystick)
+end
+
+-- Gamepad input callbacks
+function Controller.gamepadpressed(joystick, button)
+	print(button, "pressed")
+	for _,controller in pairs(Controllers) do
+		controller:gamepadpressed(joystick, button)
+	end
+end
+function Controller.gamepadreleased(joystick, button)
+	print(button, "released")
+	for _,controller in pairs(Controllers) do
+		controller:gamepadreleased(joystick, button)
 	end
 end
 
-function Controller:gamepadreleased(joystick, button)
-	if self.parent ~= nil and self.joystick == joystick then
-		local control = self:testControl(button)
-		if control ~= nil then
-			self.parent:controllerReleased(control, self)
+-- Keyboard input callbacks
+function Controller.keypressed(key)
+	print(key, "pressed")
+	for _,controller in pairs(Controllers) do
+		controller:keypressed(key)
+	end
+
+	if key == "f6" and debug then
+		local map = Scene:getMapName()
+		local nauts = {}
+		for _,naut in pairs(Scene:getNautsAll()) do
+			table.insert(nauts, {naut.name, naut.controller})
 		end
+		local new = World:new(map, nauts)
+		changeScene(new)
 	end
 end
-
--- Keyboard
-function Controller:keypressed(key, scancode)
-	if self.parent ~= nil and self.joystick == nil then
-		local control = self:testControl(key)
-		if control ~= nil then
-			self.parent:controllerPressed(control, self)
-		end
-	end
-end
-
-function Controller:keyreleased(key, scancode)
-	if self.parent ~= nil and self.joystick == nil then
-		local control = self:testControl(key)
-		if control ~= nil then
-			self.parent:controllerReleased(control, self)
-		end
-	end
-end
-
--- isDown
-function Controller:isDown(control)
-	if self.joystick == nil then
-		return love.keyboard.isDown(self[control])
-	else
-		return self.joystick:isGamepadDown(self[control])
+function Controller.keyreleased(key)
+	print(key, "released")
+	for _,controller in pairs(Controllers) do
+		controller:keyreleased(key)
 	end
 end
