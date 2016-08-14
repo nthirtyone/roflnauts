@@ -78,29 +78,6 @@ function Menu:getSelectorsInactive()
 	return t
 end
 
--- Selectors numbers getters
-function Menu:getSelectorsNumberAll()
-	return #self.selectors
-end
-function Menu:getSelectorsNumberActive()
-	local n = 0
-	for _,selector in pairs(self.selectors) do
-		if selector:getController() ~= nil then
-			n = n + 1
-		end
-	end
-	return n
-end
-function Menu:getSelectorsNumberInactive()
-	local n = 0
-	for _,selector in pairs(self.selectors) do
-		if selector:getController() == nil then
-			n = n + 1
-		end
-	end
-	return n
-end
-
 -- Header get bounce move
 function Menu:getBounce(f)
 	local f = f or 1
@@ -133,7 +110,7 @@ end
 -- Update
 function Menu:update(dt)
 	local state = true
-	if self:getSelectorsNumberActive() > 1 then
+	if #self:getSelectorsActive() > 1 then
 		for _,selector in pairs(self:getSelectorsActive()) do
 			state = state and selector.state
 		end
@@ -184,12 +161,9 @@ end
 
 -- Controller callbacks
 function Menu:controlpressed(set, action, key)
-	-- assign to character selection
-	if control == "attack" then
-		local selector = self:getSelectorsInactive()[1]
-		if selector ~= nil then
-			selector:assignController(controller)
-		end
+	-- pass to selectors
+	for k,selector in pairs(Menu:getSelectorsAll()) do
+		selector:controlpressed(set, action, key)
 	end
 	-- map selection chaos!
 	if action == "left" then
@@ -205,6 +179,10 @@ function Menu:controlpressed(set, action, key)
 		else
 			self.map = 1
 		end
+	end
+	-- speed up the countdown
+	if action ~= "jump" then
+		self:countdownJump()
 	end
 end
 function Menu:controlreleased(set, action, key)

@@ -93,8 +93,6 @@ function Selector:controlpressed(set, action, key)
 			self.parent:unselectSelector(self)
 		end
 	end
-	-- Speed up countdown
-	self.parent:countdownJump()
 end
 function Selector:controlreleased(set, action, key)
 end
