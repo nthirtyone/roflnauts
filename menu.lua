@@ -197,11 +197,6 @@ function Menu:startGame()
 	changeScene(world)
 end
 
--- Controllers stuff
-function Menu:assignController(controller)
-	controller:setParent(self)
-end
-
 -- Controller callbacks
 function Menu:controlpressed(set, action, key)
 	-- assign to character selection
@@ -212,14 +207,14 @@ function Menu:controlpressed(set, action, key)
 		end
 	end
 	-- map selection chaos!
-	if control == "left" then
+	if action == "left" then
 		if self.map ~= 1 then
 			self.map = self.map - 1
 		else
 			self.map = #self.maplist
 		end
 	end
-	if control == "right" then
+	if action == "right" then
 		if self.map ~= #self.maplist then
 			self.map = self.map + 1
 		else

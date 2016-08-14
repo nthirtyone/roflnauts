@@ -4,10 +4,9 @@
 -- Rather than that use functions provided by this module: `Controller.controlpressed` and `Controller.controlreleased`.
 -- For information on additional functions, look below.
 
--- Metatable
-Controller = {
-	sets = {}
-}
+-- Namespace
+Controller = {}
+Controller.sets = {}
 
 -- Declared to avoid calling nil. Be sure to define yours after this line is performed.
 function Controller.controlpressed(set, action, key) end
@@ -23,6 +22,7 @@ function Controller.registerSet(left, right, up, down, attack, jump, joystick)
 	set.attack = attack or "return"
 	set.jump = jump or "rshift"
 	table.insert(Controller.sets, set)
+	print(set, left, right, up, down, attack, jump, joystick)
 	return set
 end
 
@@ -41,23 +41,19 @@ end
 function Controller.testControl(set, key, joystick)
 	-- First test if it is joystick and if it is correct one
 	if joystick == set.joystick then
-		if control == set.left then
+		if key == set.left then
 			return "left"
-		elseif control == set.right then
+		elseif key == set.right then
 			return "right"
-		elseif control == set.up then
+		elseif key == set.up then
 			return "up"
-		elseif control == set.down then
+		elseif key == set.down then
 			return "down"
-		elseif control == set.attack then
+		elseif key == set.attack then
 			return "attack"
-		elseif control == set.jump then
+		elseif key == set.jump then
 			return "jump"
-		else
-			return nil
 		end
-	else
-		return nil
 	end
 end
 
@@ -69,24 +65,24 @@ end
 
 -- Gamepad input callbacks
 function Controller.gamepadpressed(joystick, button)
-	print(button, "pressed")
 	local set, action, key = Controller.testSets(button, joystick)
+	print("Pressed:", set, action, key)
 	Controller.controlpressed(set, action, key)
 end
 function Controller.gamepadreleased(joystick, button)
-	print(button, "released")
 	local set, action, key = Controller.testSets(button, joystick)
+	print("Released:", set, action, key)
 	Controller.controlreleased(set, action, key)
 end
 
 -- Keyboard input callbacks
 function Controller.keypressed(button)
-	print(button, "pressed")
-	local set, action, key = Controller.testSets(button)
+	local set, action, key = Controller.testSets(button, nil)
+	print("Pressed:", set, action, key)
 	Controller.controlpressed(set, action, key)
 end
 function Controller.keyreleased(button)
-	print(button, "released")
-	local set, action, key = Controller.testSets(button)
+	local set, action, key = Controller.testSets(button, nil)
+	print("Released:", set, action, key)
 	Controller.controlreleased(set, action, key)
 end
