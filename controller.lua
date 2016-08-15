@@ -79,11 +79,11 @@ end
 function Controller.createAxisName(axis, value)
 	local key = "axis:"..axis
 	if value == 0 then 
-		key = key.."_zero"
+		key = key.."0"
 	elseif value > 0 then
-		key = key.."_pos" 
+		key = key.."+" 
 	else
-		key = key.."_neg"
+		key = key.."-"
 	end
 	return key
 end
@@ -94,15 +94,6 @@ function Controller.isAxis(key)
 		return true
 	else 
 		return false 
-	end
-end
-
--- Check if given axis key is flagged as zero
-function Controller.isZeroAxis(key)
-	if string.find(key, "_zero") then
-		return true
-	else
-		return false
 	end
 end
 
@@ -126,6 +117,29 @@ function Controller.setAxisState(joystick, key, state)
 	Controller.axes[joystick][key] = state
 end
 
+-- Simulate pressing key on an axis
+function Controller.axisPress(joystick, axis, value)
+	local key = Controller.createAxisName(axis, value)
+	local set, action = Controller.testSets(key, joystick)
+	local state = Controller.getAxisState(joystick, key)
+	if not state then
+		print(joystick, set, action, key)
+		Controller.setAxisState(joystick, key, true)
+		Controller.controlpressed(set, action, key)
+	end
+end
+
+-- Simulate releasing key on an axis
+function Controller.axisRelease(joystick, axis, value)
+	local key = Controller.createAxisName(axis, value)
+	local set, action = Controller.testSets(key, joystick)
+	local state = Controller.getAxisState(joystick, key)
+	if state then
+		Controller.setAxisState(joystick, key,false)
+		Controller.controlreleased(set, action, key)
+	end
+end
+
 -- Callbacks from LÖVE2D
 -- Load gamepad mappings from db file and init module
 function Controller.load()
@@ -136,42 +150,20 @@ end
 
 -- Create new sets when new joystick is added
 function Controller.joystickadded(joystick)
-	--Controller.registerSet("dpleft", "dpright", "dpup", "dpdown", "a", "b", joystick)
-	Controller.registerSet("axis:leftx_neg", "axis:leftx_pos", "axis:lefty_neg", "axis:lefty_pos", "a", "b", joystick)
+	Controller.registerSet("axis:leftx-", "axis:leftx+", "axis:lefty-", "axis:lefty+", "a", "b", joystick)
 end
 
 -- Gamepad input callbacks
 function Controller.gamepadaxis(joystick, axis, value)
-	local key = Controller.createAxisName(axis, value)
-	if not Controller.isZeroAxis(key) then
-		local set, action = Controller.testSets(key, joystick)
-		local state = Controller.getAxisState(joystick, key)
+	if value ~= 0 then
 		if math.abs(value) > Controller.deadzone then
-			if not state then
-				print(joystick, set, action, key)
-				Controller.setAxisState(joystick, key, true)
-				Controller.controlpressed(set, action, key)
-			end
+			Controller.axisPress(joystick, axis, value)
 		else
-			if state then
-				Controller.setAxisState(joystick, key, false)
-				Controller.controlreleased(set, action, key)
-			end
+			Controller.axisRelease(joystick, axis, value)
 		end
 	else
-		local pos, neg = Controller.createAxisName(axis, 1), Controller.createAxisName(axis, -1)
-		if Controller.getAxisState(joystick, pos) then
-			local key = pos
-			local set, action = Controller.testSets(key, joystick)
-			Controller.setAxisState(joystick, key, false)
-			Controller.controlreleased(set, action, key)
-		end
-		if Controller.getAxisState(joystick, neg) then
-			local key = neg
-			local set, action = Controller.testSets(key, joystick)
-			Controller.setAxisState(joystick, key, false)
-			Controller.controlreleased(set, action, key)
-		end
+		Controller.axisRelease(joystick, axis, 1)
+		Controller.axisRelease(joystick, axis, -1)
 	end
 end
 function Controller.gamepadpressed(joystick, key)
