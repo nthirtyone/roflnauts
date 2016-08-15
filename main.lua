@@ -55,9 +55,7 @@ function love.load()
 	Font:setLineHeight(9/16)
 	love.graphics.setFont(Font) 
 	-- Controller
-	love.joystick.loadGamepadMappings("gamecontrollerdb.txt")
-	Controller.registerSet("left", "right", "up", "down", "return", "rshift")
-	Controller.registerSet("a", "d", "w", "s", "g", "h")
+	Controller.load()
 	-- Scene
 	Scene = Menu:new()
 end
@@ -78,6 +76,7 @@ function love.draw()
 end
 -- Pass input to Controller
 function love.joystickadded(joystick) Controller.joystickadded(joystick) end
+function love.gamepadaxis(joystick, axis, value) Controller.gamepadaxis(joystick, axis, value) end
 function love.gamepadpressed(joystick, key) Controller.gamepadpressed(joystick, key) end
 function love.gamepadreleased(joystick, key) Controller.gamepadreleased(joystick, key) end
 function love.keypressed(key) Controller.keypressed(key) end

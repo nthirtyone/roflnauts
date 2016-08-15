@@ -70,12 +70,22 @@ function Controller.isDown(set, action)
 end
 
 -- Callbacks from LÖVE2D
+-- Load gamepad mappings from db file and init module
+function Controller.load()
+	love.joystick.loadGamepadMappings("gamecontrollerdb.txt")
+	Controller.registerSet("left", "right", "up", "down", "return", "rshift")
+	Controller.registerSet("a", "d", "w", "s", "g", "h")
+end
+
 -- Create new sets when new joystick is added
 function Controller.joystickadded(joystick)
 	Controller.registerSet("dpleft", "dpright", "dpup", "dpdown", "a", "b", joystick)
 end
 
 -- Gamepad input callbacks
+function Controller.gamepadaxis(joystick, axis, value)
+	print(joystick, axis, value)
+end
 function Controller.gamepadpressed(joystick, key)
 	local set, action = Controller.testSets(key, joystick)
 	print(joystick, set, action, key)
