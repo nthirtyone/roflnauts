@@ -96,8 +96,10 @@ end
 function Player:update(dt)
 	-- hotfix? for destroyed bodies
 	if self.body:isDestroyed() then return end
-	-- # LOCALS
-	local x,y = self.body:getLinearVelocity()
+	-- locals
+	local x, y = self.body:getLinearVelocity()
+	local isDown = Controller.isDown
+	local controlset = self:getControlSet()
 	
 	-- # VERTICAL MOVEMENT
 	-- Jumping
@@ -115,7 +117,7 @@ function Player:update(dt)
 
 	-- # HORIZONTAL MOVEMENT
 	-- Walking
-	if Controller.isDown(self:getControlSet(), "left") then
+	if isDown(controlset, "left") then
 		self.facing = -1
 		self.body:applyForce(-250, 0)
 		-- Controlled speed limit
@@ -123,7 +125,7 @@ function Player:update(dt)
 			self.body:applyForce(250, 0)
 		end
 	end
-	if Controller.isDown(self:getControlSet(), "right") then
+	if isDown(controlset, "right") then
 		self.facing = 1
 		self.body:applyForce(250, 0)
 		-- Controlled speed limit
@@ -133,8 +135,8 @@ function Player:update(dt)
 	end
 
 	-- Custom linear damping
-	if  not Controller.isDown(self:getControlSet(), "left") and
-		not Controller.isDown(self:getControlSet(), "right")
+	if  not isDown(controlset, "left") and
+		not isDown(controlset, "right")
 	then
 		local face = nil
 		if x < -12 then
@@ -158,7 +160,7 @@ function Player:update(dt)
 		-- Thank you De Morgan!
 		if self.current.repeated or not (self.frame == self.current.frames) then
 			self.frame = (self.frame % self.current.frames) + 1
-		elseif Controller.isDown(self:getControlSet(), "right") or Controller.isDown(self:getControlSet(), "left") then
+		elseif isDown(controlset, "right") or isDown(controlset, "left") then
 			-- If nonrepeatable animation is finished and player is walking
 			self:changeAnimation("walk")
 		elseif self.current == self.animations.damage then
@@ -206,6 +208,8 @@ end
 -- Controller callbacks
 function Player:controlpressed(set, action, key)
 	if set ~= self:getControlSet() then return end
+	local isDown = Controller.isDown
+	local controlset = self:getControlSet()
 	-- Jumping
 	if action == "jump" then
 		if self.jumpnumber > 0 then
@@ -244,13 +248,13 @@ function Player:controlpressed(set, action, key)
 	if action == "attack" and self.punchcd <= 0 then
 		local f = self.facing
 		self.salto = false
-		if Controller.isDown(self:getControlSet(), "up") then
+		if isDown(controlset, "up") then
 			-- Punch up
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack_up")
 			end
 			self:hit(-f,-18,4*f,10, 0, -1)
-		elseif Controller.isDown(self:getControlSet(), "down") then
+		elseif isDown(controlset, "down") then
 			-- Punch down
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack_down")
@@ -268,6 +272,8 @@ function Player:controlpressed(set, action, key)
 end
 function Player:controlreleased(set, action, key)
 	if set ~= self:getControlSet() then return end
+	local isDown = Controller.isDown
+	local controlset = self:getControlSet()
 	-- Jumping
 	if action == "jump" then
 		self.jumpactive = false
@@ -275,7 +281,7 @@ function Player:controlreleased(set, action, key)
 	end
 	-- Walking
 	if (action == "left" or action == "right") and not
-	   (Controller.isDown(self:getControlSet(), "left") or Controller.isDown(self:getControlSet(), "right")) and
+	   (isDown(controlset, "left") or isDown(controlset, "right")) and
 	   self.current == self.animations.walk
 	then
 		self:changeAnimation("idle")
