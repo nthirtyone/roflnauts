@@ -90,14 +90,18 @@ function Menu:getSelectorsLocked()
 	return t
 end
 
--- Tests if Control set is assigned to any selector
+-- Tests if Control set is assigned to any selector (1.) and if it is locked (2.)
 function Menu:isSetUsed(set)
 	for k,selector in pairs(self:getSelectorsActive()) do
 		if selector:getControlSet() == set then
-			return true
+			if selector:getState() == 2 then
+				return true, true
+			else
+				return true, false
+			end
 		end
 	end
-	return false
+	return false, false
 end
 
 -- Header get bounce move
@@ -175,11 +179,12 @@ end
 
 -- Controller callbacks
 function Menu:controlpressed(set, action, key)
+	local used, locked = self:isSetUsed(set)
 	-- Pass to active selectors
 	for k,selector in pairs(self:getSelectorsActive()) do
 		selector:controlpressed(set, action, key)
 	end
-	if not self:isSetUsed(set) then
+	if not used then
 		if action == "attack" then
 			self:getSelectorsInactive()[1]:assignControlSet(set)
 		end
@@ -201,7 +206,9 @@ function Menu:controlpressed(set, action, key)
 	end
 	-- speed up the countdown
 	if action ~= "jump" then
-		self:countdownJump() -- that's funny isn't it? if not jump then jump
+		if set == nil or locked then
+			self:countdownJump() -- that's funny isn't it? if not jump then jump
+		end
 	end
 end
 function Menu:controlreleased(set, action, key)

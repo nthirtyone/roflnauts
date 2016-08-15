@@ -220,11 +220,7 @@ function World:onNautKilled(naut)
 	self:createRay(naut)
 	local nauts = self:getNautsPlayable()
 	if self.lastNaut then
-		local m = Menu:new()
-		for _,controller in pairs(Controllers) do
-			m:assignController(controller)
-		end
-		changeScene(m)
+		changeScene(Menu:new())
 	elseif #nauts < 2 then
 		self.lastNaut = true
 	end
