@@ -7,6 +7,8 @@
 -- Namespace
 Controller = {}
 Controller.sets = {}
+Controller.axes = {}
+Controller.deadzone = .3
 
 -- Declared to avoid calling nil. Be sure to define yours after this line is performed.
 function Controller.controlpressed(set, action, key) end
@@ -64,9 +66,64 @@ function Controller.isDown(set, action)
 		if set.joystick == nil then
 			return love.keyboard.isDown(set[action])
 		else
-			return set.joystick:isGamepadDown(set[action])
+			if not Controller.isAxis(set[action]) then
+				return set.joystick:isGamepadDown(set[action])
+			else
+				return Controller.getAxisState(set.joystick, set[action])
+			end
 		end
 	end
+end
+
+-- Return key name from given axis and value
+function Controller.createAxisName(axis, value)
+	local key = "axis:"..axis
+	if value == 0 then 
+		key = key.."_zero"
+	elseif value > 0 then
+		key = key.."_pos" 
+	else
+		key = key.."_neg"
+	end
+	return key
+end
+
+-- Checks if given key is an axis
+function Controller.isAxis(key)
+	if string.find(key, "axis:") then
+		return true
+	else 
+		return false 
+	end
+end
+
+-- Check if given axis key is flagged as zero
+function Controller.isZeroAxis(key)
+	if string.find(key, "_zero") then
+		return true
+	else
+		return false
+	end
+end
+
+-- Checks state of key assigned to axis of given joystick
+function Controller.getAxisState(joystick, key)
+	if Controller.axes[joystick] then
+		local state = Controller.axes[joystick][key]
+		if state ~= nil then
+			return state
+		else
+			return false
+		end
+	end
+end
+
+-- Sets state of key assigned to axis of given joystick
+function Controller.setAxisState(joystick, key, state)
+	if Controller.axes[joystick] == nil then
+		Controller.axes[joystick] = {}
+	end
+	Controller.axes[joystick][key] = state
 end
 
 -- Callbacks from LÖVE2D
@@ -79,12 +136,43 @@ end
 
 -- Create new sets when new joystick is added
 function Controller.joystickadded(joystick)
-	Controller.registerSet("dpleft", "dpright", "dpup", "dpdown", "a", "b", joystick)
+	--Controller.registerSet("dpleft", "dpright", "dpup", "dpdown", "a", "b", joystick)
+	Controller.registerSet("axis:leftx_neg", "axis:leftx_pos", "axis:lefty_neg", "axis:lefty_pos", "a", "b", joystick)
 end
 
 -- Gamepad input callbacks
 function Controller.gamepadaxis(joystick, axis, value)
-	print(joystick, axis, value)
+	local key = Controller.createAxisName(axis, value)
+	if not Controller.isZeroAxis(key) then
+		local set, action = Controller.testSets(key, joystick)
+		local state = Controller.getAxisState(joystick, key)
+		if math.abs(value) > Controller.deadzone then
+			if not state then
+				print(joystick, set, action, key)
+				Controller.setAxisState(joystick, key, true)
+				Controller.controlpressed(set, action, key)
+			end
+		else
+			if state then
+				Controller.setAxisState(joystick, key, false)
+				Controller.controlreleased(set, action, key)
+			end
+		end
+	else
+		local pos, neg = Controller.createAxisName(axis, 1), Controller.createAxisName(axis, -1)
+		if Controller.getAxisState(joystick, pos) then
+			local key = pos
+			local set, action = Controller.testSets(key, joystick)
+			Controller.setAxisState(joystick, key, false)
+			Controller.controlreleased(set, action, key)
+		end
+		if Controller.getAxisState(joystick, neg) then
+			local key = neg
+			local set, action = Controller.testSets(key, joystick)
+			Controller.setAxisState(joystick, key, false)
+			Controller.controlreleased(set, action, key)
+		end
+	end
 end
 function Controller.gamepadpressed(joystick, key)
 	local set, action = Controller.testSets(key, joystick)
