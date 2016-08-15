@@ -37,10 +37,6 @@ Player = {
 	jumpdouble = true,
 	jumptimer = 0.16,
 	jumpnumber = 2,
-	down_left = false,
-	down_right = false,
-	down_up = false,
-	down_down = false,
 	-- Keys
 	controlset = nil,
 	-- HUD
