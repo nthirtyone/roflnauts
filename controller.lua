@@ -21,6 +21,7 @@ function Controller.registerSet(left, right, up, down, attack, jump, joystick)
 	set.down = down or "down"
 	set.attack = attack or "return"
 	set.jump = jump or "rshift"
+	set.joystick = joystick
 	table.insert(Controller.sets, set)
 	print(set, left, right, up, down, attack, jump, joystick)
 	return set
@@ -77,23 +78,21 @@ end
 -- Gamepad input callbacks
 function Controller.gamepadpressed(joystick, key)
 	local set, action = Controller.testSets(key, joystick)
-	print("Pressed:", set, action, key)
+	print(joystick, set, action, key)
 	Controller.controlpressed(set, action, key)
 end
 function Controller.gamepadreleased(joystick, key)
 	local set, action = Controller.testSets(key, joystick)
-	print("Released:", set, action, key)
 	Controller.controlreleased(set, action, key)
 end
 
 -- Keyboard input callbacks
 function Controller.keypressed(key)
 	local set, action = Controller.testSets(key, nil)
-	print("Pressed:", set, action, key)
+	print(nil, set, action, key)
 	Controller.controlpressed(set, action, key)
 end
 function Controller.keyreleased(key)
 	local set, action = Controller.testSets(key, nil)
-	print("Released:", set, action, key)
 	Controller.controlreleased(set, action, key)
 end
