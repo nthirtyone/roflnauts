@@ -44,7 +44,6 @@ require "music"
 debug = false
 
 -- LÖVE2D callbacks
--- Load
 function love.load()
 	-- Graphics
 	love.graphics.setBackgroundColor(90, 90, 90)
@@ -59,11 +58,9 @@ function love.load()
 	-- Scene
 	Scene = Menu:new()
 end
--- Update
 function love.update(dt)
 	Scene:update(dt)
 end
--- Draw
 function love.draw()
 	Scene:draw()
 	if debug then
