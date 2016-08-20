@@ -1,0 +1,1 @@
+return {"Start", "Join", "Settings", "Credits", "Exit"}
