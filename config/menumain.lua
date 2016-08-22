@@ -1,28 +1,44 @@
+local menu = ...
+
 local button = require "button"
 
+local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.getHeight()/getRealScale()
+local button_x = width/2-29
+
 return {
-	button
-		:new("start")
-		:setPosition(10,40)
+	button:new(menu)
+		:setText("start")
+		:setPosition(button_x,60)
 		:set("active", function ()
 				changeScene(Menu:new("menustart"))
 			end)
 	,
-	button
-		:new("join")
-		:setPosition(10,50)
+	button:new(menu)
+		:setText("join")
+		:setPosition(button_x,76)
 	,
-	button
-		:new("settings")
-		:setPosition(10,60)
+	button:new(menu)
+		:setText("settings")
+		:setPosition(button_x,92)
 	,
-	button
-		:new("credits")
-		:setPosition(10,70)
+	button:new(menu)
+		:setText("credits")
+		:setPosition(button_x,108)
 	,
-	button
-		:new("exit")
-		:setPosition(10,80)
+	button:new(menu)
+		:setText("exit")
+		:setPosition(button_x,124)
 		:set("active", love.event.quit)
+	,
+	button:new(menu)
+		:setText("NEVER")
+		:setPosition(button_x,140)
+		:set("focus", function (self, next)
+				if next then
+					self.parent:next()
+				else
+					self.parent:previous()
+				end
+			end)
 	,
 }
