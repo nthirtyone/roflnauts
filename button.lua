@@ -53,7 +53,7 @@ function Button:draw(scale)
 		love.graphics.draw(self.sprite, self.arrow_l, (x+54+math.floor(self.delay))*scale, (y+5)*scale, 0, scale, scale)
 		love.graphics.draw(self.sprite, self.arrow_r, (x-1-math.floor(self.delay))*scale, (y+5)*scale, 0, scale, scale)
 	end
-	love.graphics.printf(string.upper(self.text), (x+2)*scale, (y+4)*scale, 54, "center", 0, scale, scale)
+	love.graphics.printf(self.text, (x+2)*scale, (y+4)*scale, 54, "center", 0, scale, scale)
 end
 function Button:update(dt)
 	self.delay = self.delay + dt
