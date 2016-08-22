@@ -9,8 +9,8 @@ return {
 	button:new(menu)
 		:setText("start")
 		:setPosition(button_x,60)
-		:set("active", function ()
-				changeScene(Menu:new("menustart"))
+		:set("active", function (self)
+				self.parent:load("menustart")
 			end)
 	,
 	button:new(menu)
