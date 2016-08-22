@@ -10,7 +10,7 @@ Button = {
 	quad = love.graphics.newQuad(0, 0, 58,15, 68,15),
 	arrow_l = love.graphics.newQuad(58, 0, 5, 5, 68,15),
 	arrow_r = love.graphics.newQuad(63, 0, 5, 5, 68,15),
-	delay = 0,
+	delay = 2,
 	parent
 }
 
@@ -56,7 +56,7 @@ function Button:draw(scale)
 	love.graphics.printf(string.upper(self.text), (x+2)*scale, (y+4)*scale, 54, "center", 0, scale, scale)
 end
 function Button:update(dt)
-	self.delay = (self.delay + dt)%2
+	self.delay = (self.delay + dt)%Button.delay -- Button.delay is initial
 end
 function Button:controlpressed(set, action, key)
 	if action == "attack" and self.focused then
