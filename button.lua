@@ -57,7 +57,7 @@ function Button:draw(scale)
 end
 function Button:update(dt)
 	self.delay = self.delay + dt
-	if self.delay < Button.delay then -- Button.delay is initial
+	if self.delay > Button.delay then -- Button.delay is initial
 		self.delay = self.delay - Button.delay
 	end
 end
