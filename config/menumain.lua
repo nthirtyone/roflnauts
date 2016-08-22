@@ -1,44 +1,38 @@
 local menu = ...
 
 local button = require "button"
+local header = require "header"
 
 local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.getHeight()/getRealScale()
 local button_x = width/2-29
 
 return {
 	button:new(menu)
-		:setText("start")
-		:setPosition(button_x,60)
+		:setText("Start")
+		:setPosition(button_x, 80)
 		:set("active", function (self)
 				self.parent:load("menustart")
 			end)
 	,
 	button:new(menu)
-		:setText("join")
-		:setPosition(button_x,76)
+		:setText("Join")
+		:setPosition(button_x, 96)
 	,
 	button:new(menu)
-		:setText("settings")
-		:setPosition(button_x,92)
+		:setText("Settings")
+		:setPosition(button_x, 112)
 	,
 	button:new(menu)
-		:setText("credits")
-		:setPosition(button_x,108)
+		:setText("Credits")
+		:setPosition(button_x, 128)
 	,
 	button:new(menu)
-		:setText("exit")
-		:setPosition(button_x,124)
+		:setText("Exit")
+		:setPosition(button_x, 144)
 		:set("active", love.event.quit)
 	,
-	button:new(menu)
-		:setText("NEVER")
-		:setPosition(button_x,140)
-		:set("focus", function (self, next)
-				if next then
-					self.parent:next()
-				else
-					self.parent:previous()
-				end
-			end)
+	header:new(menu)
+		:setText("Roflnauts")
+		:setPosition(width/2,40)
 	,
 }
