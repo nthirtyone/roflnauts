@@ -3,12 +3,14 @@
 -- I do know that model I used here and in `World` loading configuration files is not flawless but I did not want to rewrite `World`s one but wanted to keep things similar at least in project scope.
 
 require "selector"
+require "music"
 
 -- Here it begins
 Menu = {
 	scale = getScale(),
 	elements, --table
-	active = 1
+	active = 1,
+	music
 }
 function Menu:new(name)
 	local o = {}
@@ -16,6 +18,7 @@ function Menu:new(name)
 	self.__index = self
 	o.elements = {}
 	o:load(name)
+	o.music = Music:new("menu.ogg")
 	return o
 end
 function Menu:delete() end
