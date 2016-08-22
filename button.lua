@@ -56,7 +56,10 @@ function Button:draw(scale)
 	love.graphics.printf(string.upper(self.text), (x+2)*scale, (y+4)*scale, 54, "center", 0, scale, scale)
 end
 function Button:update(dt)
-	self.delay = (self.delay + dt)%Button.delay -- Button.delay is initial
+	self.delay = self.delay + dt
+	if self.delay < Button.delay then -- Button.delay is initial
+		self.delay = self.delay - Button.delay
+	end
 end
 function Button:controlpressed(set, action, key)
 	if action == "attack" and self.focused then
