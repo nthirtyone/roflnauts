@@ -34,7 +34,6 @@ return {
 	,
 	element:new(menu)
 		:setPosition(width/2, 15)
-		:set("sprite", love.graphics.newImage("assets/two.png"))
 		:set("draw", function (self, scale) 
 				local x,y = self:getPosition()
 				love.graphics.setColor(255, 255, 255, 255)
