@@ -29,6 +29,11 @@ function Controller.registerSet(left, right, up, down, attack, jump, joystick)
 	return set
 end
 
+-- Get table of controls sets.
+function Controller.getSets()
+	return Controller.sets
+end
+
 -- Tests all sets if they have control assigned to given key and joystick.
 function Controller.testSets(key, joystick)
 	for i,set in pairs(Controller.sets) do
