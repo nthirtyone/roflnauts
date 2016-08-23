@@ -29,12 +29,8 @@ function Header:getBounce(f)
 	return math.sin(self.bounce*f*math.pi)
 end
 function Header:getPosition() return self.x,self.y end -- gives x,y of Element
-function Header:focus(next)
-	if next and self.parent then
-		self.parent:next()
-	else
-		self.parent:previous()
-	end
+function Header:focus()
+	return false
 end
 function Header:blur() end -- Called when Element loses focus
 

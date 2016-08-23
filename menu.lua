@@ -34,7 +34,9 @@ end
 function Menu:next()
 	self.elements[self.active]:blur()
 	self.active = (self.active%#self.elements)+1
-	self.elements[self.active]:focus(true)
+	if not self.elements[self.active]:focus() then
+		self:next()
+	end
 end
 function Menu:previous()
 	self.elements[self.active]:blur()
@@ -43,7 +45,9 @@ function Menu:previous()
 	else
 		self.active = self.active - 1
 	end
-	self.elements[self.active]:focus()
+	if not self.elements[self.active]:focus() then
+		self:previous()
+	end
 end
 
 -- LÖVE2D callbacks

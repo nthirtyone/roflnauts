@@ -34,6 +34,7 @@ end
 function Button:getPosition() return self.x,self.y end
 function Button:focus(next)
 	self.focused = true
+	return true
 end
 function Button:blur()
 	self.focused = false

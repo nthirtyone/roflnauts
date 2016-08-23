@@ -26,12 +26,8 @@ function Element:set(name, func)
 end
 
 -- Menu callbacks
-function Element:focus(next) -- Called when Element gains focus
-	if next and self.parent then
-		self.parent:next()
-	else
-		self.parent:previous()
-	end
+function Element:focus() -- Called when Element gains focus
+	return false
 end 
 function Element:blur() end -- Called when Element loses focus
 
