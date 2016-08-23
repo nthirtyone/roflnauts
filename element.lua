@@ -26,7 +26,7 @@ function Element:set(name, func)
 end
 
 -- Menu callbacks
-function Header:focus(next) -- Called when Element gains focus
+function Element:focus(next) -- Called when Element gains focus
 	if next and self.parent then
 		self.parent:next()
 	else
