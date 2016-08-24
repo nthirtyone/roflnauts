@@ -11,6 +11,7 @@ Button = {
 	arrow_l = love.graphics.newQuad(58, 0, 5, 5, 68,15),
 	arrow_r = love.graphics.newQuad(63, 0, 5, 5, 68,15),
 	delay = 2,
+	blinker = 1,
 	parent
 }
 
@@ -40,6 +41,9 @@ function Button:blur()
 	self.focused = false
 end
 function Button:active() end
+function Button:blink()
+	self.blinker = 0
+end	
 function Button:set(name, func)
 	if type(name) == "string" and type(func) == "function" then
 		self[name] = func
@@ -48,7 +52,12 @@ function Button:set(name, func)
 end
 function Button:draw(scale)
 	local x,y = self:getPosition()
-	love.graphics.setColor(255, 255, 255, 255)
+	local blinker = math.floor(self.blinker*4)
+	if blinker%2 == 0 then
+		love.graphics.setColor(255, 255, 255, 255)
+	else
+		love.graphics.setColor(255, 100, 100, 255)
+	end
 	love.graphics.draw(self.sprite, self.quad, x*scale, y*scale, 0, scale, scale)
 	if self.focused then
 		love.graphics.draw(self.sprite, self.arrow_l, (x+54+math.floor(self.delay))*scale, (y+5)*scale, 0, scale, scale)
@@ -61,6 +70,9 @@ function Button:update(dt)
 	self.delay = self.delay + dt
 	if self.delay > Button.delay then -- Button.delay is initial
 		self.delay = self.delay - Button.delay
+	end
+	if self.blinker < Button.blinker then -- Button.blink is initial
+		self.blinker = self.blinker + dt
 	end
 end
 function Button:controlpressed(set, action, key)

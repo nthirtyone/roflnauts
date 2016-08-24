@@ -144,13 +144,14 @@ end
 
 -- Get list of selections, checks if not locked are allowed.
 function Selector:getFullSelection(allowed)
-	local allowed = allowed or false
+	local allowed = allowed
+	if allowed == nil then allowed = false end
 	local t = {}
-	for n,v in ipairs(self.selections) do
+	for n,v in pairs(self.selections) do
 		local name = self:getListValue(self:getSelection(n))
 		local locked = self:isLocked(n)
-		if not (not locked and not allow) then
-			table.insert(t, {name, self.sets[n], self:isLocked(n)})
+		if locked or allowed then
+			table.insert(t, {name, self.sets[n]})
 		end
 	end
 	return t

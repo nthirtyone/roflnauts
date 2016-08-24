@@ -36,7 +36,7 @@ World = {
 }
 
 -- Constructor of `World` ZA WARUDO!
-function World:new(map, ...)
+function World:new(map, nauts)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
@@ -64,7 +64,7 @@ function World:new(map, ...)
 	local map = map or "default"
 	o:loadMap(map)
 	-- Nauts
-	o:spawnNauts(...)
+	o:spawnNauts(nauts)
 	-- Create camera
 	o.camera = Camera:new(o)
 	-- Play music
@@ -110,14 +110,7 @@ function World:loadMap(name)
 end
 
 -- Spawn all the nauts for the round
-function World:spawnNauts(...)
-	local params = {...}
-	local nauts = nil
-	if type(params[1][1]) == "table" then
-		nauts = params[1]
-	else
-		nauts = params
-	end
+function World:spawnNauts(nauts)
 	for _,naut in pairs(nauts) do
 		local x,y = self:getSpawnPosition()
 		local spawn = self:createNaut(x, y, naut[1])

@@ -23,7 +23,12 @@ return {
 		:setText("Force start")
 		:setPosition(bx,101)
 		:set("active", function (self)
-				changeScene(World:new(nil,naut_selector:getFullSelection(false)))
+				local nauts = naut_selector:getFullSelection(false)
+				if #nauts > 1 then
+					changeScene(World:new(nil, nauts))
+				else
+					self:blink()
+				end
 			end)
 	,
 	button:new(menu)
