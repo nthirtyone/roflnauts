@@ -18,14 +18,23 @@ return {
 	button:new(menu)
 		:setText("Join")
 		:setPosition(bx, 96)
+		:set("active", function (self)
+				self:blink()
+			end)
 	,
 	button:new(menu)
 		:setText("Settings")
 		:setPosition(bx, 112)
+		:set("active", function (self)
+				self:blink()
+			end)
 	,
 	button:new(menu)
 		:setText("Credits")
 		:setPosition(bx, 128)
+		:set("active", function (self)
+				self:blink()
+			end)
 	,
 	button:new(menu)
 		:setText("Exit")
