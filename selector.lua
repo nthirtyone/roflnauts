@@ -154,17 +154,19 @@ function Selector:drawBlock(n, x, y, scale)
 	local quad = self.quads[name]
 	local arrowl = self.quads.arrow_left
 	local arrowr = self.quads.arrow_right
+	local w,h = self:getSize()
 	if not locked then
 		love.graphics.draw(sprite, quad.normal, x*scale, y*scale, 0, scale, scale)
 		if self.focused then
-			love.graphics.draw(sprite, arrowl, (x-2)* scale, (y+13)*scale, 0, scale, scale)
-			love.graphics.draw(sprite, arrowr, (x+30)*scale, (y+13)*scale, 0, scale, scale)
+			local dy = (h-6)/2
+			love.graphics.draw(sprite, arrowl, (x+0-2)* scale, (y+dy)*scale, 0, scale, scale)
+			love.graphics.draw(sprite, arrowr, (x+w-2)*scale, (y+dy)*scale, 0, scale, scale)
 		end
 	else
 		love.graphics.draw(sprite, quad.active, x*scale, y*scale, 0, scale, scale)
 	end
 	if self:getSelection(n) ~= 1 then
-		love.graphics.printf(string.upper(name), (x-8)*scale, (y+33)*scale, 48, "center", 0, scale, scale)
+		love.graphics.printf(string.upper(name), (x-w)*scale, (y+h+1)*scale, w*3, "center", 0, scale, scale)
 	end
 end
 
