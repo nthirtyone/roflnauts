@@ -170,6 +170,7 @@ end
 function Selector:draw(scale)
 	local x,y = self:getPosition()
 	local h,v = self:getSpacing()
+	x = #self.sets*h*0.5
 	for n=1,#self.selections do
 		self:drawBlock(n, x+h*n, y+v*n, scale)
 	end
