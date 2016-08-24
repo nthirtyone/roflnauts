@@ -12,7 +12,7 @@ return {
 		:setText("Start")
 		:setPosition(bx, 80)
 		:set("active", function (self)
-				self.parent:load("menuselect")
+				self.parent:load("menuhost")
 			end)
 	,
 	button:new(menu)
