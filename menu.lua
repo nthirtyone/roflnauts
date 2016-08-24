@@ -26,6 +26,7 @@ function Menu:delete() end
 function Menu:load(name)
 	local name = "config/" .. (name or "menumain") .. ".lua"
 	local menu = love.filesystem.load(name)
+	self.active = 1
 	self.elements = menu(self)
 	self.elements[self.active]:focus()
 end
