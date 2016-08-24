@@ -4,8 +4,11 @@
 How to use `Selector` in `Menu` config file?
 selector:new(menu)
 	:setPosition(x, y)
-	:set("list", require "file_with_list")
-	:set("global", true/false) -- true: single selector; false: selector for each controller set present
+	:setSpacing(42, 0)
+	:set("list", require "nautslist")
+	:set("sprite", love.graphics.newImage("assets/portraits.png"))
+	:set("quads", require "portraits")
+	:set("global", false) -- true: single selector; false: selector for each controller set present
 	:init()
 ]]
 
@@ -13,12 +16,16 @@ Selector = {
 	parent,
 	x = 0,
 	y = 0,
+	horizontal = 0,
+	height = 0,
 	focused = false,
 	global = false,
 	list,
 	sets,
 	locks,
-	selections
+	selections,
+	sprite,
+	quads
 }
 
 -- Constructor
@@ -36,6 +43,15 @@ function Selector:getPosition()
 end
 function Selector:setPosition(x,y)
 	self.x, self.y = x, y
+	return self
+end
+
+-- Spacing between positions of two blocks
+function Selector:getSpacing()
+	return self.horizontal, self.vertical
+end
+function Selector:setSpacing(horizontal, vertical)
+	self.horizontal, self.vertical = horizontal, vertical
 	return self
 end
 
@@ -115,6 +131,29 @@ function Selector:getListValue(i)
 	return self.list[i]
 end
 
+-- Draw single block of Selector
+function Selector:drawBlock(n, x, y, scale)
+	local x, y = x or 0, y or 0
+	if self.quads == nil or self.sprite == nil then return end
+	love.graphics.setFont(Font)
+	love.graphics.setColor(255, 255, 255, 255)
+	local name = self:getListValue(self:getSelection(n))
+	local locked = self:isLocked(n)
+	local sprite = self.sprite
+	local quad = self.quads[name]
+	local arrowl = self.quads.arrow_left
+	local arrowr = self.quads.arrow_right
+	if not locked then
+		love.graphics.draw(sprite, quad.normal, x*scale, y*scale, 0, scale, scale)
+		if self.focused then
+			love.graphics.draw(sprite, arrowl, (x-2)* scale, (y+13)*scale, 0, scale, scale)
+			love.graphics.draw(sprite, arrowr, (x+30)*scale, (y+13)*scale, 0, scale, scale)
+		end
+	else
+		love.graphics.draw(sprite, quad.active, x*scale, y*scale, 0, scale, scale)
+	end
+end
+
 -- Menu callbacks
 function Selector:focus() -- Called when Element gains focus
 	self.focused = true
@@ -127,10 +166,10 @@ end
 -- LÖVE2D callbacks
 function Selector:draw(scale)
 	local x,y = self:getPosition()
-	local text = self:getListValue(self:getSelection(1))
-	love.graphics.setFont(Font)
-	love.graphics.setColor(255, 255, 255, 255)
-	love.graphics.printf(text, (x)*scale, (y)*scale, 54, "center", 0, scale, scale)
+	local h,v = self:getSpacing()
+	for n=1,#self.selections do
+		self:drawBlock(n, x+h*n, y+v*n, scale)
+	end
 end
 function Selector:update(dt) end
 

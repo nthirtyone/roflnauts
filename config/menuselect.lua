@@ -8,8 +8,11 @@ local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.get
 return {
 	selector:new(menu)
 		:setPosition(10,10)
+		:setSpacing(42, 0)
 		:set("list", require "nautslist")
 		:set("global", false)
+		:set("sprite", love.graphics.newImage("assets/portraits.png"))
+		:set("quads", require "portraits")
 		:init()
 	,
 	button:new(menu)
