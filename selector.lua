@@ -152,6 +152,9 @@ function Selector:drawBlock(n, x, y, scale)
 	else
 		love.graphics.draw(sprite, quad.active, x*scale, y*scale, 0, scale, scale)
 	end
+	if self:getSelection(n) ~= 1 then
+		love.graphics.printf(string.upper(name), (x-8)*scale, (y+33)*scale, 48, "center", 0, scale, scale)
+	end
 end
 
 -- Menu callbacks
@@ -175,7 +178,12 @@ function Selector:update(dt) end
 
 -- Controller callbacks
 function Selector:controlpressed(set, action, key)
-	self:next(1)
+	if set and self.focused then
+		local n = self:checkNumber(set)
+		local locked = self:isLocked(n)
+		if action == "left" and not locked then self:previous(n) end
+		if action == "right" and not locked then self:next(n) end
+	end
 end
 function Selector:controlreleased(set, action, key) end
 
