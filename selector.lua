@@ -4,7 +4,8 @@
 How to use `Selector` in `Menu` config file?
 selector:new(menu)
 	:setPosition(x, y)
-	:setSpacing(42, 0)
+	:setMargin(8)
+	:setSize(32, 32)
 	:set("list", require "nautslist")
 	:set("sprite", love.graphics.newImage("assets/portraits.png"))
 	:set("quads", require "portraits")
@@ -16,8 +17,9 @@ Selector = {
 	parent,
 	x = 0,
 	y = 0,
-	horizontal = 0,
+	width = 0,
 	height = 0,
+	margin = 0,
 	focused = false,
 	global = false,
 	list,
@@ -46,12 +48,21 @@ function Selector:setPosition(x,y)
 	return self
 end
 
--- Spacing between positions of two blocks
-function Selector:getSpacing()
-	return self.horizontal, self.vertical
+-- Size of single block
+function Selector:getSize()
+	return self.width, self.height
 end
-function Selector:setSpacing(horizontal, vertical)
-	self.horizontal, self.vertical = horizontal, vertical
+function Selector:setSize(width, height)
+	self.width, self.height = width, height
+	return self
+end
+
+-- Spacing between two blocks
+function Selector:getMargin()
+	return self.margin
+end
+function Selector:setMargin(margin)
+	self.margin = margin
 	return self
 end
 
@@ -169,10 +180,11 @@ end
 -- LÖVE2D callbacks
 function Selector:draw(scale)
 	local x,y = self:getPosition()
-	local h,v = self:getSpacing()
-	x = #self.sets*h*0.5
+	local margin = self:getMargin()
+	local width = self:getSize()
+	x = x - #self.selections*0.5*(margin+margin+width)
 	for n=1,#self.selections do
-		self:drawBlock(n, x+h*n, y+v*n, scale)
+		self:drawBlock(n, x+(margin+width)*(n-1)+margin*n, y, scale)
 	end
 end
 function Selector:update(dt) end

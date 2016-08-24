@@ -7,8 +7,9 @@ local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.get
 
 return {
 	selector:new(menu)
-		:setPosition(10,10)
-		:setSpacing(42, 0)
+		:setPosition(width/2,10)
+		:setMargin(8)
+		:setSize(32, 32)
 		:set("list", require "nautslist")
 		:set("global", false)
 		:set("sprite", love.graphics.newImage("assets/portraits.png"))
