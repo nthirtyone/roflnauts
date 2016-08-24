@@ -82,6 +82,7 @@ function Selector:init()
 	end
 	-- Initialize global Selector
 	if self.global then
+		self.sets = {}
 		self.locks = {false}
 		self.selections = {1}
 	-- Initialize Selector for Controllers
@@ -162,7 +163,9 @@ function Selector:getFullSelection(allowed)
 		local name = self:getListValue(self:getSelection(n))
 		local locked = self:isLocked(n)
 		if locked or allowed then
-			table.insert(t, {name, self.sets[n]})
+			local a = {name}
+			if self.sets[n] then table.insert(a, self.sets[n]) end
+			table.insert(t, a)
 		end
 	end
 	return t

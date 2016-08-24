@@ -27,7 +27,7 @@ return {
 		:set("active", function (self)
 				local nauts = naut_selector:getFullSelection(false)
 				if #nauts > 1 then
-					changeScene(World:new(nil, nauts))
+					changeScene(World:new(MAP, nauts))
 				else
 					self:blink()
 				end
