@@ -4,8 +4,8 @@
 How to use `Selector` in `Menu` config file?
 selector:new(menu)
 	:setPosition(x, y)
-	:setMargin(8)
-	:setSize(32, 32)
+	:setMargin(8) -- each block has marigin on both sides; they do stack
+	:setSize(32, 32) -- size of single graphics frame
 	:set("list", require "nautslist")
 	:set("sprite", love.graphics.newImage("assets/portraits.png"))
 	:set("quads", require "portraits")
@@ -142,6 +142,20 @@ function Selector:getListValue(i)
 	return self.list[i]
 end
 
+-- Get list of selections, checks if not locked are allowed.
+function Selector:getFullSelection(allowed)
+	local allowed = allowed or false
+	local t = {}
+	for n,v in ipairs(self.selections) do
+		local name = self:getListValue(self:getSelection(n))
+		local locked = self:isLocked(n)
+		if not (not locked and not allow) then
+			table.insert(t, {name, self.sets[n], self:isLocked(n)})
+		end
+	end
+	return t
+end
+
 -- Draw single block of Selector
 function Selector:drawBlock(n, x, y, scale)
 	local x, y = x or 0, y or 0
@@ -198,6 +212,16 @@ function Selector:controlpressed(set, action, key)
 		local locked = self:isLocked(n)
 		if action == "left" and not locked then self:previous(n) end
 		if action == "right" and not locked then self:next(n) end
+		if action == "attack" then
+			if self:getSelection(n) ~= 1 then
+				self.locks[n] = true
+			end
+		end
+		if action == "jump" then
+			if locked then
+				self.locks[n] = false
+			end
+		end
 	end
 end
 function Selector:controlreleased(set, action, key) end
