@@ -13,4 +13,10 @@ return {
 				self.parent:load("menumain")
 			end)
 	,
+	selector:new(menu)
+		:setPosition(10,10)
+		:set("list", require "nautslist")
+		:set("global", false)
+		:init()
+	,
 }
