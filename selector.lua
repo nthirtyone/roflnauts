@@ -142,6 +142,17 @@ function Selector:getListValue(i)
 	return self.list[i]
 end
 
+-- Checks if selection of given number is unique within Selector scope.
+function Selector:isUnique(n)
+	local selection = self:getSelection(n)
+	for fn,v in pairs(self.selections) do
+		if fn ~= n and self:isLocked(fn) and v == selection then
+			return false
+		end
+	end
+	return true
+end
+
 -- Get list of selections, checks if not locked are allowed.
 function Selector:getFullSelection(allowed)
 	local allowed = allowed
@@ -159,10 +170,8 @@ end
 
 -- Draw single block of Selector
 function Selector:drawBlock(n, x, y, scale)
-	local x, y = x or 0, y or 0
 	if self.quads == nil or self.sprite == nil then return end
-	love.graphics.setFont(Font)
-	love.graphics.setColor(255, 255, 255, 255)
+	local x, y = x or 0, y or 0
 	local name = self:getListValue(self:getSelection(n))
 	local locked = self:isLocked(n)
 	local sprite = self.sprite
@@ -170,6 +179,12 @@ function Selector:drawBlock(n, x, y, scale)
 	local arrowl = self.quads.arrow_left
 	local arrowr = self.quads.arrow_right
 	local w,h = self:getSize()
+	local unique = self:isUnique(n)
+	if unique then
+		love.graphics.setColor(255, 255, 255, 255)
+	else
+		love.graphics.setColor(140, 140, 140, 255)
+	end
 	if not locked then
 		love.graphics.draw(sprite, quad.normal, x*scale, y*scale, 0, scale, scale)
 		if self.focused then
@@ -181,6 +196,8 @@ function Selector:drawBlock(n, x, y, scale)
 		love.graphics.draw(sprite, quad.active, x*scale, y*scale, 0, scale, scale)
 	end
 	if self:getSelection(n) ~= 1 then
+		love.graphics.setFont(Font)
+		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.printf(string.upper(name), (x-w)*scale, (y+h+1)*scale, w*3, "center", 0, scale, scale)
 	end
 end
@@ -214,7 +231,7 @@ function Selector:controlpressed(set, action, key)
 		if action == "left" and not locked then self:previous(n) end
 		if action == "right" and not locked then self:next(n) end
 		if action == "attack" then
-			if self:getSelection(n) ~= 1 then
+			if self:getSelection(n) ~= 1 and self:isUnique(n) then
 				self.locks[n] = true
 			end
 		end
