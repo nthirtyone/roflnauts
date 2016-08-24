@@ -16,6 +16,7 @@ function Controller.controlreleased(set, action, key) end
 
 -- Create new controls set.
 function Controller.registerSet(left, right, up, down, attack, jump, joystick)
+	if not Controller.isJoystickUnique(joystick) then return end
 	local set = {}
 	set.left = left or "left"
 	set.right = right or "right"
@@ -32,6 +33,16 @@ end
 -- Get table of controls sets.
 function Controller.getSets()
 	return Controller.sets
+end
+
+-- Checks if given joystick is unique in current set of Controller sets
+function Controller.isJoystickUnique(joystick)
+	if joystick ~= nil then
+		for _,set in pairs(Controller.sets) do
+			if set.joystick == joystick then return false end
+		end
+	end
+	return true
 end
 
 -- Tests all sets if they have control assigned to given key and joystick.
