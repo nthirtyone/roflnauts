@@ -17,8 +17,8 @@ return {
 		:setSize(32, 32)
 		:set("list", require "nautslist")
 		:set("global", false)
-		:set("sprite", love.graphics.newImage("assets/portraits.png"))
-		:set("quads", require "portraits")
+		:set("icons_i", love.graphics.newImage("assets/portraits.png"))
+		:set("icons_q", require "nautsicons")
 		:init()
 	,
 	start_button

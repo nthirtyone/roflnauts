@@ -7,8 +7,8 @@ selector:new(menu)
 	:setMargin(8) -- each block has marigin on both sides; they do stack
 	:setSize(32, 32) -- size of single graphics frame
 	:set("list", require "nautslist")
-	:set("sprite", love.graphics.newImage("assets/portraits.png"))
-	:set("quads", require "portraits")
+	:set("icons_i", love.graphics.newImage("assets/portraits.png"))
+	:set("icons_q", require "portraits")
 	:set("global", false) -- true: single selector; false: selector for each controller set present
 	:init()
 ]]
@@ -22,12 +22,16 @@ Selector = {
 	margin = 0,
 	focused = false,
 	global = false,
+	delay = 2,
 	list,
 	sets,
 	locks,
 	selections,
+	shape = "portrait",
 	sprite,
-	quads
+	quads,
+	icons_i,
+	icons_q
 }
 
 -- Constructor
@@ -36,6 +40,7 @@ function Selector:new(parent)
 	setmetatable(o, self)
 	self.__index = self
 	o.parent = parent
+	o.sprite, o.quads = parent:getSheet()
 	return o
 end
 
@@ -178,9 +183,9 @@ function Selector:drawBlock(n, x, y, scale)
 	local name = self:getListValue(self:getSelection(n))
 	local locked = self:isLocked(n)
 	local sprite = self.sprite
-	local quad = self.quads[name]
-	local arrowl = self.quads.arrow_left
-	local arrowr = self.quads.arrow_right
+	local quad = self.quads
+	local icon  = self.icons_i
+	local iconq = self.icons_q[name]
 	local w,h = self:getSize()
 	local unique = self:isUnique(n)
 	if unique then
@@ -189,14 +194,15 @@ function Selector:drawBlock(n, x, y, scale)
 		love.graphics.setColor(140, 140, 140, 255)
 	end
 	if not locked then
-		love.graphics.draw(sprite, quad.normal, x*scale, y*scale, 0, scale, scale)
-		if self.focused then
-			local dy = (h-6)/2
-			love.graphics.draw(sprite, arrowl, (x+0-2)* scale, (y+dy)*scale, 0, scale, scale)
-			love.graphics.draw(sprite, arrowr, (x+w-2)*scale, (y+dy)*scale, 0, scale, scale)
-		end
+		love.graphics.draw(sprite, quad[self.shape].normal, x*scale, y*scale, 0, scale, scale)
 	else
-		love.graphics.draw(sprite, quad.active, x*scale, y*scale, 0, scale, scale)
+		love.graphics.draw(sprite, quad[self.shape].active, x*scale, y*scale, 0, scale, scale)
+	end
+	love.graphics.draw(icon, iconq, (x+2)*scale, (y+3)*scale, 0, scale, scale)
+	if self.focused and not locked then
+		local dy = (h-6)/2
+		love.graphics.draw(sprite, quad.arrow_l, (x+0-2-math.floor(self.delay))* scale, (y+dy)*scale, 0, scale, scale)
+		love.graphics.draw(sprite, quad.arrow_r, (x+w-4+math.floor(self.delay))*scale, (y+dy)*scale, 0, scale, scale)
 	end
 	if self:getSelection(n) ~= 1 then
 		love.graphics.setFont(Font)
@@ -224,7 +230,12 @@ function Selector:draw(scale)
 		self:drawBlock(n, x+(margin+width)*(n-1)+margin*n, y, scale)
 	end
 end
-function Selector:update(dt) end
+function Selector:update(dt)
+	self.delay = self.delay + dt
+	if self.delay > Selector.delay then -- Selector.delay is initial
+		self.delay = self.delay - Selector.delay
+	end
+end
 
 -- Controller callbacks
 function Selector:controlpressed(set, action, key)

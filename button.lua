@@ -7,9 +7,7 @@ Button = {
 	x = 0,
 	y = 0,
 	sprite,
-	quad = love.graphics.newQuad(0, 0, 58,15, 68,15),
-	arrow_l = love.graphics.newQuad(58, 0, 5, 5, 68,15),
-	arrow_r = love.graphics.newQuad(63, 0, 5, 5, 68,15),
+	quads,
 	delay = 2,
 	blinker = 1,
 	parent
@@ -20,7 +18,7 @@ function Button:new(parent)
 	setmetatable(o, self)
 	self.__index = self
 	o.parent = parent
-	self.sprite = love.graphics.newImage("assets/menu.png")
+	o.sprite, o.quads = parent:getSheet()
 	return o
 end
 function Button:setText(text)
@@ -53,15 +51,17 @@ end
 function Button:draw(scale)
 	local x,y = self:getPosition()
 	local blinker = math.floor(self.blinker*4)
+	local quad = self.quads
+	local sprite = self.sprite
 	if blinker%2 == 0 then
 		love.graphics.setColor(255, 255, 255, 255)
 	else
 		love.graphics.setColor(255, 100, 100, 255)
 	end
-	love.graphics.draw(self.sprite, self.quad, x*scale, y*scale, 0, scale, scale)
+	love.graphics.draw(sprite, quad.button.normal, x*scale, y*scale, 0, scale, scale)
 	if self.focused then
-		love.graphics.draw(self.sprite, self.arrow_l, (x+54+math.floor(self.delay))*scale, (y+5)*scale, 0, scale, scale)
-		love.graphics.draw(self.sprite, self.arrow_r, (x-1-math.floor(self.delay))*scale, (y+5)*scale, 0, scale, scale)
+		love.graphics.draw(sprite, quad.arrow_l, (x+54+math.floor(self.delay))*scale, (y+5)*scale, 0, scale, scale)
+		love.graphics.draw(sprite, quad.arrow_r, (x-2-math.floor(self.delay))*scale, (y+5)*scale, 0, scale, scale)
 	end
 	love.graphics.setFont(Font)
 	love.graphics.printf(self.text, (x+2)*scale, (y+4)*scale, 54, "center", 0, scale, scale)

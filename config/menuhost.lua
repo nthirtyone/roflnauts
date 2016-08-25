@@ -15,8 +15,9 @@ return {
 		:setMargin(0)
 		:set("global", true)
 		:set("list", require "maplist")
-		:set("sprite", love.graphics.newImage("assets/placeholder-map-icon.png"))
-		:set("quads", require "mapicons")
+		:set("icons_i", love.graphics.newImage("assets/placeholder-map-icon.png"))
+		:set("icons_q", require "mapicons")
+		:set("shape", "panorama")
 		:init()
 	,
 	button:new(menu)

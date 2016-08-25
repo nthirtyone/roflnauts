@@ -9,12 +9,30 @@ Menu = {
 	scale = getScale(),
 	elements, --table
 	active = 1,
-	music
+	music,
+	sprite,
+	quads = {
+		button = {
+			normal = love.graphics.newQuad(0, 0, 58,15, 80,130),
+			active = love.graphics.newQuad(0, 0, 58,15, 80,130)
+		},
+		portrait = {
+			normal = love.graphics.newQuad( 0, 15, 32,32, 80,130),
+			active = love.graphics.newQuad(32, 15, 32,32, 80,130)
+		},
+		panorama = {
+			normal = love.graphics.newQuad(0,47, 80,42, 80,130),
+			active = love.graphics.newQuad(0,88, 80,42, 80,130)
+		},
+		arrow_l = love.graphics.newQuad(68, 0, 6, 6, 80,130),
+		arrow_r = love.graphics.newQuad(74, 0, 6, 6, 80,130),
+	}
 }
 function Menu:new(name)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
+	self.sprite = love.graphics.newImage("assets/menu.png")
 	o.elements = {}
 	o:load(name)
 	o.music = Music:new("menu.ogg")
@@ -29,6 +47,11 @@ function Menu:load(name)
 	self.active = 1
 	self.elements = menu(self)
 	self.elements[self.active]:focus()
+end
+
+-- Return reference to quads table and menu sprite
+function Menu:getSheet()
+	return self.sprite, self.quads
 end
 
 -- Cycle elements
