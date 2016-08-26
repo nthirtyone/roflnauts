@@ -10,10 +10,11 @@ local map_selector = selector:new(menu)
 
 return {
 	map_selector
-		:setPosition(width/2, 10)
+		:setPosition(width/2, 40)
 		:setSize(80, 42)
 		:setMargin(0)
 		:set("global", true)
+		:set("first", true)
 		:set("list", require "maplist")
 		:set("icons_i", love.graphics.newImage("assets/placeholder-map-icon.png"))
 		:set("icons_q", require "mapicons")

@@ -23,6 +23,7 @@ Selector = {
 	focused = false,
 	global = false,
 	delay = 2,
+	first = false,
 	list,
 	sets,
 	locks,
@@ -204,7 +205,7 @@ function Selector:drawBlock(n, x, y, scale)
 		love.graphics.draw(sprite, quad.arrow_l, (x+0-2-math.floor(self.delay))* scale, (y+dy)*scale, 0, scale, scale)
 		love.graphics.draw(sprite, quad.arrow_r, (x+w-4+math.floor(self.delay))*scale, (y+dy)*scale, 0, scale, scale)
 	end
-	if self:getSelection(n) ~= 1 then
+	if (self:getSelection(n) ~= 1 or self.first) then
 		love.graphics.setFont(Font)
 		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.printf(string.upper(name), (x-w)*scale, (y+h+1)*scale, w*3, "center", 0, scale, scale)
@@ -245,7 +246,7 @@ function Selector:controlpressed(set, action, key)
 		if action == "left" and not locked then self:previous(n) end
 		if action == "right" and not locked then self:next(n) end
 		if action == "attack" then
-			if self:getSelection(n) ~= 1 and self:isUnique(n) then
+			if (self:getSelection(n) ~= 1 or self.first) and self:isUnique(n) then
 				self.locks[n] = true
 			end
 		end
