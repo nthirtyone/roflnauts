@@ -11,6 +11,7 @@ Menu = {
 	active = 1,
 	music,
 	sprite,
+	background,
 	quads = {
 		button = {
 			normal = love.graphics.newQuad(0, 0, 58,15, 80,130),
@@ -33,6 +34,7 @@ function Menu:new(name)
 	setmetatable(o, self)
 	self.__index = self
 	self.sprite = love.graphics.newImage("assets/menu.png")
+	self.background = love.graphics.newImage("assets/backgrounds/menu.png")
 	o.elements = {}
 	o:load(name)
 	o.music = Music:new("menu.ogg")
@@ -82,6 +84,7 @@ function Menu:update(dt)
 end
 function Menu:draw()
 	local scale = self.scale
+	love.graphics.draw(self.background, 0, 0, 0, scale, scale)
 	love.graphics.setFont(Font)
 	for _,element in pairs(self.elements) do
 		element:draw(scale)
