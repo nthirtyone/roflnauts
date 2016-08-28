@@ -202,10 +202,15 @@ function Selector:drawBlock(n, x, y, scale)
 		love.graphics.draw(sprite, quad[self.shape].active, x*scale, y*scale, 0, scale, scale)
 	end
 	love.graphics.draw(icon, iconq, (x+2)*scale, (y+3)*scale, 0, scale, scale)
-	if self.focused and not locked then
+	if self.focused then
 		local dy = (h-6)/2
-		love.graphics.draw(sprite, quad.arrow_l, (x+0-2-math.floor(self.delay))* scale, (y+dy)*scale, 0, scale, scale)
-		love.graphics.draw(sprite, quad.arrow_r, (x+w-4+math.floor(self.delay))*scale, (y+dy)*scale, 0, scale, scale)
+		if not locked then
+			love.graphics.draw(sprite, quad.arrow_l, (x+0-2-math.floor(self.delay))* scale, (y+dy)*scale, 0, scale, scale)
+			love.graphics.draw(sprite, quad.arrow_r, (x+w-4+math.floor(self.delay))*scale, (y+dy)*scale, 0, scale, scale)
+		else
+			love.graphics.draw(sprite, quad.arrow_r, (x+0-2-math.floor(self.delay))* scale, (y+dy)*scale, 0, scale, scale)
+			love.graphics.draw(sprite, quad.arrow_l, (x+w-4+math.floor(self.delay))*scale, (y+dy)*scale, 0, scale, scale)
+		end
 	end
 	if (self:getSelection(n) ~= 1 or self.first) then
 		love.graphics.setFont(Font)
