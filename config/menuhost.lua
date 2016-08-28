@@ -24,6 +24,9 @@ return {
 	button:new(menu)
 		:setText("Select")
 		:setPosition(bx,101)
+		:set("isEnabled", function ()
+				return map_selector:isLocked()
+			end)
 		:set("active", function (self)
 				MAP = map_selector:getFullSelection(true)[1][1]
 				self.parent:load("menuselect")

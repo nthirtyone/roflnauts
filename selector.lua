@@ -136,11 +136,13 @@ end
 
 -- Check if given number is locked
 function Selector:isLocked(n)
+	local n = n or 1
 	return self.locks[n]
 end
 
 -- Get value of selection of given number
 function Selector:getSelection(n)
+	local n = n or 1
 	return self.selections[n]
 end
 

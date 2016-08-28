@@ -24,12 +24,16 @@ return {
 	start_button
 		:setText("Force start")
 		:setPosition(bx,134)
+		:set("isEnabled", function ()
+				if #naut_selector:getFullSelection(false) > 1 then
+					return true
+				end
+				return false
+			end)
 		:set("active", function (self)
 				local nauts = naut_selector:getFullSelection(false)
 				if #nauts > 1 then
 					changeScene(World:new(MAP, nauts))
-				else
-					self:blink()
 				end
 			end)
 	,

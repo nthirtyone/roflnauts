@@ -9,8 +9,7 @@ Button = {
 	sprite,
 	quads,
 	delay = 2,
-	blinker = 1,
-	parent
+	parent,
 }
 
 function Button:new(parent)
@@ -39,9 +38,7 @@ function Button:blur()
 	self.focused = false
 end
 function Button:active() end
-function Button:blink()
-	self.blinker = 0
-end	
+function Button:isEnabled() return true end
 function Button:set(name, func)
 	if type(name) == "string" and type(func) == "function" then
 		self[name] = func
@@ -50,13 +47,12 @@ function Button:set(name, func)
 end
 function Button:draw(scale)
 	local x,y = self:getPosition()
-	local blinker = math.floor(self.blinker*4)
 	local quad = self.quads
 	local sprite = self.sprite
-	if blinker%2 == 0 then
+	if self:isEnabled() then
 		love.graphics.setColor(255, 255, 255, 255)
 	else
-		love.graphics.setColor(255, 100, 100, 255)
+		love.graphics.setColor(140, 140, 140, 255)
 	end
 	love.graphics.draw(sprite, quad.button.normal, x*scale, y*scale, 0, scale, scale)
 	if self.focused then
@@ -71,12 +67,9 @@ function Button:update(dt)
 	if self.delay > Button.delay then -- Button.delay is initial
 		self.delay = self.delay - Button.delay
 	end
-	if self.blinker < Button.blinker then -- Button.blink is initial
-		self.blinker = self.blinker + dt
-	end
 end
 function Button:controlpressed(set, action, key)
-	if action == "attack" and self.focused then
+	if action == "attack" and self.focused and self:isEnabled() then
 		self:active()
 	end
 end
