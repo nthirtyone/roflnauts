@@ -32,8 +32,8 @@ return {
 	button:new(menu)
 		:setText("Credits")
 		:setPosition(bx, 128)
-		:set("isEnabled", function (self)
-				return false
+		:set("active", function (self)
+				self.parent:load("menucredits")
 			end)
 	,
 	button:new(menu)
