@@ -18,7 +18,7 @@ return {
 		:setPosition(width/2, 30)
 		:set("draw", function (self, scale)
 				local x,y = self:getPosition()
-				love.graphics.printf("The year is 3587. Conflict spans the stars as huge robot armies are locked in an enduring stalemate. In their bid for galactic supremacy, they call upon the most powerful group of mercenaries in the universe: the Awesomenauts!", (x-100)*scale, (y+10)*scale, 200, "center", 0, scale, scale)
+				love.graphics.printf("A game by the Awesomenauts community including:\nSeltzy, PlasmaWisp, ParaDoX, MilkingChicken, Burningdillo, Bronkey and Aki.\n\n04font was used.\n\nBased on a game by Jan Willem Nijman, Paul Veer and Bits_Beats XOXO.\n\nAwesomenauts is property of Ronimo Games.", (x-110)*scale, (y+10)*scale, 220, "left", 0, scale, scale)
 			end)
 	,
 }

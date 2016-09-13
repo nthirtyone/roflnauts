@@ -22,7 +22,7 @@ return {
 		:init()
 	,
 	button:new(menu)
-		:setText("Select")
+		:setText("Next")
 		:setPosition(bx,101)
 		:set("isEnabled", function ()
 				return map_selector:isLocked()
