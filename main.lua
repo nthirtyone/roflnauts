@@ -39,6 +39,7 @@ require "camera"
 require "menu"
 require "controller"
 require "music"
+require "settings"
 
 -- Temporary debug
 debug = false
@@ -53,8 +54,9 @@ function love.load()
 	Bold = love.graphics.newImageFont("assets/font-big.png", " 0123456789AEFILNORSTUW", -2)
 	Font:setLineHeight(9/16)
 	love.graphics.setFont(Font) 
-	-- Controller
+	-- Modules
 	Controller.load()
+	Settings.load()
 	-- Scene
 	Scene = Menu:new()
 end
@@ -84,7 +86,7 @@ function Controller.controlpressed(set, action, key)
 	-- pass to current Scene
 	Scene:controlpressed(set, action, key)
 	-- globals
-	if key == "escape" or key == "f1" then
+	if key == "escape" then
 		love.event.quit()
 	end
 	if key == "f5" then

@@ -160,8 +160,6 @@ end
 -- Load gamepad mappings from db file and init module
 function Controller.load()
 	love.joystick.loadGamepadMappings("gamecontrollerdb.txt")
-	Controller.registerSet("left", "right", "up", "down", "return", "rshift")
-	Controller.registerSet("a", "d", "w", "s", "g", "h")
 end
 
 -- Create new sets when new joystick is added
