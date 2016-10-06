@@ -3,7 +3,7 @@ local menu = ...
 local button = require "button"
 local selector = require "selector"
 
-local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.getHeight()/getRealScale()
+local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
 
 local map_selector = selector:new(menu)
