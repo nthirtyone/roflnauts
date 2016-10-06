@@ -67,6 +67,7 @@ function love.draw()
 	Scene:draw()
 	if debug then
 		local scale = getScale()
+		love.graphics.setFont(Font)
 		love.graphics.setColor(255, 0, 0, 255)
 		love.graphics.print("Debug ON", 10, 10, 0, scale, scale)
 		love.graphics.setColor(255, 255, 255, 255)
@@ -97,5 +98,3 @@ function Controller.controlreleased(set, action, key)
 	-- pass to current Scene
 	Scene:controlreleased(set, action, key)
 end
-
-
