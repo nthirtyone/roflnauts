@@ -28,7 +28,7 @@ return {
 				return map_selector:isLocked()
 			end)
 		:set("active", function (self)
-				MAP = map_selector:getFullSelection(true)[1][1]
+				MAP = map_selector:getFullSelection(true)[1][1] -- please, don't kill me for this, kek
 				self.parent:load("menuselect")
 			end)
 	,

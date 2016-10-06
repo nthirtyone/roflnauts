@@ -4,7 +4,7 @@ local button = require "button"
 local header = require "header"
 local element = require "element"
 
-local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.getHeight()/getRealScale()
+local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
 
 return {
@@ -25,8 +25,8 @@ return {
 	button:new(menu)
 		:setText("Settings")
 		:setPosition(bx, 112)
-		:set("isEnabled", function (self)
-				return false
+		:set("active", function (self)
+				self.parent:load("menusettings")
 			end)
 	,
 	button:new(menu)

@@ -4,7 +4,7 @@ local button = require "button"
 local selector = require "selector"
 local element = require "element"
 
-local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.getHeight()/getRealScale()
+local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
 
 local naut_selector = selector:new(menu)

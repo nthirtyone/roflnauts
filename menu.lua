@@ -86,7 +86,7 @@ function Menu:update(dt)
 end
 function Menu:draw()
 	local scale = self.scale
-	love.graphics.draw(self.background, 0, 0, 0, scale, scale)
+	love.graphics.draw(self.background, 0, 0, 0, getRealScale(), getRealScale())
 	love.graphics.setFont(Font)
 	for _,element in pairs(self.elements) do
 		element:draw(scale)
