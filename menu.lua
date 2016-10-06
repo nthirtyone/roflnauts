@@ -40,7 +40,9 @@ function Menu:new(name)
 	o.music = Music:new("menu.ogg")
 	return o
 end
-function Menu:delete() end
+function Menu:delete()
+	self.music:delete()
+end
 
 -- Load menu from file
 function Menu:load(name)
