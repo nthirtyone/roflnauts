@@ -75,7 +75,6 @@ function love.draw()
 	end
 end
 -- Pass input to Controller
-function love.joystickadded(joystick) Controller.joystickadded(joystick) end
 function love.gamepadaxis(joystick, axis, value) Controller.gamepadaxis(joystick, axis, value) end
 function love.gamepadpressed(joystick, key) Controller.gamepadpressed(joystick, key) end
 function love.gamepadreleased(joystick, key) Controller.gamepadreleased(joystick, key) end

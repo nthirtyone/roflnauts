@@ -162,11 +162,6 @@ function Controller.load()
 	love.joystick.loadGamepadMappings("gamecontrollerdb.txt")
 end
 
--- Create new sets when new joystick is added
-function Controller.joystickadded(joystick)
-	Controller.registerSet("axis:leftx-", "axis:leftx+", "axis:lefty-", "axis:lefty+", "a", "b", joystick)
-end
-
 -- Gamepad input callbacks
 function Controller.gamepadaxis(joystick, axis, value)
 	if value ~= 0 then
