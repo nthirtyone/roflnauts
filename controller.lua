@@ -16,6 +16,7 @@ function Controller.controlreleased(set, action, key) end
 
 -- Create new controls set.
 function Controller.registerSet(left, right, up, down, attack, jump, joystick)
+	if not Controller.isJoystickUnique(joystick) then return end
 	local set = {}
 	set.left = left or "left"
 	set.right = right or "right"
@@ -27,6 +28,21 @@ function Controller.registerSet(left, right, up, down, attack, jump, joystick)
 	table.insert(Controller.sets, set)
 	print(set, left, right, up, down, attack, jump, joystick)
 	return set
+end
+
+-- Get table of controls sets.
+function Controller.getSets()
+	return Controller.sets
+end
+
+-- Checks if given joystick is unique in current set of Controller sets
+function Controller.isJoystickUnique(joystick)
+	if joystick ~= nil then
+		for _,set in pairs(Controller.sets) do
+			if set.joystick == joystick then return false end
+		end
+	end
+	return true
 end
 
 -- Tests all sets if they have control assigned to given key and joystick.
@@ -144,13 +160,6 @@ end
 -- Load gamepad mappings from db file and init module
 function Controller.load()
 	love.joystick.loadGamepadMappings("gamecontrollerdb.txt")
-	Controller.registerSet("left", "right", "up", "down", "return", "rshift")
-	Controller.registerSet("a", "d", "w", "s", "g", "h")
-end
-
--- Create new sets when new joystick is added
-function Controller.joystickadded(joystick)
-	Controller.registerSet("axis:leftx-", "axis:leftx+", "axis:lefty-", "axis:lefty+", "a", "b", joystick)
 end
 
 -- Gamepad input callbacks

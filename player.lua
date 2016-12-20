@@ -286,6 +286,8 @@ end
 
 -- Draw of `Player`
 function Player:draw(offset_x, offset_y, scale, debug)
+	-- draw only alive
+	if not self.alive then return end
 	-- locals
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0

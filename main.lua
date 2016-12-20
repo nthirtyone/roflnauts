@@ -39,12 +39,12 @@ require "camera"
 require "menu"
 require "controller"
 require "music"
+require "settings"
 
 -- Temporary debug
 debug = false
 
 -- LÖVE2D callbacks
--- Load
 function love.load()
 	-- Graphics
 	love.graphics.setBackgroundColor(90, 90, 90)
@@ -54,28 +54,30 @@ function love.load()
 	Bold = love.graphics.newImageFont("assets/font-big.png", " 0123456789AEFILNORSTUW", -2)
 	Font:setLineHeight(9/16)
 	love.graphics.setFont(Font) 
-	-- Controller
+	-- Modules
 	Controller.load()
+	Settings.load()
 	-- Scene
 	Scene = Menu:new()
 end
--- Update
 function love.update(dt)
 	Scene:update(dt)
 end
--- Draw
 function love.draw()
 	Scene:draw()
 	if debug then
 		local scale = getScale()
+		love.graphics.setFont(Font)
 		love.graphics.setColor(255, 0, 0, 255)
 		love.graphics.print("Debug ON", 10, 10, 0, scale, scale)
 		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10+9*scale, 0, scale, scale)
 	end
 end
+function love.quit()
+	Settings.save()
+end
 -- Pass input to Controller
-function love.joystickadded(joystick) Controller.joystickadded(joystick) end
 function love.gamepadaxis(joystick, axis, value) Controller.gamepadaxis(joystick, axis, value) end
 function love.gamepadpressed(joystick, key) Controller.gamepadpressed(joystick, key) end
 function love.gamepadreleased(joystick, key) Controller.gamepadreleased(joystick, key) end
@@ -87,7 +89,7 @@ function Controller.controlpressed(set, action, key)
 	-- pass to current Scene
 	Scene:controlpressed(set, action, key)
 	-- globals
-	if key == "escape" or key == "f1" then
+	if key == "escape" then
 		love.event.quit()
 	end
 	if key == "f5" then
@@ -98,5 +100,3 @@ function Controller.controlreleased(set, action, key)
 	-- pass to current Scene
 	Scene:controlreleased(set, action, key)
 end
-
-
