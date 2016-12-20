@@ -12,6 +12,7 @@ Menu = {
 	music,
 	sprite,
 	background,
+	allowMove = true,
 	quads = {
 		button = {
 			normal = love.graphics.newQuad(0, 0, 58,15, 80,130),
@@ -95,14 +96,20 @@ end
 
 -- Controller callbacks
 function Menu:controlpressed(set, action, key)
-	if action == "down" then
-		self:next()
-	end
-	if action == "up" then
-		self:previous()
+	if self.allowMove then
+		if action == "down" then
+			self:next()
+		end
+		if action == "up" then
+			self:previous()
+		end
 	end
 	for _,element in pairs(self.elements) do
 		element:controlpressed(set, action, key)
 	end
 end
-function Menu:controlreleased(set, action, key) end
+function Menu:controlreleased(set, action, key)
+	for _,element in pairs(self.elements) do
+		element:controlreleased(set, action, key)
+	end
+end

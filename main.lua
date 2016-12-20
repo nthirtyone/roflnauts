@@ -74,6 +74,9 @@ function love.draw()
 		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10+9*scale, 0, scale, scale)
 	end
 end
+function love.quit()
+	Settings.save()
+end
 -- Pass input to Controller
 function love.gamepadaxis(joystick, axis, value) Controller.gamepadaxis(joystick, axis, value) end
 function love.gamepadpressed(joystick, key) Controller.gamepadpressed(joystick, key) end
