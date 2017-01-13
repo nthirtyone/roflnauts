@@ -20,6 +20,7 @@ return {
 	"calamari", -- swiggins
 	"quack", -- rocco
 	"scissors", -- ksenia
+	"link", -- ix
 	"marine", -- ted
 	"scooter", -- penny
 	"phonebooth", -- sentry
@@ -28,5 +29,5 @@ return {
 	"gramps", -- yoolip
 	"biker", -- chucho
 	"vrooom", -- lux
-	"link", -- ix
+	"shutter", -- max
 }
