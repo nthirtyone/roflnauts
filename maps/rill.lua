@@ -1,7 +1,7 @@
 return {
 	-- CENTER AND SIZE
 	name = "rill",
-	theme = "rill.mp3",
+	theme = "rill.ogg",
 	center_x = 0,
 	center_y = 65,
 	width  = 400,

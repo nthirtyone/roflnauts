@@ -1,7 +1,7 @@
 return {
 	-- CENTER AND SIZE
 	name = "starstorm",
-	theme = "starstorm.mp3",
+	theme = "starstorm.ogg",
 	center_x = 0,
 	center_y = -20,
 	width  = 400,

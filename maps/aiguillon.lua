@@ -1,7 +1,7 @@
 return {
 	-- CENTER AND SIZE
 	name = "aiguillon",
-	theme = "aiguillon.mp3",
+	theme = "aiguillon.ogg",
 	center_x = 0,
 	center_y = 10,
 	width  = 370,
