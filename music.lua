@@ -19,7 +19,7 @@ function Music:new(track)
 	o.source = love.audio.newSource("assets/music/" .. o.track)
 	o.source:setLooping(true)
 	o.source:setVolume(.7)
-	--o.source:play()
+	o.source:play()
 	return o
 end
 function Music:delete()
