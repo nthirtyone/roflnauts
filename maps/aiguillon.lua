@@ -1,17 +1,17 @@
 return {
 	-- CENTER AND SIZE
 	name = "aiguillon",
-	theme = "sorona.ogg",
+	theme = "aiguillon.mp3",
 	center_x = 0,
-	center_y = -45,
+	center_y = 10,
 	width  = 370,
 	height = 290,
 	-- RESPAWN POINTS
 	respawns = {
-		{x = -119, y = -28},
-		{x = 115, y = -28},
-		{x = 0, y = -90},
-		{x = 0, y = 45},
+		{x = 0, y = -80},
+		{x = 0, y = -80},
+		{x = 0, y = -80},
+		{x = 0, y = -80},
 	},
 	-- GRAPHICS
 	clouds = false,
@@ -19,37 +19,37 @@ return {
 	platforms = {
 		{
 			x = -108,
-			y = -72,
+			y = 22,
 			shape = {1,0, 212,0, 212,12, 206,18, 14,18, 1,12},
-			sprite = "assets/platforms/aiguillon-top.png"
+			sprite = "assets/platforms/aiguillon-wide.png"
 		},
 		{
 			x = -46,
-			y = 62,
+			y = -19,
 			shape = {1,0, 87,0, 87,18, 14,18, 1,12},
-			sprite = "assets/platforms/aiguillon-bottom.png"
+			sprite = "assets/platforms/aiguillon-middle.png"
 		},
 		{
-			x = -144,
-			y = -14,
+			x = -141,
+			y = -57,
 			shape = {1,0, 50,0, 50,18, 5,18, 1,13},
 			sprite = "assets/platforms/aiguillon-left-big.png"
 		},
 		{
-			x = -82,
-			y = 16,
+			x = -132,
+			y = 84,
 			shape = {1,0, 25,0, 25,18, 1,18},
 			sprite = "assets/platforms/aiguillon-left-small.png"
 		},
 		{
-			x = 90,
-			y = -14,
+			x = 77,
+			y = -57,
 			shape = {1,0, 50,0, 50,12, 37,18, 1,18},
 			sprite = "assets/platforms/aiguillon-right-big.png"
 		},
 		{
-			x = 53,
-			y = 16,
+			x = 103,
+			y = 84,
 			shape = {1,0, 25,0, 25,18, 1,18},
 			sprite = "assets/platforms/aiguillon-right-small.png"
 		}

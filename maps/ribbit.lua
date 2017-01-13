@@ -1,7 +1,7 @@
 return {
 	-- GENERAL
 	name = "ribbit",
-	theme = "sorona.ogg",
+	theme = "ribbit.mp3",
 	center_x = 0,
 	center_y = 50,
 	width  = 360,
