@@ -12,6 +12,10 @@ Menu = {
 	music,
 	sprite,
 	background,
+	asteroids,
+	stars,
+	asteroids_bounce = 0,
+	stars_timer = 0,
 	allowMove = true,
 	quads = {
 		button = {
@@ -28,6 +32,10 @@ Menu = {
 		},
 		arrow_l = love.graphics.newQuad(68, 0, 6, 6, 80,130),
 		arrow_r = love.graphics.newQuad(74, 0, 6, 6, 80,130),
+		stars = {
+			love.graphics.newQuad(  0, 0, 320, 200, 640,200),
+			love.graphics.newQuad(320, 0, 320, 200, 640,200)
+		},
 	}
 }
 function Menu:new(name)
@@ -36,6 +44,8 @@ function Menu:new(name)
 	self.__index = self
 	self.sprite = love.graphics.newImage("assets/menu.png")
 	self.background = love.graphics.newImage("assets/backgrounds/menu.png")
+	self.asteroids = love.graphics.newImage("assets/asteroids.png")
+	self.stars = love.graphics.newImage("assets/stars.png")
 	o.elements = {}
 	o:load(name)
 	o.music = Music:new("menu.ogg")
@@ -84,10 +94,17 @@ function Menu:update(dt)
 	for _,element in pairs(self.elements) do
 		element:update(dt)
 	end
+	self.asteroids_bounce = self.asteroids_bounce + dt*0.1
+	if self.asteroids_bounce > 2 then self.asteroids_bounce = self.asteroids_bounce - 2 end
+	self.stars_timer = self.stars_timer + dt * 0.7
+	if self.stars_timer > 2 then self.stars_timer = self.stars_timer - 2 end
 end
 function Menu:draw()
 	local scale = self.scale
-	love.graphics.draw(self.background, 0, 0, 0, getRealScale(), getRealScale())
+	local scaler = getRealScale()
+	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
+	love.graphics.draw(self.stars, self.quads.stars[math.ceil(self.stars_timer)], 0, 0, 0, scaler, scaler)
+	love.graphics.draw(self.asteroids, 0, math.floor(64+math.sin(self.asteroids_bounce*math.pi)*4)*scaler, 0, scaler, scaler)
 	love.graphics.setFont(Font)
 	for _,element in pairs(self.elements) do
 		element:draw(scale)
