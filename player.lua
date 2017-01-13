@@ -41,7 +41,9 @@ Player = {
 	controlset = nil,
 	-- HUD
 	portrait_sprite = nil,
-	portrait_sheet  = require "portraits",
+	portrait_frame  = nil,
+	portrait_sheet  = require "nautsicons",
+	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
 	-- Sounds
 	sfx = require "sounds"
 }
@@ -70,6 +72,7 @@ function Player:new (game, world, x, y, name)
 	-- Portrait load for first object created
 	if self.portrait_sprite == nil then
 		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
+		self.portrait_frame = love.graphics.newImage("assets/menu.png")
 	end
 	return o
 end
@@ -319,7 +322,8 @@ function Player:drawHUD(x,y,scale,elevation)
 	-- hud displays only if player is alive
 	if self.alive then
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name].normal, x*scale, y*scale, 0, scale, scale)
+		love.graphics.draw(self.portrait_frame, self.portrait_box, (x)*scale, (y)*scale, 0, scale, scale)
+		love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
 		local dy = 30 * elevation
 		love.graphics.setFont(Font)
 		love.graphics.print((self.combo*10).."%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
