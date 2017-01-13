@@ -1,4 +1,5 @@
 -- List of characters with empty character included
+-- icons list is generated from this file
 return {
 	"empty", -- empty
 	"froggo", -- froggy
