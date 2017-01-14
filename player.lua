@@ -424,20 +424,21 @@ function Player:hit(direction)
 	self:playSound(4)
 end
 
--- Hittest
--- Should be replaced with actual sensor; after moving collision callbacks into Player
-function Player:testHit(target, ox, oy, sx, sy)
-	local x, y = self.body:getPosition()
-	for v=0,2 do
-		for h=0,2,1+v%2 do
-			if target.fixture:testPoint(x+ox+h*sx, y+oy+v*sy) then return true end
-		end
-	end
-	return false
-end
-
 -- Taking damage of `Player` by successful hit test
-function Player:damage(horizontal, vertical)
+function Player:damage(direction)
+	local horizontal, vertical = 0, 0
+	if direction == "left" then
+		horizontal = -1
+	end
+	if direction == "right" then
+		horizontal = 1
+	end
+	if direction == "up" then
+		vertical = -1
+	end
+	if direction == "down" then
+		vertical = 1
+	end
 	self:createEffect("hit")
 	local x,y = self.body:getLinearVelocity()
 	self.body:setLinearVelocity(x,0)

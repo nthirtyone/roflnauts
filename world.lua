@@ -379,6 +379,12 @@ function World.beginContact(a, b, coll)
 			b:getUserData():playSound(3)
 		end
 	end
+	if a:getCategory() == 3 then
+		b:getUserData():damage(a:getUserData()[2])
+	end
+	if b:getCategory() == 3 then
+		a:getUserData():damage(b:getUserData()[2])
+	end
 end
 -- endContact
 function World.endContact(a, b, coll)
