@@ -377,7 +377,8 @@ function Player:createEffect(name)
 end
 
 -- Punch of `Player`
--- (string) direction 
+-- direction: left, right, up, down
+-- creates temporary fixture for player's body that acts as sensor; fixture is deleted after time set in UserData[1]; deleted by Player:update(dt)
 function Player:hit(direction)
 	-- start cooldown
 	self.punchcd = Player.punchcd -- INITIAL from metatable
@@ -405,6 +406,7 @@ function Player:hit(direction)
 end
 
 -- Taking damage of `Player` by successful hit test
+-- currently called from World's startContact
 function Player:damage(direction)
 	local horizontal, vertical = 0, 0
 	if direction == "left" then
