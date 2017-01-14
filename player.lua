@@ -434,10 +434,10 @@ end
 -- DIE
 function Player:die()
 	self:playSound(1)
-	self.combo = Player.combo
+	self.combo = Player.combo -- INITIAL from metatable
 	self.lives = self.lives - 1
 	self.alive = false
-	self.spawntimer = Player.spawntimer
+	self.spawntimer = Player.spawntimer -- INITIAL from metatable
 	self.body:setActive(false)
 	self.world:onNautKilled(self)
 end
