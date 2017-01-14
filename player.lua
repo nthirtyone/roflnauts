@@ -22,8 +22,7 @@ Player = {
 	lives = 3,
 	spawntimer = 2,
 	alive = true,
-	punchcd = 0,
-	punchinitial = 0.25,
+	punchcd = 0.25,
 	punchdir = 0, -- a really bad thing
 	-- Animation
 	animations = require "animations",
@@ -68,6 +67,7 @@ function Player:new (game, world, x, y, name)
 	o.name   = name or "empty"
 	o.sprite = newImage("assets/nauts/"..o.name..".png")
 	o.world  = game
+	o.punchcd = 0
 	-- Animation
 	o.current = o.animations.idle
 	o:createEffect("respawn")
@@ -380,7 +380,7 @@ end
 -- (string) direction 
 function Player:hit(direction)
 	-- start cooldown
-	self.punchcd = self.punchinitial
+	self.punchcd = Player.punchcd -- INITIAL from metatable
 	-- actual punch
 	local fixture
 	if direction == "left" then
