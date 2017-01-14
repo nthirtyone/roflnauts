@@ -72,10 +72,14 @@ function Player:new (game, world, x, y, name)
 	o.current = o.animations.idle
 	o:createEffect("respawn")
 	-- New punch mechanics
-	o.hitbox_fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(6,-8,28,-8,28,8,6,8), 0)
+	o.hitbox_fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(6,-6,20,-6,20,6,6,6), 0)
 	o.hitbox_fixture:setSensor(true)
 	o.hitbox_fixture:setCategory(3)
 	o.hitbox_fixture:setMask(1)
+	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-6,-6,-20,-6,-20,6,-6,6), 0)
+	fixture:setSensor(true)
+	fixture:setCategory(3)
+	fixture:setMask(1)
 	-- Portrait load for first object created
 	if self.portrait_sprite == nil then
 		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
@@ -309,7 +313,7 @@ function Player:draw(offset_x, offset_y, scale, debug)
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.current[self.frame], draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 14)
+	love.graphics.draw(self.sprite, self.current[self.frame], draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
 	-- debug draw
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
