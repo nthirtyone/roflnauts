@@ -72,11 +72,19 @@ function Player:new (game, world, x, y, name)
 	o.current = o.animations.idle
 	o:createEffect("respawn")
 	-- New punch mechanics
-	o.hitbox_fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(6,-6,20,-6,20,6,6,6), 0)
+	o.hitbox_fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(0,-6,20,-6,20,6,0,6), 0)
 	o.hitbox_fixture:setSensor(true)
 	o.hitbox_fixture:setCategory(3)
 	o.hitbox_fixture:setMask(1)
-	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-6,-6,-20,-6,-20,6,-6,6), 0)
+	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(0,-6,-20,-6,-20,6,0,6), 0)
+	fixture:setSensor(true)
+	fixture:setCategory(3)
+	fixture:setMask(1)
+	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-8,0,-8,-20,8,-20,8,0), 0)
+	fixture:setSensor(true)
+	fixture:setCategory(3)
+	fixture:setMask(1)
+	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-8,0,-8,20,8,20,8,0), 0)
 	fixture:setSensor(true)
 	fixture:setCategory(3)
 	fixture:setMask(1)
@@ -318,9 +326,9 @@ function Player:draw(offset_x, offset_y, scale, debug)
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
 			if fixture:getCategory() == 2 then
-				love.graphics.setColor(137, 255, 0, 140)
+				love.graphics.setColor(137, 255, 0, 120)
 			else
-				love.graphics.setColor(137, 0, 255, 100)
+				love.graphics.setColor(137, 0, 255, 40)
 			end
 			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
 		end
