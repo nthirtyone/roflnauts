@@ -3,7 +3,7 @@ return {
 	name = "rill",
 	theme = "rill.ogg",
 	center_x = 0,
-	center_y = 65,
+	center_y = 75,
 	width  = 400,
 	height = 260,
 	-- RESPAWN POINTS
@@ -18,35 +18,56 @@ return {
 	background = "assets/backgrounds/rill.png",
 	platforms = {
 		{
-			x = -160,
+			x = -151,
 			y = 25,
-			shape = {2,2, 47,2, 47,18, 2,18},
-			sprite = "assets/platforms/rill-block-left.png"
+			shape = {0,0, 56,0, 56,12, 0,12},
+			sprite = "assets/platforms/rill-flat-left.png"
 		},
 		{
-			x = 110,
+			x = 93,
 			y = 25,
-			shape = {0,2, 46,2, 42,18, 0,18},
-			sprite = "assets/platforms/rill-block-right.png"
+			shape = {0,0, 56,0, 56,12, 0,12},
+			sprite = "assets/platforms/rill-flat-right.png"
 		},
 		{
-			x = -32,
-			y = 70,
-			shape = {2,2, 62,2, 42,18, 22,18},
+			x = -24,
+			y = 55,
+			shape = {0,0, 49,0, 47,18, 3,18, 0,4},
 			sprite = "assets/platforms/rill-center.png"
 		},
 		{
-			x = -110,
-			y = 90,
-			shape = {2,2, 18,2, 76,41, 75,61, 2,9},
-			sprite = "assets/platforms/rill-slide-left.png"
+			x = -112,
+			y = 80,
+			shape = {78,30, 17,0, 0,0, 0,7, 78,45},
+			sprite = "assets/platforms/rill-slope-left.png"
 		},
 		{
-			x = 34,
-			y = 90,
-			shape = {2,44, 64,2, 75,2, 7,57},
-			sprite = "assets/platforms/rill-slide-right.png"
+			x = 35,
+			y = 80,
+			shape = {0,30, 61,0, 78,0, 78,7, 0,45},
+			sprite = "assets/platforms/rill-slope-right.png"
 		}
 	},
-	decorations = {}
+	decorations = {
+		{
+			x = 98,
+			y = -20,
+			sprite = "assets/decorations/rill-lollipop-big-purple.png"
+		},
+		{
+			x = 127,
+			y = 4,
+			sprite = "assets/decorations/rill-lollipop-small-green.png"
+		},
+		{
+			x = -152,
+			y = -20,
+			sprite = "assets/decorations/rill-lollipop-big-orange.png"
+		},
+		{
+			x = -121,
+			y = 4,
+			sprite = "assets/decorations/rill-lollipop-small-blue.png"
+		},
+	}
 }
