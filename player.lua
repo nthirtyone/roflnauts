@@ -212,11 +212,13 @@ function Player:update(dt)
 	-- # PUNCH
 	-- Cooldown
 	self.punchcd = self.punchcd - dt
-	for _,fixture in pairs(self.body:getFixtureList()) do
-		if fixture:getUserData() ~= self then
-			fixture:setUserData({fixture:getUserData()[1] - dt, fixture:getUserData()[2]})
-			if fixture:getUserData()[1] < 0 then
-				fixture:destroy()
+	if not self.body:isDestroyed() then -- This is weird
+		for _,fixture in pairs(self.body:getFixtureList()) do
+			if fixture:getUserData() ~= self then
+				fixture:setUserData({fixture:getUserData()[1] - dt, fixture:getUserData()[2]})
+				if fixture:getUserData()[1] < 0 then
+					fixture:destroy()
+				end
 			end
 		end
 	end
