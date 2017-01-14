@@ -71,28 +71,6 @@ function Player:new (game, world, x, y, name)
 	-- Animation
 	o.current = o.animations.idle
 	o:createEffect("respawn")
-	--[[ New punch mechanics
-	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-6,-6, -20,-6, -20,6, -6,6), 0) -- LEFT
-	fixture:setSensor(true)
-	fixture:setCategory(3)
-	fixture:setMask(1,3)
-	fixture:setGroupIndex(group)
-	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(6,-6, 20,-6, 20,6, 6,6), 0) -- RIGHT
-	fixture:setSensor(true)
-	fixture:setCategory(3)
-	fixture:setMask(1,3)
-	fixture:setGroupIndex(group)
-	o.punch_right = fixture
-	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-8,-7, -8,-20, 8,-20, 8,-7), 0) -- UP
-	fixture:setSensor(true)
-	fixture:setCategory(3)
-	fixture:setMask(1,3)
-	fixture:setGroupIndex(group)
-	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-8,7, -8,20, 8,20, 8,7), 0) -- DOWN
-	fixture:setSensor(true)
-	fixture:setCategory(3)
-	fixture:setMask(1,3)
-	fixture:setGroupIndex(group)]]
 	-- Portrait load for first object created
 	if self.portrait_sprite == nil then
 		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
