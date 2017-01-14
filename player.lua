@@ -384,16 +384,16 @@ function Player:hit(direction)
 	-- actual punch
 	local fixture
 	if direction == "left" then
-		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-6,-6, -20,-6, -20,6, -6,6), 0)
+		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-2,-6, -20,-6, -20,6, -2,6), 0)
 	end
 	if direction == "right" then
-		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(6,-6, 20,-6, 20,6, 6,6), 0)
+		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(2,-6, 20,-6, 20,6, 2,6), 0)
 	end
 	if direction == "up" then
-		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-8,-7, -8,-20, 8,-20, 8,-7), 0)
+		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-8,-4, -8,-20, 8,-20, 8,-4), 0)
 	end
 	if direction == "down" then
-		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-8,7, -8,20, 8,20, 8,7), 0)
+		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-8,4, -8,20, 8,20, 8,4), 0)
 	end
 	fixture:setSensor(true)
 	fixture:setCategory(3)
