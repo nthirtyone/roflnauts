@@ -44,8 +44,6 @@ Player = {
 	portrait_frame  = nil,
 	portrait_sheet  = require "nautsicons",
 	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
-	-- New punch mechanics
-	hitbox_fixture,
 	-- Sounds
 	sfx = require "sounds"
 }
@@ -57,12 +55,14 @@ function Player:new (game, world, x, y, name)
 	setmetatable(o, self)
 	self.__index = self
 	-- Physics
+	local group = -1-#game.Nauts
 	o.body    = love.physics.newBody(world, x, y, "dynamic")
 	o.shape   = love.physics.newRectangleShape(10, 16)
 	o.fixture = love.physics.newFixture(o.body, o.shape, 8)
 	o.fixture:setUserData(o)
 	o.fixture:setCategory(2)
 	o.fixture:setMask(2)
+	o.fixture:setGroupIndex(group)
 	o.body:setFixedRotation(true)
 	-- Misc
 	o.name   = name or "empty"
@@ -71,23 +71,28 @@ function Player:new (game, world, x, y, name)
 	-- Animation
 	o.current = o.animations.idle
 	o:createEffect("respawn")
-	-- New punch mechanics
-	o.hitbox_fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(0,-6,20,-6,20,6,0,6), 0)
-	o.hitbox_fixture:setSensor(true)
-	o.hitbox_fixture:setCategory(3)
-	o.hitbox_fixture:setMask(1)
-	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(0,-6,-20,-6,-20,6,0,6), 0)
+	--[[ New punch mechanics
+	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-6,-6, -20,-6, -20,6, -6,6), 0) -- LEFT
 	fixture:setSensor(true)
 	fixture:setCategory(3)
-	fixture:setMask(1)
-	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-8,0,-8,-20,8,-20,8,0), 0)
+	fixture:setMask(1,3)
+	fixture:setGroupIndex(group)
+	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(6,-6, 20,-6, 20,6, 6,6), 0) -- RIGHT
 	fixture:setSensor(true)
 	fixture:setCategory(3)
-	fixture:setMask(1)
-	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-8,0,-8,20,8,20,8,0), 0)
+	fixture:setMask(1,3)
+	fixture:setGroupIndex(group)
+	o.punch_right = fixture
+	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-8,-7, -8,-20, 8,-20, 8,-7), 0) -- UP
 	fixture:setSensor(true)
 	fixture:setCategory(3)
-	fixture:setMask(1)
+	fixture:setMask(1,3)
+	fixture:setGroupIndex(group)
+	local fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(-8,7, -8,20, 8,20, 8,7), 0) -- DOWN
+	fixture:setSensor(true)
+	fixture:setCategory(3)
+	fixture:setMask(1,3)
+	fixture:setGroupIndex(group)]]
 	-- Portrait load for first object created
 	if self.portrait_sprite == nil then
 		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
@@ -207,6 +212,14 @@ function Player:update(dt)
 	-- # PUNCH
 	-- Cooldown
 	self.punchcd = self.punchcd - dt
+	for _,fixture in pairs(self.body:getFixtureList()) do
+		if fixture:getUserData() ~= self then
+			fixture:setUserData({fixture:getUserData()[1] - dt, fixture:getUserData()[2]})
+			if fixture:getUserData()[1] < 0 then
+				fixture:destroy()
+			end
+		end
+	end
 
 	-- Stop vertical
 	local c,a = self.current, self.animations
@@ -271,19 +284,23 @@ function Player:controlpressed(set, action, key)
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack_up")
 			end
-			self:hit(-f,-18,4*f,10, 0, -1)
+			self:hit("up")
 		elseif isDown(controlset, "down") then
 			-- Punch down
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack_down")
 			end
-			self:hit(-4,-2,4,9, 0, 1)
+			self:hit("down")
 		else
 			-- Punch horizontal
 			if self.current ~= self.animations.damage then
 				self:changeAnimation("attack")
 			end
-			self:hit(2*f,-4,8*f,4, f, 0)
+			if f == 1 then
+				self:hit("right")
+			else
+				self:hit("left")
+			end
 			self.punchdir = 1
 		end
 	end
@@ -332,6 +349,11 @@ function Player:draw(offset_x, offset_y, scale, debug)
 			end
 			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
 		end
+		for _,contact in pairs(self.body:getContactList()) do
+			love.graphics.setColor(255, 0, 0, 255)
+			love.graphics.setPointSize(scale)
+			love.graphics.points(self.world.camera:translatePoints(contact:getPositions()))
+		end
 	end
 end
 
@@ -375,18 +397,29 @@ function Player:createEffect(name)
 end
 
 -- Punch of `Player`
--- offset_x, offset_y, step_x, step_y, vector_x, vector_y
-function Player:hit(ox, oy, sx, sy, vx, vy)
+-- (string) direction 
+function Player:hit(direction)
 	-- start cooldown
 	self.punchcd = self.punchinitial
 	-- actual punch
-	for k,n in pairs(self.world.Nauts) do
-		if n ~= self then
-			if self:testHit(n, ox, oy, sx, sy) then
-				n:damage(vx, vy)
-			end
-		end
+	local fixture
+	if direction == "left" then
+		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-6,-6, -20,-6, -20,6, -6,6), 0)
 	end
+	if direction == "right" then
+		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(6,-6, 20,-6, 20,6, 6,6), 0)
+	end
+	if direction == "up" then
+		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-8,-7, -8,-20, 8,-20, 8,-7), 0)
+	end
+	if direction == "down" then
+		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-8,7, -8,20, 8,20, 8,7), 0)
+	end
+	fixture:setSensor(true)
+	fixture:setCategory(3)
+	fixture:setMask(1,3)
+	fixture:setGroupIndex(self.fixture:getGroupIndex())
+	fixture:setUserData({0.08, direction})
 	-- sound
 	self:playSound(4)
 end
