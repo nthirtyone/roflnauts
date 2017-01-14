@@ -15,7 +15,8 @@ Menu = {
 	asteroids,
 	stars,
 	asteroids_bounce = 0,
-	stars_timer = 0,
+	stars_frame = 1,
+	stars_delay = 0.8,
 	allowMove = true,
 	quads = {
 		button = {
@@ -96,14 +97,21 @@ function Menu:update(dt)
 	end
 	self.asteroids_bounce = self.asteroids_bounce + dt*0.1
 	if self.asteroids_bounce > 2 then self.asteroids_bounce = self.asteroids_bounce - 2 end
-	self.stars_timer = self.stars_timer + dt * 0.7
-	if self.stars_timer > 2 then self.stars_timer = self.stars_timer - 2 end
+	self.stars_delay = self.stars_delay - dt
+	if self.stars_delay < 0 then
+		self.stars_delay = self.stars_delay + Menu.stars_delay --Menu.stars_delay is initial
+		if self.stars_frame == 2 then
+			self.stars_frame = 1
+		else
+			self.stars_frame = 2
+		end
+	end
 end
 function Menu:draw()
 	local scale = self.scale
 	local scaler = getRealScale()
 	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
-	love.graphics.draw(self.stars, self.quads.stars[math.ceil(self.stars_timer)], 0, 0, 0, scaler, scaler)
+	love.graphics.draw(self.stars, self.quads.stars[self.stars_frame], 0, 0, 0, scaler, scaler)
 	love.graphics.draw(self.asteroids, 0, math.floor(64+math.sin(self.asteroids_bounce*math.pi)*4)*scaler, 0, scaler, scaler)
 	love.graphics.setFont(Font)
 	for _,element in pairs(self.elements) do
