@@ -48,7 +48,7 @@ local controlreleased = function(self, set, action, key)
 			dimmer:set("visible", false)
 			self.parent.allowMove = true
 			self.inProgress = false
-			table.insert(self.newSet, Controller.sets[self.setNumber()][7])
+			table.insert(self.newSet, Controller.sets[self.setNumber()].joystick)
 			print(self.newSet[7])
 			Settings.change(self.setNumber(), self.newSet[1], self.newSet[2], self.newSet[3], self.newSet[4], self.newSet[5], self.newSet[6], self.newSet[7])
 		else

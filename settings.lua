@@ -11,6 +11,7 @@ function Settings.load()
 		end
 		local getSettings = love.filesystem.load("settings")
 		Settings.current = getSettings()
+		Controller.reset()
 		local joysticksList = love.joystick.getJoysticks() -- local list for editing
 		for _,set in pairs(Settings.current) do
 			local isJoystick = set[7]
@@ -57,7 +58,9 @@ function Settings.change(n, left, right, up, down, attack, jump, joystick)
 	else
 		bool = false
 	end
+	-- Save current settings
 	Settings.current[n] = {left, right, up, down, attack, jump, bool}
-	table.remove(Controller.sets, n)
-	Controller.registerSet(left, right, up, down, attack, jump, joystick)
+	Settings.save()
+	-- Load settings
+	Settings.load()
 end

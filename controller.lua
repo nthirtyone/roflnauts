@@ -30,6 +30,12 @@ function Controller.registerSet(left, right, up, down, attack, jump, joystick)
 	return set
 end
 
+-- Reset table of controls sets.
+function Controller.reset()
+	local t = {}
+	Controller.sets = t
+end
+
 -- Get table of controls sets.
 function Controller.getSets()
 	return Controller.sets
