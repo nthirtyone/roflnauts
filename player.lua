@@ -44,6 +44,8 @@ Player = {
 	portrait_frame  = nil,
 	portrait_sheet  = require "nautsicons",
 	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
+	-- New punch mechanics
+	hitbox_fixture,
 	-- Sounds
 	sfx = require "sounds"
 }
@@ -56,7 +58,7 @@ function Player:new (game, world, x, y, name)
 	self.__index = self
 	-- Physics
 	o.body    = love.physics.newBody(world, x, y, "dynamic")
-	o.shape   = love.physics.newRectangleShape(10, 17)
+	o.shape   = love.physics.newRectangleShape(10, 16)
 	o.fixture = love.physics.newFixture(o.body, o.shape, 8)
 	o.fixture:setUserData(o)
 	o.fixture:setCategory(2)
@@ -69,6 +71,11 @@ function Player:new (game, world, x, y, name)
 	-- Animation
 	o.current = o.animations.idle
 	o:createEffect("respawn")
+	-- New punch mechanics
+	o.hitbox_fixture = love.physics.newFixture(o.body, love.physics.newPolygonShape(6,-8,28,-8,28,8,6,8), 0)
+	o.hitbox_fixture:setSensor(true)
+	o.hitbox_fixture:setCategory(3)
+	o.hitbox_fixture:setMask(1)
 	-- Portrait load for first object created
 	if self.portrait_sprite == nil then
 		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
@@ -305,9 +312,14 @@ function Player:draw(offset_x, offset_y, scale, debug)
 	love.graphics.draw(self.sprite, self.current[self.frame], draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 14)
 	-- debug draw
 	if debug then
-		love.graphics.setColor(137, 255, 0, 140)
-		love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(self.shape:getPoints())))
-		love.graphics.setColor(255,255,255,255)
+		for _,fixture in pairs(self.body:getFixtureList()) do
+			if fixture:getCategory() == 2 then
+				love.graphics.setColor(137, 255, 0, 140)
+			else
+				love.graphics.setColor(137, 0, 255, 100)
+			end
+			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
+		end
 	end
 end
 
