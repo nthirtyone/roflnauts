@@ -7,6 +7,8 @@ local element = require "element"
 local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
 
+local awesometwo = love.graphics.newImage("assets/two.png")
+
 return {
 	button:new(menu)
 		:setText("Start")
@@ -47,8 +49,7 @@ return {
 				local x,y = self:getPosition()
 				love.graphics.setColor(255, 255, 255, 255)
 				love.graphics.setFont(Bold)
-				love.graphics.print("1", (x-17)*scale, y*scale, 0, scale*2, scale*2, 12)
-				love.graphics.print("1", (x+13)*scale, y*scale, 0, scale*2, scale*2, 12)
+				love.graphics.draw(awesometwo, x*scale, y*scale, 0, scale, scale, 35)
 			end)
 	,
 	header:new(menu)
