@@ -1,9 +1,12 @@
-local w, h = 80, 252
-return {
-	default   = love.graphics.newQuad(2,  3,76,37,w,h),
-	rill      = love.graphics.newQuad(2, 45,76,37,w,h),
-	ribbit    = love.graphics.newQuad(2, 87,76,37,w,h),
-	starstorm = love.graphics.newQuad(2,129,76,37,w,h),
-	aiguillon = love.graphics.newQuad(2,171,76,37,w,h),
-	sorona    = love.graphics.newQuad(2,213,76,37,w,h),
-}
+-- Maps icons list generation file
+-- REWORK NEEDED, it is so similar to `nautsicons.lua` they could be merged together into one function that returns icon quad sequences.
+local maps = require "maplist"
+local w, h = 456, 37
+local icons = {}
+
+local i = 0
+for _,map in pairs(maps) do
+	icons[map] = love.graphics.newQuad(i*76, 0, 76, 37, w, h)
+	i = i + 1
+end
+return icons

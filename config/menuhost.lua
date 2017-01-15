@@ -16,7 +16,7 @@ return {
 		:set("global", true)
 		:set("first", true)
 		:set("list", require "maplist")
-		:set("icons_i", love.graphics.newImage("assets/placeholder-map-icon.png"))
+		:set("icons_i", love.graphics.newImage("assets/maps.png"))
 		:set("icons_q", require "mapicons")
 		:set("shape", "panorama")
 		:init()
