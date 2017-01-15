@@ -9,12 +9,10 @@ return {
 	height = 240,
 	-- RESPAWN POINTS
 	respawns = {
-		{x = -30, y = 70},
-		{x =  -90, y = 125},
-		{x =   -31, y = 122},
-		{x =  70, y = 20},
-		{x =  1, y = -15},
-		{x =  105, y = -15}
+		{x = -98, y = -70},
+		{x = 70, y = -70},
+		{x = -30, y = -20},
+		{x = -90, y = 40},
 	},
 	-- GRAPHICS
 	clouds = false,
@@ -22,32 +20,32 @@ return {
 	platforms = {
 		{
 			x = -60,
-			y = 70,
-			shape = {0,0, 60,0, 60,20, 0,20},
+			y = 0,
+			shape = {0,1, 59,1, 59,17, 0,17},
 			sprite = "assets/platforms/sorona-center.png"
 		},
 		{
 			x = -40,
-			y = 125,
+			y = 55,
 			shape = {3,0, 180,0, 180,20, 3,20},
 			sprite = "assets/platforms/sorona-right-bottom.png"
 		},
 		{
 			x = -120,
-			y = 122,
-			shape = {3,0, 62,0, 62,24, 3,24},
+			y = 55,
+			shape = {3,0, 62,0, 62,23, 3,23},
 			sprite = "assets/platforms/sorona-left-bottom.png"
 		},
 		{
 			x = 0,
-			y = 20,
-			shape = {1,0, 141,0, 1,25, 141,25},
+			y = -50,
+			shape = {1,1, 140,1, 1,17, 140,17},
 			sprite = "assets/platforms/sorona-right-top.png"
 		},
 		{
 			x = -150,
-			y = 15,
-			shape = {1,8, 105,8, 85,16, 38,28, 1,30},
+			y = -55,
+			shape = {1,9, 106,9, 40,27, 1,27},
 			sprite = "assets/platforms/sorona-left-top.png"
 		}
 	},
