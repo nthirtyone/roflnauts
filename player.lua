@@ -3,6 +3,7 @@
 -- Collision category: [2]
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
+require "animated"
 
 -- Metatable of `Player`
 -- nils initialized in constructor
@@ -24,11 +25,6 @@ Player = {
 	alive = true,
 	punchcd = 0.25,
 	punchdir = 0, -- a really bad thing
-	-- Animation
-	animations = require "animations",
-	current = nil,
-	frame = 1,
-	delay = 0.10,
 	-- Movement
 	inAir = true,
 	salto = false,
@@ -46,6 +42,8 @@ Player = {
 	-- Sounds
 	sfx = require "sounds"
 }
+Player.__index = Player
+setmetatable(Player, Animated)
 
 -- Constructor of `Player`
 function Player:new (game, world, x, y, name)
@@ -153,21 +151,7 @@ function Player:update(dt)
 		end
 	end
 
-	-- # ANIMATIONS
-	-- Animation
-	self.delay = self.delay - dt
-	if self.delay < 0 then
-		self.delay = self.delay + Player.delay -- INITIAL from metatable
-		-- Thank you De Morgan!
-		if self.current.repeated or not (self.frame == self.current.frames) then
-			self.frame = (self.frame % self.current.frames) + 1
-		elseif isDown(controlset, "right") or isDown(controlset, "left") then
-			-- If nonrepeatable animation is finished and player is walking
-			self:changeAnimation("walk")
-		elseif self.current == self.animations.damage then
-			self:changeAnimation("idle")
-		end
-	end
+	self:animate(dt)
 
 	-- # DEATH
 	-- We all die in the end.
@@ -240,7 +224,7 @@ function Player:controlpressed(set, action, key)
 			if (self.current == self.animations.attack) or
 			   (self.current == self.animations.attack_up) or
 			   (self.current == self.animations.attack_down) then
-				self:changeAnimation("idle")
+				self:setAnimation("idle")
 			end
 			-- Remove jump
 			self.jumpnumber = self.jumpnumber - 1
@@ -252,7 +236,7 @@ function Player:controlpressed(set, action, key)
 	   (self.current ~= self.animations.attack) and
 	   (self.current ~= self.animations.attack_up) and
 	   (self.current ~= self.animations.attack_down) then
-		self:changeAnimation("walk")
+		self:setAnimation("walk")
 	end
 
 	-- Punching
@@ -262,19 +246,19 @@ function Player:controlpressed(set, action, key)
 		if isDown(controlset, "up") then
 			-- Punch up
 			if self.current ~= self.animations.damage then
-				self:changeAnimation("attack_up")
+				self:setAnimation("attack_up")
 			end
 			self:hit("up")
 		elseif isDown(controlset, "down") then
 			-- Punch down
 			if self.current ~= self.animations.damage then
-				self:changeAnimation("attack_down")
+				self:setAnimation("attack_down")
 			end
 			self:hit("down")
 		else
 			-- Punch horizontal
 			if self.current ~= self.animations.damage then
-				self:changeAnimation("attack")
+				self:setAnimation("attack")
 			end
 			if f == 1 then
 				self:hit("right")
@@ -299,7 +283,7 @@ function Player:controlreleased(set, action, key)
 	   (isDown(controlset, "left") or isDown(controlset, "right")) and
 	   self.current == self.animations.walk
 	then
-		self:changeAnimation("idle")
+		self:setAnimation("idle")
 	end
 end
 
@@ -359,10 +343,17 @@ end
 
 -- Change animation of `Player`
 -- idle, walk, attack, attack_up, attack_down, damage
-function Player:changeAnimation(animation)
-	self.frame = 1
-	self.delay = Player.delay -- INITIAL from metatable
-	self.current = self.animations[animation]
+function Player:nextFrame()
+	local isDown = Controller.isDown
+	local controlset = self:getControlSet()
+	if self.current.repeated or not (self.frame == self.current.frames) then
+		self.frame = (self.frame % self.current.frames) + 1
+	elseif isDown(controlset, "right") or isDown(controlset, "left") then
+		-- If nonrepeatable animation is finished and player is walking
+		self:setAnimation("walk")
+	elseif self.current == self.animations.damage then
+		self:setAnimation("idle")
+	end
 end
 
 -- Spawn `Effect` relative to `Player`
@@ -425,7 +416,7 @@ function Player:damage(direction)
 	local x,y = self.body:getLinearVelocity()
 	self.body:setLinearVelocity(x,0)
 	self.body:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
-	self:changeAnimation("damage")
+	self:setAnimation("damage")
 	self.combo = math.min(27, self.combo + 1)
 	self.punchcd = 0.08 + self.combo*0.006
 	self:playSound(2)
