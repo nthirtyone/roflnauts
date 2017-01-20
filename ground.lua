@@ -3,6 +3,7 @@
 -- Collision category: [1]
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
+require "animated"
 
 -- Metatable of `Ground`
 -- nils initialized in constructor
@@ -11,13 +12,14 @@ Ground = {
 	shape = nil,
 	fixture = nil,
 	world = nil,
-	sprite = nil
 }
+Ground.__index = Ground
+setmetatable(Ground, Animated)
+
 -- Constructor of `Ground`
 function Ground:new (game, world, x, y, shape, sprite)
 	local o = {}
 	setmetatable(o, self)
-	self.__index = self
 	o.body  = love.physics.newBody(world, x, y)
 	-- MULTIPLE SHAPES NEED TO BE REWRITED!
 	o.shape = {}
@@ -37,15 +39,9 @@ function Ground:new (game, world, x, y, shape, sprite)
 		end
 	end
 	-- END HERE
-	o.sprite  = love.graphics.newImage(sprite)
+	o:setSprite(love.graphics.newImage(sprite))
 	o.world = game
 	return o
-end
-
--- Destructor of `Ground`
-function Ground:delete ()
-	-- body deletion is handled by world deletion
-	self.sprite = nil
 end
 
 -- Position
@@ -65,8 +61,7 @@ function Ground:draw (offset_x, offset_y, scale, debug)
 	local draw_x = (math.floor(x) + offset_x) * scale
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
-	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, draw_x, draw_y, 0, scale, scale)
+	Animated.draw(self, draw_x, draw_y, 0, scale, scale)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(255, 69, 0, 140)
