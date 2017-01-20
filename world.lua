@@ -231,9 +231,15 @@ function World:update(dt)
 	self.world:update(dt)
 	-- Camera
 	self.camera:update(dt)
-	-- Nauts
+	-- Engine world: Nauts, Grounds (kek) and Decorations - all Animateds (top kek)
 	for _,naut in pairs(self.Nauts) do
 		naut:update(dt)
+	end
+	for _,platform in pairs(self.Platforms) do
+		platform:update(dt)
+	end
+	for _,decoration in pairs(self.Decorations) do
+		decoration:update(dt)
 	end
 	-- Clouds
 	if self.map.clouds then
