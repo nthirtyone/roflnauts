@@ -25,6 +25,12 @@ function Animated:getSprite()
 	return self.sprite
 end
 
+-- Sets new animations list.
+function Animated:setAnimationsList(t)
+	self.animations = t
+	self:setAnimation("default")
+end
+
 -- Sets current animation by table key.
 function Animated:setAnimation(animation)
 	self.frame = 1
@@ -38,23 +44,29 @@ end
 
 -- Get frame quad for drawing.
 function Animated:getQuad()
-	return self.current[self.frame]
+	if self.animations and self.current then
+		return self.current[self.frame]
+	end
 end
 
 -- Drawing self to LOVE2D buffer.
+-- If there is no Quad, it will draw entire sprite.
 function Animated:draw(...)
 	local s, q = self:getSprite(), self:getQuad()
-	if s and q then
+	if s then
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(s, q, ...)
+		if q then love.graphics.draw(s, q, ...)
+		else love.graphics.draw(s, ...) end
 	end
 end
 -- Animation updating.
 function Animated:update(dt)
-	self.delay = self.delay - dt
-	if self.delay < 0 then
-		self.delay = self.delay + Animated.delay -- INITIAL from metatable
-		self:nextFrame()
+	if self.animations and self.current then
+		self.delay = self.delay - dt
+		if self.delay < 0 then
+			self.delay = self.delay + Animated.delay -- INITIAL from metatable
+			self:nextFrame()
+		end
 	end
 end
 -- Moving to the next frame.
