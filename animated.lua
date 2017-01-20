@@ -11,6 +11,11 @@ Animated = {
 }
 Animated.__index = Animated
 
+-- Cleans up reference to sprite on deletion.
+function Animated:delete()
+	self.sprite = nil
+end
+
 -- Sets an Image as a sprite.
 function Animated:setSprite(image)
 	self.sprite = image
@@ -38,9 +43,12 @@ end
 
 -- Drawing self to LOVE2D buffer.
 function Animated:draw(...)
-	love.graphics.draw(self:getSprite(), self:getQuad(), ...)
+	local s, q = self:getSprite(), self:getQuad()
+	if s and q then
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.draw(s, q, ...)
+	end
 end
-
 -- Animation updating.
 function Animated:update(dt)
 	self.delay = self.delay - dt

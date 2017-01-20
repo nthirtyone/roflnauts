@@ -52,7 +52,6 @@ function Player:new (game, world, x, y, name)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
-	self.__index = self
 	-- Physics
 	local group = -1-#game.Nauts
 	o.body    = love.physics.newBody(world, x, y, "dynamic")
@@ -77,12 +76,6 @@ function Player:new (game, world, x, y, name)
 		self.portrait_frame = love.graphics.newImage("assets/menu.png")
 	end
 	return o
-end
-
--- Destructor of `Player`
-function Player:delete()
-	-- body deletion is handled by world deletion
-	self.sprite = nil
 end
 
 -- Control set managment
@@ -303,9 +296,7 @@ function Player:draw(offset_x, offset_y, scale, debug)
 	local draw_x = (math.floor(x) + offset_x) * scale
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
-	love.graphics.setColor(255,255,255,255)
-	Animated.draw(self, draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
-	--love.graphics.draw(self:getSprite(), self:getQuad(), draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
+	Animated.draw(self, draw_x, draw_y, self.rotate, self.facing*scale, scale, 12, 15)
 	-- debug draw
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
