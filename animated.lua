@@ -27,8 +27,10 @@ end
 
 -- Sets new animations list.
 function Animated:setAnimationsList(t)
-	self.animations = t
-	self:setAnimation("default")
+	if t then
+		self.animations = t
+		self:setAnimation("default")
+	end
 end
 
 -- Sets current animation by table key.

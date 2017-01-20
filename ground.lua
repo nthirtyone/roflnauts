@@ -17,7 +17,7 @@ Ground.__index = Ground
 setmetatable(Ground, Animated)
 
 -- Constructor of `Ground`
-function Ground:new (game, world, x, y, shape, sprite)
+function Ground:new (game, world, x, y, shape, sprite, animations)
 	local o = {}
 	setmetatable(o, self)
 	o.body  = love.physics.newBody(world, x, y)
@@ -40,6 +40,7 @@ function Ground:new (game, world, x, y, shape, sprite)
 	end
 	-- END HERE
 	o:setSprite(love.graphics.newImage(sprite))
+	o:setAnimationsList(animations)
 	o.world = game
 	return o
 end

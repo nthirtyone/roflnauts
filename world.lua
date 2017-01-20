@@ -93,7 +93,7 @@ function World:loadMap(name)
 	self.map = map()
 	-- Platforms
 	for _,platform in pairs(self.map.platforms) do
-		self:createPlatform(platform.x, platform.y, platform.shape, platform.sprite)
+		self:createPlatform(platform.x, platform.y, platform.shape, platform.sprite, platform.animations)
 	end
 	-- Decorations
 	for _,decoration in pairs(self.map.decorations) do
@@ -125,8 +125,8 @@ function World:getSpawnPosition()
 end
 
 -- Add new platform to the world
-function World:createPlatform(x, y, polygon, sprite)
-	table.insert(self.Platforms, Ground:new(self, self.world, x, y, polygon, sprite))
+function World:createPlatform(x, y, polygon, sprite, animations)
+	table.insert(self.Platforms, Ground:new(self, self.world, x, y, polygon, sprite, animations))
 end
 
 -- Add new naut to the world
