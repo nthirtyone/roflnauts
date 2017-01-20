@@ -40,7 +40,9 @@ Player = {
 	portrait_sheet  = require "nautsicons",
 	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
 	-- Sounds
-	sfx = require "sounds"
+	sfx = require "sounds",
+	-- Animations table
+	animations = require "animations"
 }
 Player.__index = Player
 setmetatable(Player, Animated)
@@ -63,11 +65,11 @@ function Player:new (game, world, x, y, name)
 	o.body:setFixedRotation(true)
 	-- Misc
 	o.name   = name or "empty"
-	o.sprite = newImage("assets/nauts/"..o.name..".png")
+	o:setSprite(newImage("assets/nauts/"..o.name..".png"))
 	o.world  = game
 	o.punchcd = 0
 	-- Animation
-	o.current = o.animations.idle
+	o.current = o.animations.default
 	o:createEffect("respawn")
 	-- Portrait load for first object created
 	if self.portrait_sprite == nil then
@@ -108,7 +110,7 @@ function Player:update(dt)
 	end
 
 	-- Salto
-	if self.salto and (self.current == self.animations.walk or self.current == self.animations.idle) then
+	if self.salto and (self.current == self.animations.walk or self.current == self.animations.default) then
 		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
 	elseif self.rotate ~= 0 then
 		self.rotate = 0
@@ -151,7 +153,7 @@ function Player:update(dt)
 		end
 	end
 
-	self:animate(dt)
+	Animated.update(self, dt)
 
 	-- # DEATH
 	-- We all die in the end.
@@ -224,7 +226,7 @@ function Player:controlpressed(set, action, key)
 			if (self.current == self.animations.attack) or
 			   (self.current == self.animations.attack_up) or
 			   (self.current == self.animations.attack_down) then
-				self:setAnimation("idle")
+				self:setAnimation("default")
 			end
 			-- Remove jump
 			self.jumpnumber = self.jumpnumber - 1
@@ -283,7 +285,7 @@ function Player:controlreleased(set, action, key)
 	   (isDown(controlset, "left") or isDown(controlset, "right")) and
 	   self.current == self.animations.walk
 	then
-		self:setAnimation("idle")
+		self:setAnimation("default")
 	end
 end
 
@@ -302,7 +304,8 @@ function Player:draw(offset_x, offset_y, scale, debug)
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.current[self.frame], draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
+	Animated.draw(self, draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
+	--love.graphics.draw(self:getSprite(), self:getQuad(), draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
 	-- debug draw
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
@@ -342,7 +345,7 @@ function Player:drawHUD(x,y,scale,elevation)
 end
 
 -- Change animation of `Player`
--- idle, walk, attack, attack_up, attack_down, damage
+-- default, walk, attack, attack_up, attack_down, damage
 function Player:nextFrame()
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
@@ -352,7 +355,7 @@ function Player:nextFrame()
 		-- If nonrepeatable animation is finished and player is walking
 		self:setAnimation("walk")
 	elseif self.current == self.animations.damage then
-		self:setAnimation("idle")
+		self:setAnimation("default")
 	end
 end
 
