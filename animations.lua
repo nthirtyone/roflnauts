@@ -1,8 +1,8 @@
 -- Animations spritesheet array for `Player`
 -- Basic spritesheet size is 376x26. Each frame is 24x24 and has 1px border around it.
--- From the left: idle (walk0), walk1, walk2, walk3, attack0, attack1, attack3, attack_up0, attack_up1, attack_up2, attack_down0, attack_down1, attack_down2, damage0, damage1
+-- From the left: default (walk0), walk1, walk2, walk3, attack0, attack1, attack3, attack_up0, attack_up1, attack_up2, attack_down0, attack_down1, attack_down2, damage0, damage1
 local animations = {
-	idle = {
+	default = {
 		[1] = love.graphics.newQuad(  1, 1, 24,24, 376,26),
 		frames = 1,
 		repeated = true

@@ -3,6 +3,7 @@
 -- Collision category: [2]
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
+require "animated"
 
 -- Metatable of `Player`
 -- nils initialized in constructor
@@ -24,11 +25,6 @@ Player = {
 	alive = true,
 	punchcd = 0.25,
 	punchdir = 0, -- a really bad thing
-	-- Animation
-	animations = require "animations",
-	current = nil,
-	frame = 1,
-	delay = 0.10,
 	-- Movement
 	inAir = true,
 	salto = false,
@@ -44,15 +40,18 @@ Player = {
 	portrait_sheet  = require "nautsicons",
 	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
 	-- Sounds
-	sfx = require "sounds"
+	sfx = require "sounds",
+	-- Animations table
+	animations = require "animations"
 }
+Player.__index = Player
+setmetatable(Player, Animated)
 
 -- Constructor of `Player`
 function Player:new (game, world, x, y, name)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
-	self.__index = self
 	-- Physics
 	local group = -1-#game.Nauts
 	o.body    = love.physics.newBody(world, x, y, "dynamic")
@@ -65,11 +64,11 @@ function Player:new (game, world, x, y, name)
 	o.body:setFixedRotation(true)
 	-- Misc
 	o.name   = name or "empty"
-	o.sprite = newImage("assets/nauts/"..o.name..".png")
+	o:setSprite(newImage("assets/nauts/"..o.name..".png"))
 	o.world  = game
 	o.punchcd = 0
 	-- Animation
-	o.current = o.animations.idle
+	o.current = o.animations.default
 	o:createEffect("respawn")
 	-- Portrait load for first object created
 	if self.portrait_sprite == nil then
@@ -77,12 +76,6 @@ function Player:new (game, world, x, y, name)
 		self.portrait_frame = love.graphics.newImage("assets/menu.png")
 	end
 	return o
-end
-
--- Destructor of `Player`
-function Player:delete()
-	-- body deletion is handled by world deletion
-	self.sprite = nil
 end
 
 -- Control set managment
@@ -110,7 +103,7 @@ function Player:update(dt)
 	end
 
 	-- Salto
-	if self.salto and (self.current == self.animations.walk or self.current == self.animations.idle) then
+	if self.salto and (self.current == self.animations.walk or self.current == self.animations.default) then
 		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
 	elseif self.rotate ~= 0 then
 		self.rotate = 0
@@ -153,21 +146,7 @@ function Player:update(dt)
 		end
 	end
 
-	-- # ANIMATIONS
-	-- Animation
-	self.delay = self.delay - dt
-	if self.delay < 0 then
-		self.delay = self.delay + Player.delay -- INITIAL from metatable
-		-- Thank you De Morgan!
-		if self.current.repeated or not (self.frame == self.current.frames) then
-			self.frame = (self.frame % self.current.frames) + 1
-		elseif isDown(controlset, "right") or isDown(controlset, "left") then
-			-- If nonrepeatable animation is finished and player is walking
-			self:changeAnimation("walk")
-		elseif self.current == self.animations.damage then
-			self:changeAnimation("idle")
-		end
-	end
+	Animated.update(self, dt)
 
 	-- # DEATH
 	-- We all die in the end.
@@ -240,7 +219,7 @@ function Player:controlpressed(set, action, key)
 			if (self.current == self.animations.attack) or
 			   (self.current == self.animations.attack_up) or
 			   (self.current == self.animations.attack_down) then
-				self:changeAnimation("idle")
+				self:setAnimation("default")
 			end
 			-- Remove jump
 			self.jumpnumber = self.jumpnumber - 1
@@ -252,7 +231,7 @@ function Player:controlpressed(set, action, key)
 	   (self.current ~= self.animations.attack) and
 	   (self.current ~= self.animations.attack_up) and
 	   (self.current ~= self.animations.attack_down) then
-		self:changeAnimation("walk")
+		self:setAnimation("walk")
 	end
 
 	-- Punching
@@ -262,19 +241,19 @@ function Player:controlpressed(set, action, key)
 		if isDown(controlset, "up") then
 			-- Punch up
 			if self.current ~= self.animations.damage then
-				self:changeAnimation("attack_up")
+				self:setAnimation("attack_up")
 			end
 			self:hit("up")
 		elseif isDown(controlset, "down") then
 			-- Punch down
 			if self.current ~= self.animations.damage then
-				self:changeAnimation("attack_down")
+				self:setAnimation("attack_down")
 			end
 			self:hit("down")
 		else
 			-- Punch horizontal
 			if self.current ~= self.animations.damage then
-				self:changeAnimation("attack")
+				self:setAnimation("attack")
 			end
 			if f == 1 then
 				self:hit("right")
@@ -299,7 +278,7 @@ function Player:controlreleased(set, action, key)
 	   (isDown(controlset, "left") or isDown(controlset, "right")) and
 	   self.current == self.animations.walk
 	then
-		self:changeAnimation("idle")
+		self:setAnimation("default")
 	end
 end
 
@@ -317,8 +296,7 @@ function Player:draw(offset_x, offset_y, scale, debug)
 	local draw_x = (math.floor(x) + offset_x) * scale
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
-	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, self.current[self.frame], draw_x, draw_y, self.rotate, self.facing*scale, 1*scale, 12, 15)
+	Animated.draw(self, draw_x, draw_y, self.rotate, self.facing*scale, scale, 12, 15)
 	-- debug draw
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
@@ -358,11 +336,18 @@ function Player:drawHUD(x,y,scale,elevation)
 end
 
 -- Change animation of `Player`
--- idle, walk, attack, attack_up, attack_down, damage
-function Player:changeAnimation(animation)
-	self.frame = 1
-	self.delay = Player.delay -- INITIAL from metatable
-	self.current = self.animations[animation]
+-- default, walk, attack, attack_up, attack_down, damage
+function Player:nextFrame()
+	local isDown = Controller.isDown
+	local controlset = self:getControlSet()
+	if self.current.repeated or not (self.frame == self.current.frames) then
+		self.frame = (self.frame % self.current.frames) + 1
+	elseif isDown(controlset, "right") or isDown(controlset, "left") then
+		-- If nonrepeatable animation is finished and player is walking
+		self:setAnimation("walk")
+	elseif self.current == self.animations.damage then
+		self:setAnimation("default")
+	end
 end
 
 -- Spawn `Effect` relative to `Player`
@@ -425,7 +410,7 @@ function Player:damage(direction)
 	local x,y = self.body:getLinearVelocity()
 	self.body:setLinearVelocity(x,0)
 	self.body:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
-	self:changeAnimation("damage")
+	self:setAnimation("damage")
 	self.combo = math.min(27, self.combo + 1)
 	self.punchcd = 0.08 + self.combo*0.006
 	self:playSound(2)

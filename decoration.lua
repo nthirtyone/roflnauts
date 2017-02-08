@@ -4,10 +4,11 @@ Decoration = {
 	x = 0,
 	y = 0
 }
+Decoration.__index = Decoration
+setmetatable(Decoration, Animated)
 function Decoration:new(x, y, sprite)
 	local o = {}
 	setmetatable(o, self)
-	self.__index = self
 	o.sprite = love.graphics.newImage(sprite)
 	o:setPosition(x,y)
 	return o
@@ -28,6 +29,5 @@ function Decoration:draw(offset_x, offset_y, scale)
 	local draw_x = (math.floor(x) + offset_x) * scale
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- draw
-	love.graphics.setColor(255,255,255,255)
-	love.graphics.draw(self.sprite, draw_x, draw_y, 0, scale, scale)
+	Animated.draw(self, draw_x, draw_y, 0, scale, scale)
 end
