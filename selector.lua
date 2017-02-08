@@ -106,24 +106,12 @@ end
 
 -- Cycle through list on given number
 function Selector:next(n)
-	local total = #self.list
 	local current = self.selections[n]
-	local locked = self:isLocked(n)
-	if not locked then
-		self.selections[n] = (current % total) + 1
-	end
+	self:setSelection(n, current + 1)
 end
 function Selector:previous(n)
-	local total = #self.list
 	local current = self.selections[n]
-	local locked = self:isLocked(n)
-	if not locked then
-		if current == 1 then
-			self.selections[n] = total
-		else
-			self.selections[n] = current - 1
-		end
-	end
+	self:setSelection(n, current - 1)
 end
 
 -- Get number associated with a given set
@@ -138,6 +126,24 @@ end
 function Selector:isLocked(n)
 	local n = n or 1
 	return self.locks[n]
+end
+
+-- Sets value of selection of given number. Returns old.
+function Selector:setSelection(n, new)
+	-- Functception. It sounds like fun but it isn't.
+	local function limit(new, total)
+		if new > total then
+			return limit(new - total, total)
+		elseif new < 1 then
+			return limit(total + new, total)
+		else 
+			return new
+		end
+	end
+	local n = n or 1
+	local old = self.selections[n]
+	self.selections[n] = limit(new, #self.list)
+	return old
 end
 
 -- Get value of selection of given number
@@ -177,6 +183,29 @@ function Selector:getFullSelection(allowed)
 		end
 	end
 	return t
+end
+
+-- Rolls and returns random selection from list that is not locked.
+function Selector:rollRandom(avoids)
+	-- Me: You should make it simpler.
+	-- Inner me: Nah, it works. Leave it.
+	-- Me: Ok, let's leave it as it is.
+	local avoids = avoids or {}
+	local total = #self.list
+	local random = love.math.random(1, total)
+	local eligible = true
+	for _,avoid in ipairs(avoids) do
+		if random == avoid then
+			eligible = false
+			break
+		end
+	end
+	if not eligible or self:isLocked(random) then
+		table.insert(avoids, random)
+		return self:rollRandom(avoid)
+	else
+		return random
+	end
 end
 
 -- Draw single block of Selector
@@ -253,8 +282,15 @@ function Selector:controlpressed(set, action, key)
 		if action == "left" and not locked then self:previous(n) end
 		if action == "right" and not locked then self:next(n) end
 		if action == "attack" then
-			if (self:getSelection(n) ~= 1 or self.first) and self:isUnique(n) then
+			local name = self:getListValue(self:getSelection(n))
+			if name == "random" then
+				self:setSelection(n, self:rollRandom({1})) -- avoid empty naut
 				self.locks[n] = true
+			else
+				-- If not empty or if first is allowed. Additionaly must be unique selection.
+				if (self:getSelection(n) ~= 1 or self.first) and self:isUnique(n) then
+					self.locks[n] = true
+				end
 			end
 		end
 		if action == "jump" then
