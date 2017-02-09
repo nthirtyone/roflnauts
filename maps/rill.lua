@@ -20,31 +20,31 @@ return {
 		{
 			x = -151,
 			y = 25,
-			shape = {0,0, 56,0, 56,12, 0,12},
+			shape = {0,0, 55,0, 55,11, 0,11},
 			sprite = "assets/platforms/rill-flat-left.png"
 		},
 		{
 			x = 93,
 			y = 25,
-			shape = {0,0, 56,0, 56,12, 0,12},
+			shape = {0,0, 55,0, 55,11, 0,11},
 			sprite = "assets/platforms/rill-flat-right.png"
 		},
 		{
 			x = -24,
 			y = 55,
-			shape = {0,0, 49,0, 47,18, 3,18, 0,4},
+			shape = {0,0, 48,0, 47,15, 1,15},
 			sprite = "assets/platforms/rill-center.png"
 		},
 		{
 			x = -112,
 			y = 80,
-			shape = {78,30, 17,0, 0,0, 0,7, 78,45},
+			shape = {77,30, 17,0, 0,0, 0,7, 77,44},
 			sprite = "assets/platforms/rill-slope-left.png"
 		},
 		{
 			x = 35,
 			y = 80,
-			shape = {0,30, 61,0, 78,0, 78,7, 0,45},
+			shape = {0,30, 60,0, 77,0, 77,7, 0,44},
 			sprite = "assets/platforms/rill-slope-right.png"
 		}
 	},
