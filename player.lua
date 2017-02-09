@@ -439,8 +439,8 @@ function Player:respawn()
 end
 
 -- Sounds
-function Player:playSound(sfx)
-	if self.alive then
+function Player:playSound(sfx, force)
+	if self.alive or force then
 		local source = love.audio.newSource(self.sfx[sfx])
 		source:play()
 	end
