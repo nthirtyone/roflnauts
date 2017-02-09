@@ -21,25 +21,25 @@ return {
 		{
 			x = -91,
 			y = 0,
-			shape = {0,1, 181,1, 181,10, 96,76, 86,76, 0,10},
+			shape = {0,1, 180,1, 180,10, 95,76, 86,76, 0,10},
 			sprite = "assets/platforms/default-big.png"
 		},
 		{
 			x = 114,
 			y = 50,
-			shape = {0,1, 52,1, 52,30, 0,30},
+			shape = {0,1, 51,1, 51,18, 0,18},
 			sprite = "assets/platforms/default-side.png"
 		},
 		{
 			x = -166,
 			y = 50,
-			shape = {0,1, 52,1, 52,30, 0,30},
+			shape = {0,1, 51,1, 51,18, 0,18},
 			sprite = "assets/platforms/default-side.png"
 		},
 		{
 			x = -17,
 			y = -50,
-			shape = {0,1, 34,1, 34,16, 0,16},
+			shape = {0,1, 33,1, 33,14, 0,14},
 			sprite = "assets/platforms/default-top.png"
 		}
 	},
