@@ -292,9 +292,11 @@ function Player:draw(offset_x, offset_y, scale, debug)
 	local scale = scale or 1
 	local debug = debug or false
 	local x, y = self:getPosition()
-	-- pixel grid
+	-- pixel grid ; `approx` selected to prevent floating characters on certain conditions
+	local approx = math.floor
+	if (y - math.floor(y)) > 0.5 then approx = math.ceil end
+	local draw_y = (approx(y) + offset_y) * scale
 	local draw_x = (math.floor(x) + offset_x) * scale
-	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
 	Animated.draw(self, draw_x, draw_y, self.rotate, self.facing*scale, scale, 12, 15)
 	-- debug draw

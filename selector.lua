@@ -284,7 +284,7 @@ function Selector:controlpressed(set, action, key)
 		if action == "attack" then
 			local name = self:getListValue(self:getSelection(n))
 			if name == "random" then
-				self:setSelection(n, self:rollRandom({1})) -- avoid empty naut
+				self:setSelection(n, self:rollRandom({1,2})) -- avoid empty naut
 				self.locks[n] = true
 			else
 				-- If not empty or if first is allowed. Additionaly must be unique selection.

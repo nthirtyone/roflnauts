@@ -32,13 +32,13 @@ return {
 		{
 			x = -70,
 			y = -5,
-			shape = {0,3, 140,3, 132,26, 8,26},
+			shape = {0,3, 139,3, 134,24, 5,24},
 			sprite = "assets/platforms/ribbit-top.png"
 		},
 		{
 			x = -54,
 			y = 63,
-			shape = {0,3, 108,3, 84,41, 24,41},
+			shape = {0,3, 107,3, 75,44, 32,44},
 			sprite = "assets/platforms/ribbit-bottom.png"
 		}
 	},
