@@ -23,42 +23,42 @@ return {
 			x = -170,
 			y = -55,
 			shape = {
-				{0,1, 33,1, 39,6, 39,19, 31,21, 3,21},
-				{40,6, 115,6, 114,14, 40,14}
+				{0,1, 33,1, 39,6, 39,21, 31,21, 0,21},
+				{40,6, 115,6, 115,14, 40,14}
 			},
 			sprite = "assets/platforms/starstorm-left-top.png"
 		},
 		{
 			x = -156,
 			y = -2,
-			shape = {1,0, 109,0, 108,18, 1,20},
+			shape = {0,0, 109,0, 109,20, 0,20},
 			sprite = "assets/platforms/starstorm-left-middle.png"
 		},
 		{
 			x = -160,
 			y = 69,
-			shape = {0,4, 17,1, 97,1, 102,6, 102,11, 97,16, 19,16, 1,11},
+			shape = {0,4, 8,4, 13,1, 102,1, 102,16, 19,16, 0,11},
 			sprite = "assets/platforms/starstorm-left-bottom.png"
 		},
 		{
 			x = 52,
 			y = -55,
 			shape = {
-				{116,1, 83,1, 77,6, 77,19, 85,21, 113,21},
-				{76,6, 1,6, 2,14, 76,14}
+				{115,1, 82,1, 76,6, 76,21, 84,21, 115,21},
+				{75,6, 0,6, 0,14, 75,14}
 			},
 			sprite = "assets/platforms/starstorm-right-top.png"
 		},
 		{
 			x = 44,
 			y = -2,
-			shape = {109,0, 1,0, 2,18, 109,20},
+			shape = {109,0, 0,0, 0,20, 109,20},
 			sprite = "assets/platforms/starstorm-right-middle.png"
 		},
 		{
 			x = 55,
 			y = 69,
-			shape = {103,4, 86,1, 6,1, 1,6, 1,11, 6,16, 84,16, 102,11},
+			shape = {102,4, 94,4, 89,1, 0,1, 0,16, 83,16, 102,11},
 			sprite = "assets/platforms/starstorm-right-bottom.png"
 		},
 		{
