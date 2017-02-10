@@ -205,6 +205,7 @@ function Player:controlpressed(set, action, key)
 		if self.jumpnumber > 0 then
 			-- General jump logics
 			self.jumpactive = true
+			self:playSound(6)
 			-- Spawn proper effect
 			if not self.inAir then
 				self:createEffect("jump")
@@ -436,6 +437,7 @@ function Player:respawn()
 	self.body:setPosition(self.world:getSpawnPosition())
 	self.body:setActive(true)
 	self:createEffect("respawn")
+	self:playSound(7)
 end
 
 -- Sounds
