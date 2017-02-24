@@ -216,6 +216,7 @@ function World:onNautKilled(naut)
 		changeScene(Menu:new())
 	elseif #nauts < 2 then
 		self.lastNaut = true
+		naut:playSound(5, true)
 	end
 end
 
