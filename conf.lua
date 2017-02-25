@@ -1,7 +1,7 @@
 -- Game configuration
 function love.conf(t)
 	t.title = "Roflnauts 2"
-	t.version = "0.10.1"
+	t.version = "0.10.2"
 	-- t.window.width = 320*3
 	-- t.window.height = 180*3
 	-- t.window.borderless = true
