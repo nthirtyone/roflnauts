@@ -3,7 +3,7 @@
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
-require "ground"
+require "platform"
 require "player"
 require "cloud"
 require "effect"
@@ -126,7 +126,7 @@ end
 
 -- Add new platform to the world
 function World:createPlatform(x, y, polygon, sprite, animations)
-	table.insert(self.Platforms, Ground:new(self, self.world, x, y, polygon, sprite, animations))
+	table.insert(self.Platforms, Platform:new(self, self.world, x, y, polygon, sprite, animations))
 end
 
 -- Add new naut to the world
