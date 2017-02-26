@@ -1,23 +1,23 @@
--- `Ground`
+-- `Platform`
 -- Static platform physical object with a sprite. `Players` can walk on it.
 -- Collision category: [1]
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 require "animated"
 
--- Metatable of `Ground`
+-- Metatable of `Platform`
 -- nils initialized in constructor
-Ground = {
+Platform = {
 	body = nil,
 	shape = nil,
 	fixture = nil,
 	world = nil,
 }
-Ground.__index = Ground
-setmetatable(Ground, Animated)
+Platform.__index = Platform
+setmetatable(Platform, Animated)
 
--- Constructor of `Ground`
-function Ground:new (game, world, x, y, shape, sprite, animations)
+-- Constructor of `Platform`
+function Platform:new (game, world, x, y, shape, sprite, animations)
 	local o = {}
 	setmetatable(o, self)
 	o.body  = love.physics.newBody(world, x, y)
@@ -46,12 +46,12 @@ function Ground:new (game, world, x, y, shape, sprite, animations)
 end
 
 -- Position
-function Ground:getPosition()
+function Platform:getPosition()
 	return self.body:getPosition()
 end
 
--- Draw of `Ground`
-function Ground:draw (offset_x, offset_y, scale, debug)
+-- Draw of `Platform`
+function Platform:draw (offset_x, offset_y, scale, debug)
 	-- locals
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
