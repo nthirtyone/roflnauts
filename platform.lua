@@ -3,7 +3,7 @@
 -- Collision category: [1]
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
-require "animated"
+require "sprite"
 
 -- Metatable of `Platform`
 -- nils initialized in constructor
@@ -14,7 +14,7 @@ Platform = {
 	world = nil,
 }
 Platform.__index = Platform
-setmetatable(Platform, Animated)
+setmetatable(Platform, Sprite)
 
 -- Constructor of `Platform`
 function Platform:new (game, world, x, y, shape, sprite, animations)
@@ -39,7 +39,7 @@ function Platform:new (game, world, x, y, shape, sprite, animations)
 		end
 	end
 	-- END HERE
-	o:setSprite(love.graphics.newImage(sprite))
+	o:setImage(love.graphics.newImage(sprite))
 	o:setAnimationsList(animations)
 	o.world = game
 	return o
@@ -62,7 +62,7 @@ function Platform:draw (offset_x, offset_y, scale, debug)
 	local draw_x = (math.floor(x) + offset_x) * scale
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- sprite draw
-	Animated.draw(self, draw_x, draw_y, 0, scale, scale)
+	Sprite.draw(self, draw_x, draw_y, 0, scale, scale)
 	-- debug draw
 	if debug then
 		love.graphics.setColor(255, 69, 0, 140)

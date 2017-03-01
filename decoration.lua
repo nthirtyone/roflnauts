@@ -5,11 +5,11 @@ Decoration = {
 	y = 0
 }
 Decoration.__index = Decoration
-setmetatable(Decoration, Animated)
+setmetatable(Decoration, Sprite)
 function Decoration:new(x, y, sprite)
 	local o = {}
 	setmetatable(o, self)
-	o.sprite = love.graphics.newImage(sprite)
+	o:setImage(love.graphics.newImage(sprite))
 	o:setPosition(x,y)
 	return o
 end
@@ -29,5 +29,5 @@ function Decoration:draw(offset_x, offset_y, scale)
 	local draw_x = (math.floor(x) + offset_x) * scale
 	local draw_y = (math.floor(y) + offset_y) * scale
 	-- draw
-	Animated.draw(self, draw_x, draw_y, 0, scale, scale)
+	Sprite.draw(self, draw_x, draw_y, 0, scale, scale)
 end

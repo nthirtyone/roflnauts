@@ -3,7 +3,7 @@
 -- Collision category: [2]
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
-require "animated"
+require "sprite"
 
 -- Metatable of `Player`
 -- nils initialized in constructor
@@ -45,7 +45,7 @@ Player = {
 	animations = require "animations"
 }
 Player.__index = Player
-setmetatable(Player, Animated)
+setmetatable(Player, Sprite)
 
 -- Constructor of `Player`
 function Player:new (game, world, x, y, name)
@@ -64,7 +64,7 @@ function Player:new (game, world, x, y, name)
 	o.body:setFixedRotation(true)
 	-- Misc
 	o.name   = name or "empty"
-	o:setSprite(newImage("assets/nauts/"..o.name..".png"))
+	o:setImage(newImage("assets/nauts/"..o.name..".png"))
 	o.world  = game
 	o.punchcd = 0
 	-- Animation
@@ -146,7 +146,7 @@ function Player:update(dt)
 		end
 	end
 
-	Animated.update(self, dt)
+	Sprite.update(self, dt)
 
 	-- # DEATH
 	-- We all die in the end.
@@ -299,7 +299,7 @@ function Player:draw(offset_x, offset_y, scale, debug)
 	local draw_y = (approx(y) + offset_y) * scale
 	local draw_x = (math.floor(x) + offset_x) * scale
 	-- sprite draw
-	Animated.draw(self, draw_x, draw_y, self.rotate, self.facing*scale, scale, 12, 15)
+	Sprite.draw(self, draw_x, draw_y, self.rotate, self.facing*scale, scale, 12, 15)
 	-- debug draw
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
