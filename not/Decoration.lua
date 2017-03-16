@@ -1,3 +1,4 @@
+require "not.Sprite"
 Decoration = {
 	world = nil,
 	sprite = nil,

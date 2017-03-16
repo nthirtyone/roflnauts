@@ -34,7 +34,7 @@ function newImage(path)
 end
 
 -- Require
-require "world"
+require "not.World"
 require "camera"
 require "menu"
 require "controller"

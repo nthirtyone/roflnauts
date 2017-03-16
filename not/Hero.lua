@@ -1,13 +1,13 @@
--- `Player`
+-- `Hero`
 -- Entity controlled by a player. It has a physical body and a sprite. Can play animations and interact with other instances of the same class.
 -- Collision category: [2]
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
-require "sprite"
+require "not.Sprite"
 
--- Metatable of `Player`
+-- Metatable of `Hero`
 -- nils initialized in constructor
-Player = {
+Hero = {
 	-- General and physics
 	name = "empty",
 	body = nil,
@@ -44,11 +44,11 @@ Player = {
 	-- Animations table
 	animations = require "animations"
 }
-Player.__index = Player
-setmetatable(Player, Sprite)
+Hero.__index = Hero
+setmetatable(Hero, Sprite)
 
--- Constructor of `Player`
-function Player:new (game, world, x, y, name)
+-- Constructor of `Hero`
+function Hero:new (game, world, x, y, name)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
@@ -79,15 +79,15 @@ function Player:new (game, world, x, y, name)
 end
 
 -- Control set managment
-function Player:assignControlSet(set)
+function Hero:assignControlSet(set)
 	self.controlset = set
 end
-function Player:getControlSet()
+function Hero:getControlSet()
 	return self.controlset
 end
 
--- Update callback of `Player`
-function Player:update(dt)
+-- Update callback of `Hero`
+function Hero:update(dt)
 	-- hotfix? for destroyed bodies
 	if self.body:isDestroyed() then return end
 	-- locals
@@ -196,7 +196,7 @@ function Player:update(dt)
 end
 
 -- Controller callbacks
-function Player:controlpressed(set, action, key)
+function Hero:controlpressed(set, action, key)
 	if set ~= self:getControlSet() then return end
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
@@ -265,14 +265,14 @@ function Player:controlpressed(set, action, key)
 		end
 	end
 end
-function Player:controlreleased(set, action, key)
+function Hero:controlreleased(set, action, key)
 	if set ~= self:getControlSet() then return end
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
 	-- Jumping
 	if action == "jump" then
 		self.jumpactive = false
-		self.jumptimer = Player.jumptimer -- take initial from metatable
+		self.jumptimer = Hero.jumptimer -- take initial from metatable
 	end
 	-- Walking
 	if (action == "left" or action == "right") and not
@@ -283,8 +283,8 @@ function Player:controlreleased(set, action, key)
 	end
 end
 
--- Draw of `Player`
-function Player:draw(offset_x, offset_y, scale, debug)
+-- Draw of `Hero`
+function Hero:draw(offset_x, offset_y, scale, debug)
 	-- draw only alive
 	if not self.alive then return end
 	-- locals
@@ -319,13 +319,13 @@ function Player:draw(offset_x, offset_y, scale, debug)
 end
 
 -- getPosition
-function Player:getPosition()
+function Hero:getPosition()
 	return self.body:getPosition()
 end
 
--- Draw HUD of `Player`
+-- Draw HUD of `Hero`
 -- elevation: 1 bottom, 0 top
-function Player:drawHUD(x,y,scale,elevation)
+function Hero:drawHUD(x,y,scale,elevation)
 	-- hud displays only if player is alive
 	if self.alive then
 		love.graphics.setColor(255,255,255,255)
@@ -338,9 +338,9 @@ function Player:drawHUD(x,y,scale,elevation)
 	end
 end
 
--- Change animation of `Player`
+-- Change animation of `Hero`
 -- default, walk, attack, attack_up, attack_down, damage
-function Player:nextFrame()
+function Hero:nextFrame()
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
 	if self.current.repeated or not (self.frame == self.current.frames) then
@@ -353,8 +353,8 @@ function Player:nextFrame()
 	end
 end
 
--- Spawn `Effect` relative to `Player`
-function Player:createEffect(name)
+-- Spawn `Effect` relative to `Hero`
+function Hero:createEffect(name)
 	if name == "trail" or name == "hit" then
 		-- 16px effect: -7 -7
 		self.world:createEffect(name, self.body:getX()-8, self.body:getY()-8)
@@ -364,12 +364,12 @@ function Player:createEffect(name)
 	end
 end
 
--- Punch of `Player`
+-- Punch of `Hero`
 -- direction: left, right, up, down
--- creates temporary fixture for player's body that acts as sensor; fixture is deleted after time set in UserData[1]; deleted by Player:update(dt)
-function Player:hit(direction)
+-- creates temporary fixture for player's body that acts as sensor; fixture is deleted after time set in UserData[1]; deleted by Hero:update(dt)
+function Hero:hit(direction)
 	-- start cooldown
-	self.punchcd = Player.punchcd -- INITIAL from metatable
+	self.punchcd = Hero.punchcd -- INITIAL from metatable
 	-- actual punch
 	local fixture
 	if direction == "left" then
@@ -393,9 +393,9 @@ function Player:hit(direction)
 	self:playSound(4)
 end
 
--- Taking damage of `Player` by successful hit test
+-- Taking damage of `Hero` by successful hit test
 -- currently called from World's startContact
-function Player:damage(direction)
+function Hero:damage(direction)
 	local horizontal, vertical = 0, 0
 	if direction == "left" then
 		horizontal = -1
@@ -420,18 +420,18 @@ function Player:damage(direction)
 end
 
 -- DIE
-function Player:die()
+function Hero:die()
 	self:playSound(1)
-	self.combo = Player.combo -- INITIAL from metatable
+	self.combo = Hero.combo -- INITIAL from metatable
 	self.lives = self.lives - 1
 	self.alive = false
-	self.spawntimer = Player.spawntimer -- INITIAL from metatable
+	self.spawntimer = Hero.spawntimer -- INITIAL from metatable
 	self.body:setActive(false)
 	self.world:onNautKilled(self)
 end
 
 -- And then respawn. Like Jon Snow.
-function Player:respawn()
+function Hero:respawn()
 	self.alive = true
 	self.body:setLinearVelocity(0,0)
 	self.body:setPosition(self.world:getSpawnPosition())
@@ -441,7 +441,7 @@ function Player:respawn()
 end
 
 -- Sounds
-function Player:playSound(sfx, force)
+function Hero:playSound(sfx, force)
 	if self.alive or force then
 		local source = love.audio.newSource(self.sfx[sfx])
 		source:play()

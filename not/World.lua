@@ -3,11 +3,11 @@
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
-require "platform"
-require "player"
-require "cloud"
-require "effect"
-require "decoration"
+require "not.Platform"
+require "not.Hero"
+require "not.Cloud"
+require "not.Effect"
+require "not.Decoration"
 require "ray"
 
 -- Metatable of `World`
@@ -131,7 +131,7 @@ end
 
 -- Add new naut to the world
 function World:createNaut(x, y, name)
-	local naut = Player:new(self, self.world, x, y, name)
+	local naut = Hero:new(self, self.world, x, y, name)
 	table.insert(self.Nauts, naut)
 	return naut
 end
@@ -375,7 +375,7 @@ function World.beginContact(a, b, coll)
 		local x,y = coll:getNormal()
 		if y < -0.6 then
 			print(b:getUserData().name .. " is not in air")
-			-- Move them to Player
+			-- Move them to Hero
 			b:getUserData().inAir = false
 			b:getUserData().jumpnumber = 2
 			b:getUserData().salto = false
@@ -397,7 +397,7 @@ end
 function World.endContact(a, b, coll)
 	if a:getCategory() == 1 then
 		print(b:getUserData().name .. " is in air")
-		-- Move them to Player
+		-- Move them to Hero
 		b:getUserData().inAir = true
 	end
 end

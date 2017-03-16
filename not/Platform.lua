@@ -3,7 +3,7 @@
 -- Collision category: [1]
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
-require "sprite"
+require "not.Sprite"
 
 -- Metatable of `Platform`
 -- nils initialized in constructor
