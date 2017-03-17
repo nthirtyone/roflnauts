@@ -8,7 +8,7 @@ require "not.Hero"
 require "not.Cloud"
 require "not.Effect"
 require "not.Decoration"
-require "ray"
+require "not.Ray"
 
 -- Metatable of `World`
 -- nils initialized in constructor
