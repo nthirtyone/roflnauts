@@ -1,12 +1,6 @@
--- `Hero`
--- Entity controlled by a player. It has a physical body and a sprite. Can play animations and interact with other instances of the same class.
+--- `Hero`
+-- Hero (naut) entity that exists in a game world.
 -- Collision category: [2]
-
--- WHOLE CODE HAS FLAG OF "need a cleanup"
-require "not.Sprite"
-
--- Metatable of `Hero`
--- nils initialized in constructor
 Hero = {
 	-- General and physics
 	name = "empty",
@@ -44,10 +38,13 @@ Hero = {
 	-- Animations table
 	animations = require "animations"
 }
-Hero.__index = Hero
-setmetatable(Hero, Sprite)
 
--- Constructor of `Hero`
+-- `Hero` is a child of `PhysicalBody`.
+require "not.PhysicalBody"
+Hero.__index = Hero
+setmetatable(Hero, PhysicalBody)
+
+-- Constructor of `Hero`.
 function Hero:new (game, world, x, y, name)
 	-- Meta
 	local o = {}
@@ -64,7 +61,7 @@ function Hero:new (game, world, x, y, name)
 	o.body:setFixedRotation(true)
 	-- Misc
 	o.name   = name or "empty"
-	o:setImage(newImage("assets/nauts/"..o.name..".png"))
+	o:setImage(Sprite.newImage("assets/nauts/"..o.name..".png"))
 	o.world  = game
 	o.punchcd = 0
 	-- Animation

@@ -18,20 +18,6 @@ end
 function getRealScale()
 	return math.max(1, math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180))
 end
--- Should be moved to Sprite metaclass (non-existent yet)
-function newImage(path)
-	local imagedata = love.image.newImageData(path)
-	local transparency = function(x, y, r, g, b, a)
-		if (r == 0 and g == 128 and b == 64) or
-		   (r == 0 and g == 240 and b ==  6) then
-			a = 0
-		end
-		return r, g, b, a
-	end
-	imagedata:mapPixel(transparency)
-	local image = love.graphics.newImage(imagedata)
-	return image
-end
 
 -- Require
 require "not.World"
