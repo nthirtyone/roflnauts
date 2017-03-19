@@ -104,10 +104,9 @@ end
 -- If there is no Quad, it will draw entire image. It won't draw anything if there is no image.
 -- TODO: it doesn't follow same pattern as `not.Hero.draw`. It should implement so it can be called from `not.World`.
 -- TODO: change children if above changes are in effect: `not.Platform`, `not.Decoration`.
-function Sprite:draw (offset_x, offset_y, scale, debug)
+function Sprite:draw (offset_x, offset_y, scale)
 	local offset_x = offset_x or 0
 	local offset_y = offset_y or 0
-	local debug = debug or false
 
 	local i, q = self:getImage(), self:getQuad()
 	local x, y = self:getPosition()
