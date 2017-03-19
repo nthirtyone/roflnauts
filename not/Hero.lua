@@ -83,6 +83,7 @@ function Hero:getControlSet ()
 end
 
 -- Update callback of `Hero`
+-- TODO: Explode this function (method, kek), move controler-related parts to `not.Player`, physics parts to `not.PhysicalBody`.
 function Hero:update (dt)
 	-- hotfix? for destroyed bodies
 	if self.body:isDestroyed() then return end
@@ -280,6 +281,7 @@ function Hero:controlreleased (set, action, key)
 end
 
 -- Draw of `Hero`
+-- TODO: see `not.PhysicalBody.draw` and `not.Sprite.draw`.
 function Hero:draw (offset_x, offset_y, scale, debug)
 	-- draw only alive
 	if not self.alive then return end

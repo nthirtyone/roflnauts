@@ -3,6 +3,8 @@
 
 -- Metatable of `Effect`
 -- nils initialized in constructor
+-- TODO: inherit from `not.Sprite`.
+-- TODO: clean-up and reformat code, see newer code for reference.
 Effect = {
 	x = 0,
 	y = 0,

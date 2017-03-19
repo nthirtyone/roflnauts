@@ -82,6 +82,7 @@ end
 -- Drawing self to LOVE2D buffer.
 -- If there is no Quad, it will draw entire image. It won't draw anything if there is no image.
 -- TODO: it doesn't follow same pattern as `not.Hero.draw`. It should implement so it can be called from `not.World`.
+-- TODO: change children if above changes are in effect: `not.Platform`, `not.Decoration`.
 function Sprite:draw (...)
 	local i, q = self:getImage(), self:getQuad()
 	if i then

@@ -1,6 +1,8 @@
 -- `Platform`
 -- Static platform physical object with a sprite. `Players` can walk on it.
 -- Collision category: [1]
+-- TODO: reformat code to follow new code patterns
+-- TODO: comment uncovered code parts
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 require "not.Sprite"
@@ -51,6 +53,7 @@ function Platform:getPosition()
 end
 
 -- Draw of `Platform`
+-- TODO: see todos in `not.Sprite.draw`.
 function Platform:draw (offset_x, offset_y, scale, debug)
 	-- locals
 	local offset_x = offset_x or 0

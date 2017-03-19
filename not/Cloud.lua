@@ -5,6 +5,7 @@
 
 -- Metatable of `Cloud`
 -- nils initialized in constructor
+-- TODO: inherit from `not.Decoration` or `not.Sprite`, depending on final result of `not.Sprite`.
 Cloud = {
 	x = 0,  -- position horizontal
 	y = 0,  -- position vertical

@@ -1,3 +1,5 @@
+-- TODO: follow new code template
+-- TODO: add comments
 require "not.Sprite"
 Decoration = {
 	world = nil,

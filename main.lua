@@ -1,8 +1,11 @@
 -- "NOTNAUTS"
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
+-- TODO: Any lua source file in root directory that is not `main` (this file), `conf` should be moved to a proper directory. Its name should be changed to show what it contains.
+
 -- Pretend you didn't see this
 -- This is work for scene manager
+-- TODO: Create SceneManager or similar class.
 Scene = nil
 function changeScene(scene)
 	if Scene ~= nil then
@@ -12,6 +15,7 @@ function changeScene(scene)
 end
 
 -- Should be moved to scene/camera
+-- TODO: move following functions to `Camera`.
 function getScale()
 	return math.max(1, math.floor(math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180)))
 end
