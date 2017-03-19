@@ -4,14 +4,10 @@
 Hero = {
 	-- General and physics
 	name = "empty",
-	body = nil,
-	shape = nil,
-	fixture = nil,
-	sprite = nil,
-	rotate = 0, -- "angle" would sound better
+	angle = 0,
 	facing = 1,
 	max_velocity = 105,
-	world = nil, -- game world
+	world = --[[not.World]]nil,
 	-- Combat
 	combo = 0,
 	lives = 3,
@@ -28,15 +24,12 @@ Hero = {
 	jumpnumber = 2,
 	-- Keys
 	controlset = nil,
-	-- HUD
+	-- Statics
 	portrait_sprite = nil,
 	portrait_frame  = nil,
 	portrait_sheet  = require "nautsicons",
 	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
-	-- Sounds
 	sfx = require "sounds",
-	-- Animations table
-	animations = nil
 }
 
 -- `Hero` is a child of `PhysicalBody`.
@@ -62,10 +55,10 @@ function Hero:init (name, world, x, y)
 	local fileName = name or Hero.name -- INITIAL from metatable
 	local imagePath = string.format("assets/nauts/%s.png", fileName)
 	PhysicalBody.init(self, world, x, y, imagePath)
-	-- To be removed or heavily changed.
+	-- TODO: probably should be removed or heavily changed.
 	self.world = world
 	self.punchcd = 0
-	-- To be moved to PhysicalBody abstract.
+	-- TODO: move following lines to PhysicalBody, cut if not needed, refectorize to subfunctions in target class.
 	local group = -1-#world.Nauts
 	self.body    = love.physics.newBody(world.world, x, y, "dynamic")
 	self.shape   = love.physics.newRectangleShape(10, 16)
@@ -107,9 +100,9 @@ function Hero:update(dt)
 
 	-- Salto
 	if self.salto and (self.current == self.animations.walk or self.current == self.animations.default) then
-		self.rotate = (self.rotate + 17 * dt * self.facing) % 360
-	elseif self.rotate ~= 0 then
-		self.rotate = 0
+		self.angle = (self.angle + 17 * dt * self.facing) % 360
+	elseif self.angle ~= 0 then
+		self.angle = 0
 	end
 
 	-- # HORIZONTAL MOVEMENT
@@ -302,7 +295,7 @@ function Hero:draw(offset_x, offset_y, scale, debug)
 	local draw_y = (approx(y) + offset_y) * scale
 	local draw_x = (math.floor(x) + offset_x) * scale
 	-- sprite draw
-	Sprite.draw(self, draw_x, draw_y, self.rotate, self.facing*scale, scale, 12, 15)
+	Sprite.draw(self, draw_x, draw_y, self.angle, self.facing*scale, scale, 12, 15)
 	-- debug draw
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
