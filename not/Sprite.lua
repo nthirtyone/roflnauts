@@ -9,12 +9,13 @@ Sprite = {
 }
 Sprite.__index = Sprite
 
--- Constructor of `Sprite`.
+--[[ Constructor of `Sprite`.
 function Sprite:new (imagePath)
 	local o = setmetatable({}, self)
 	o:init(imagePath)
 	return o
 end
+]]
 
 -- Cleans up reference to image on deletion.
 function Sprite:delete ()
@@ -89,6 +90,7 @@ function Sprite:draw (...)
 		else love.graphics.draw(i, ...) end
 	end
 end
+
 -- Animation updating.
 function Sprite:update (dt)
 	if self.animations and self.current then
@@ -99,6 +101,7 @@ function Sprite:update (dt)
 		end
 	end
 end
+
 -- Moving to the next frame.
 function Sprite:goToNextFrame ()
 	if self.current.repeated or not (self.frame == self.current.frames) then
