@@ -12,15 +12,20 @@ Sprite.__index = Sprite
 -- Constructor of `Sprite`.
 function Sprite:new (imagePath)
 	local o = setmetatable({}, self)
-	if type(imagePath) == "string" then
-		o:setImage(self.newImage(imagePath))
-	end
+	o:init(imagePath)
 	return o
 end
 
 -- Cleans up reference to image on deletion.
 function Sprite:delete ()
 	self.image = nil
+end
+
+-- Initializes new Sprite instance.
+function Sprite:init (imagePath)
+	if type(imagePath) == "string" then
+		self:setImage(Sprite.newImage(imagePath))
+	end
 end
 
 -- Creates new Image object from path. Key-colours two shades of green. Static.

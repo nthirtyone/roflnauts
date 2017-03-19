@@ -36,7 +36,7 @@ Hero = {
 	-- Sounds
 	sfx = require "sounds",
 	-- Animations table
-	animations = require "animations"
+	animations = nil
 }
 
 -- `Hero` is a child of `PhysicalBody`.
@@ -46,33 +46,39 @@ setmetatable(Hero, PhysicalBody)
 
 -- Constructor of `Hero`.
 function Hero:new (game, world, x, y, name)
-	-- Meta
-	local o = {}
-	setmetatable(o, self)
-	-- Physics
-	local group = -1-#game.Nauts
-	o.body    = love.physics.newBody(world, x, y, "dynamic")
-	o.shape   = love.physics.newRectangleShape(10, 16)
-	o.fixture = love.physics.newFixture(o.body, o.shape, 8)
-	o.fixture:setUserData(o)
-	o.fixture:setCategory(2)
-	o.fixture:setMask(2)
-	o.fixture:setGroupIndex(group)
-	o.body:setFixedRotation(true)
-	-- Misc
-	o.name   = name or "empty"
-	o:setImage(Sprite.newImage("assets/nauts/"..o.name..".png"))
-	o.world  = game
-	o.punchcd = 0
-	-- Animation
-	o.current = o.animations.default
-	o:createEffect("respawn")
-	-- Portrait load for first object created
+	local o = setmetatable({}, self)
+	o:init(name, game, x, y)
+	-- Load portraits statically.
 	if self.portrait_sprite == nil then
 		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
 		self.portrait_frame = love.graphics.newImage("assets/menu.png")
 	end
 	return o
+end
+
+-- Initializator of `Hero`.
+function Hero:init (name, world, x, y)
+	-- Find imagePath basing on hero name and call super initializator.
+	local fileName = name or Hero.name -- INITIAL from metatable
+	local imagePath = string.format("assets/nauts/%s.png", fileName)
+	PhysicalBody.init(self, world, x, y, imagePath)
+	-- To be removed or heavily changed.
+	self.world = world
+	self.punchcd = 0
+	-- To be moved to PhysicalBody abstract.
+	local group = -1-#world.Nauts
+	self.body    = love.physics.newBody(world.world, x, y, "dynamic")
+	self.shape   = love.physics.newRectangleShape(10, 16)
+	self.fixture = love.physics.newFixture(self.body, self.shape, 8)
+	self.fixture:setUserData(self)
+	self.fixture:setCategory(2)
+	self.fixture:setMask(2)
+	self.fixture:setGroupIndex(group)
+	self.body:setFixedRotation(true)
+	-- Actual `Hero` initialization.
+	self.name = name
+	self:setAnimationsList(require("animations"))
+	self:createEffect("respawn")
 end
 
 -- Control set managment

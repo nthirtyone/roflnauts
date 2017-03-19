@@ -11,6 +11,12 @@ setmetatable(PhysicalBody, Sprite)
 
 -- Constructor of `PhysicalBody`.
 function PhysicalBody:new (world, x, y, imagePath)
-	local o = Sprite:new(imagePath)
+	local o = setmetatable({}, self)
+	o:init(world, x, y, imagePath)
 	return o
+end
+
+-- Initializator of `PhysicalBody`.
+function PhysicalBody:init (world, x, y, imagePath)
+	Sprite.init(self, imagePath)
 end
