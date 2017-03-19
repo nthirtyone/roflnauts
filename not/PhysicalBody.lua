@@ -30,4 +30,5 @@ end
 -- Draw of `PhysicalBody`.
 function PhysicalBody:draw (offset_x, offset_y, scale, debug)
 	-- TODO: Move debug part here from `not.Hero.draw`.
+	Sprite.draw(self, offset_x, offset_y, scale)
 end

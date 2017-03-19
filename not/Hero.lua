@@ -280,24 +280,23 @@ function Hero:controlreleased (set, action, key)
 	end
 end
 
+-- TODO: comment them and place them somewhere properly
+function Hero:getAngle ()
+	return self.angle
+end
+function Hero:getHorizontalMirror()
+	return self.facing
+end
+function Hero:getOffset ()
+	return 12,15 -- TODO: WHY? How about creating body as polygon and using 0,0 instead. LIKE EVERYWHERE ELSE? Make it obsolete both in here and in `not.Sprite`.
+end
+
 -- Draw of `Hero`
 -- TODO: see `not.PhysicalBody.draw` and `not.Sprite.draw`.
 function Hero:draw (offset_x, offset_y, scale, debug)
-	-- draw only alive
 	if not self.alive then return end
-	-- locals
-	local offset_x = offset_x or 0
-	local offset_y = offset_y or 0
-	local scale = scale or 1
-	local debug = debug or false
-	local x, y = self:getPosition()
-	-- pixel grid ; `approx` selected to prevent floating characters on certain conditions
-	local approx = math.floor
-	if (y - math.floor(y)) > 0.5 then approx = math.ceil end
-	local draw_y = (approx(y) + offset_y) * scale
-	local draw_x = (math.floor(x) + offset_x) * scale
-	-- sprite draw
-	Sprite.draw(self, draw_x, draw_y, self.angle, self.facing*scale, scale, 12, 15)
+	PhysicalBody.draw(self, offset_x, offset_y, scale, debug)
+
 	-- debug draw
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
