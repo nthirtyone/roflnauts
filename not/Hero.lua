@@ -75,15 +75,15 @@ function Hero:init (name, world, x, y)
 end
 
 -- Control set managment
-function Hero:assignControlSet(set)
+function Hero:assignControlSet (set)
 	self.controlset = set
 end
-function Hero:getControlSet()
+function Hero:getControlSet ()
 	return self.controlset
 end
 
 -- Update callback of `Hero`
-function Hero:update(dt)
+function Hero:update (dt)
 	-- hotfix? for destroyed bodies
 	if self.body:isDestroyed() then return end
 	-- locals
@@ -192,7 +192,7 @@ function Hero:update(dt)
 end
 
 -- Controller callbacks
-function Hero:controlpressed(set, action, key)
+function Hero:controlpressed (set, action, key)
 	if set ~= self:getControlSet() then return end
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
@@ -261,7 +261,7 @@ function Hero:controlpressed(set, action, key)
 		end
 	end
 end
-function Hero:controlreleased(set, action, key)
+function Hero:controlreleased (set, action, key)
 	if set ~= self:getControlSet() then return end
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
@@ -280,7 +280,7 @@ function Hero:controlreleased(set, action, key)
 end
 
 -- Draw of `Hero`
-function Hero:draw(offset_x, offset_y, scale, debug)
+function Hero:draw (offset_x, offset_y, scale, debug)
 	-- draw only alive
 	if not self.alive then return end
 	-- locals
@@ -315,13 +315,13 @@ function Hero:draw(offset_x, offset_y, scale, debug)
 end
 
 -- getPosition
-function Hero:getPosition()
+function Hero:getPosition ()
 	return self.body:getPosition()
 end
 
 -- Draw HUD of `Hero`
 -- elevation: 1 bottom, 0 top
-function Hero:drawHUD(x,y,scale,elevation)
+function Hero:drawHUD (x,y,scale,elevation)
 	-- hud displays only if player is alive
 	if self.alive then
 		love.graphics.setColor(255,255,255,255)
@@ -336,7 +336,7 @@ end
 
 -- Change animation of `Hero`
 -- default, walk, attack, attack_up, attack_down, damage
-function Hero:nextFrame()
+function Hero:nextFrame ()
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
 	if self.current.repeated or not (self.frame == self.current.frames) then
@@ -350,7 +350,7 @@ function Hero:nextFrame()
 end
 
 -- Spawn `Effect` relative to `Hero`
-function Hero:createEffect(name)
+function Hero:createEffect (name)
 	if name == "trail" or name == "hit" then
 		-- 16px effect: -7 -7
 		self.world:createEffect(name, self.body:getX()-8, self.body:getY()-8)
@@ -363,7 +363,7 @@ end
 -- Punch of `Hero`
 -- direction: left, right, up, down
 -- creates temporary fixture for player's body that acts as sensor; fixture is deleted after time set in UserData[1]; deleted by Hero:update(dt)
-function Hero:hit(direction)
+function Hero:hit (direction)
 	-- start cooldown
 	self.punchcd = Hero.punchcd -- INITIAL from metatable
 	-- actual punch
@@ -391,7 +391,7 @@ end
 
 -- Taking damage of `Hero` by successful hit test
 -- currently called from World's startContact
-function Hero:damage(direction)
+function Hero:damage (direction)
 	local horizontal, vertical = 0, 0
 	if direction == "left" then
 		horizontal = -1
@@ -416,7 +416,7 @@ function Hero:damage(direction)
 end
 
 -- DIE
-function Hero:die()
+function Hero:die ()
 	self:playSound(1)
 	self.combo = Hero.combo -- INITIAL from metatable
 	self.lives = self.lives - 1
@@ -427,7 +427,7 @@ function Hero:die()
 end
 
 -- And then respawn. Like Jon Snow.
-function Hero:respawn()
+function Hero:respawn ()
 	self.alive = true
 	self.body:setLinearVelocity(0,0)
 	self.body:setPosition(self.world:getSpawnPosition())
@@ -437,7 +437,7 @@ function Hero:respawn()
 end
 
 -- Sounds
-function Hero:playSound(sfx, force)
+function Hero:playSound (sfx, force)
 	if self.alive or force then
 		local source = love.audio.newSource(self.sfx[sfx])
 		source:play()
