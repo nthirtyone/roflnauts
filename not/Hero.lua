@@ -337,7 +337,7 @@ end
 
 -- Change animation of `Hero`
 -- default, walk, attack, attack_up, attack_down, damage
-function Hero:nextFrame ()
+function Hero:goToNextFrame ()
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
 	if self.current.repeated or not (self.frame == self.current.frames) then
