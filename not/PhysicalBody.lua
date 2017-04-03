@@ -57,9 +57,14 @@ function PhysicalBody:draw (offset_x, offset_y, scale, debug)
 	Sprite.draw(self, offset_x, offset_y, scale)
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
-			if fixture:getCategory() == 2 then
+			local category = fixture:getCategory()
+			if category == 1 then
+				love.graphics.setColor(255, 69, 0, 140)
+			end
+			if category == 2 then
 				love.graphics.setColor(137, 255, 0, 120)
-			else
+			end
+			if category == 3 then
 				love.graphics.setColor(137, 0, 255, 40)
 			end
 			-- TODO: `world` is not a member of `PhysicalBody` or its instance normally.
