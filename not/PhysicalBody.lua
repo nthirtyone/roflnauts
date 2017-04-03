@@ -54,6 +54,16 @@ end
 
 -- Draw of `PhysicalBody`.
 function PhysicalBody:draw (offset_x, offset_y, scale, debug)
-	-- TODO: Move debug part here from `not.Hero.draw`.
 	Sprite.draw(self, offset_x, offset_y, scale)
+	if debug then
+		for _,fixture in pairs(self.body:getFixtureList()) do
+			if fixture:getCategory() == 2 then
+				love.graphics.setColor(137, 255, 0, 120)
+			else
+				love.graphics.setColor(137, 0, 255, 40)
+			end
+			-- TODO: `world` is not a member of `PhysicalBody` or its instance normally.
+			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
+		end
+	end
 end

@@ -8,6 +8,7 @@ Hero = {
 	facing = 1,
 	max_velocity = 105,
 	world = --[[not.World]]nil,
+	group = nil,
 	-- Combat
 	combo = 0,
 	lives = 3,
@@ -54,20 +55,20 @@ function Hero:init (name, world, x, y)
 	-- Find imagePath basing on hero name and call super initializator.
 	local fileName = name or Hero.name -- INITIAL from metatable
 	local imagePath = string.format("assets/nauts/%s.png", fileName)
+	-- `PhysicalBody` initialization.
 	PhysicalBody.init(self, world, x, y, imagePath)
 	self:setBodyType("dynamic")
 	self:setBodyFixedRotation(true)
-	-- TODO: probably should be removed or heavily changed.
-	self.world = world
-	self.punchcd = 0
-	-- TODO: move following lines to PhysicalBody, cut if not needed, refectorize to subfunctions in target class.
-	local group = -1-#world.Nauts
+	self.group = -1-#world.Nauts
+	-- Main fixture initialization.
 	local fixture = self:addFixture({-5,-8, 5,-8, 5,8, -5,8}, 8)
 	fixture:setUserData(self)
 	fixture:setCategory(2)
 	fixture:setMask(2)
-	fixture:setGroupIndex(group)
+	fixture:setGroupIndex(self.group)
 	-- Actual `Hero` initialization.
+	self.world = world
+	self.punchcd = 0
 	self.name = name
 	self:setAnimationsList(require("animations"))
 	self:createEffect("respawn")
@@ -295,22 +296,6 @@ end
 function Hero:draw (offset_x, offset_y, scale, debug)
 	if not self.alive then return end
 	PhysicalBody.draw(self, offset_x, offset_y, scale, debug)
-	-- debug draw
-	if debug then
-		for _,fixture in pairs(self.body:getFixtureList()) do
-			if fixture:getCategory() == 2 then
-				love.graphics.setColor(137, 255, 0, 120)
-			else
-				love.graphics.setColor(137, 0, 255, 40)
-			end
-			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
-		end
-		for _,contact in pairs(self.body:getContactList()) do
-			love.graphics.setColor(255, 0, 0, 255)
-			love.graphics.setPointSize(scale)
-			love.graphics.points(self.world.camera:translatePoints(contact:getPositions()))
-		end
-	end
 end
 
 -- Draw HUD of `Hero`
@@ -377,7 +362,7 @@ function Hero:hit (direction)
 	fixture:setSensor(true)
 	fixture:setCategory(3)
 	fixture:setMask(1,3)
-	fixture:setGroupIndex(self.fixture:getGroupIndex())
+	fixture:setGroupIndex(self.group)
 	fixture:setUserData({0.08, direction})
 	-- sound
 	self:playSound(4)
