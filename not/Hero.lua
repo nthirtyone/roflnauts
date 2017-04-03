@@ -55,19 +55,18 @@ function Hero:init (name, world, x, y)
 	local fileName = name or Hero.name -- INITIAL from metatable
 	local imagePath = string.format("assets/nauts/%s.png", fileName)
 	PhysicalBody.init(self, world, x, y, imagePath)
+	self:setBodyType("dynamic")
+	self:setBodyFixedRotation(true)
 	-- TODO: probably should be removed or heavily changed.
 	self.world = world
 	self.punchcd = 0
 	-- TODO: move following lines to PhysicalBody, cut if not needed, refectorize to subfunctions in target class.
 	local group = -1-#world.Nauts
-	self.body    = love.physics.newBody(world.world, x, y, "dynamic")
-	self.shape   = love.physics.newRectangleShape(10, 16)
-	self.fixture = love.physics.newFixture(self.body, self.shape, 8)
-	self.fixture:setUserData(self)
-	self.fixture:setCategory(2)
-	self.fixture:setMask(2)
-	self.fixture:setGroupIndex(group)
-	self.body:setFixedRotation(true)
+	local fixture = self:addFixture({-5,-8, 5,-8, 5,8, -5,8}, 8)
+	fixture:setUserData(self)
+	fixture:setCategory(2)
+	fixture:setMask(2)
+	fixture:setGroupIndex(group)
 	-- Actual `Hero` initialization.
 	self.name = name
 	self:setAnimationsList(require("animations"))
@@ -296,7 +295,6 @@ end
 function Hero:draw (offset_x, offset_y, scale, debug)
 	if not self.alive then return end
 	PhysicalBody.draw(self, offset_x, offset_y, scale, debug)
-
 	-- debug draw
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
@@ -313,11 +311,6 @@ function Hero:draw (offset_x, offset_y, scale, debug)
 			love.graphics.points(self.world.camera:translatePoints(contact:getPositions()))
 		end
 	end
-end
-
--- getPosition
-function Hero:getPosition ()
-	return self.body:getPosition()
 end
 
 -- Draw HUD of `Hero`
