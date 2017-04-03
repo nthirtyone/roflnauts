@@ -85,8 +85,6 @@ end
 -- Update callback of `Hero`
 -- TODO: Explode this function (method, kek), move controler-related parts to `not.Player`, physics parts to `not.PhysicalBody`.
 function Hero:update (dt)
-	-- hotfix? for destroyed bodies
-	if self.body:isDestroyed() then return end
 	PhysicalBody.update(self, dt)
 	-- locals
 	local x, y = self.body:getLinearVelocity()
