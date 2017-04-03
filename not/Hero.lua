@@ -52,7 +52,7 @@ end
 
 -- Initializator of `Hero`.
 function Hero:init (name, world, x, y)
-	-- Find imagePath basing on hero name and call super initializator.
+	-- Find imagePath based on hero name.
 	local fileName = name or Hero.name -- INITIAL from metatable
 	local imagePath = string.format("assets/nauts/%s.png", fileName)
 	-- `PhysicalBody` initialization.
@@ -87,6 +87,7 @@ end
 function Hero:update (dt)
 	-- hotfix? for destroyed bodies
 	if self.body:isDestroyed() then return end
+	PhysicalBody.update(self, dt)
 	-- locals
 	local x, y = self.body:getLinearVelocity()
 	local isDown = Controller.isDown
@@ -142,8 +143,6 @@ function Hero:update (dt)
 			self.body:applyForce(80*face,0)
 		end
 	end
-
-	Sprite.update(self, dt)
 
 	-- # DEATH
 	-- We all die in the end.
