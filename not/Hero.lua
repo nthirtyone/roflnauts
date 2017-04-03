@@ -386,7 +386,7 @@ function Hero:damage (direction)
 	self:createEffect("hit")
 	local x,y = self:getLinearVelocity()
 	self:setLinearVelocity(x,0)
-	self.body:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
+	self:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:setAnimation("damage")
 	self.combo = math.min(27, self.combo + 1)
 	self.punchcd = 0.08 + self.combo*0.006
