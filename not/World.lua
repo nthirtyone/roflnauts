@@ -386,10 +386,12 @@ function World.beginContact(a, b, coll)
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
+			-- TODO: remove debug messages
+			-- TODO: move landing to `not.Hero`
 			print(b:getUserData().name .. " is not in air")
 			-- Move them to Hero
 			b:getUserData().inAir = false
-			b:getUserData().jumpnumber = 2
+			b:getUserData().jumpCounter = 2
 			b:getUserData().salto = false
 			b:getUserData():createEffect("land")
 		end

@@ -14,15 +14,14 @@ Hero = {
 	lives = 3,
 	spawntimer = 2,
 	alive = true,
-	punchcd = 0.25,
+	punchCooldown = 0.25,
 	punchdir = 0, -- a really bad thing
 	-- Movement
 	inAir = true,
 	salto = false,
-	jumpactive = false,
-	jumpdouble = true,
-	jumptimer = 0.16,
-	jumpnumber = 2,
+	isJumping = false,
+	jumpTimer = 0.16,
+	jumpCounter = 2,
 	-- Keys
 	controlset = nil,
 	-- Statics
@@ -68,7 +67,7 @@ function Hero:init (name, world, x, y)
 	fixture:setGroupIndex(self.group)
 	-- Actual `Hero` initialization.
 	self.world = world
-	self.punchcd = 0
+	self.punchCooldown = 0
 	self.name = name
 	self:setAnimationsList(require("animations"))
 	self:createEffect("respawn")
@@ -94,9 +93,9 @@ function Hero:update (dt)
 	
 	-- # VERTICAL MOVEMENT
 	-- Jumping
-	if self.jumpactive and self.jumptimer > 0 then
+	if self.isJumping and self.jumpTimer > 0 then
 		self:setLinearVelocity(x,-160)
-		self.jumptimer = self.jumptimer - dt
+		self.jumpTimer = self.jumpTimer - dt
 	end
 
 	-- Salto
@@ -163,7 +162,7 @@ function Hero:update (dt)
 
 	-- # PUNCH
 	-- Cooldown
-	self.punchcd = self.punchcd - dt
+	self.punchCooldown = self.punchCooldown - dt
 	if not self.body:isDestroyed() then -- TODO: This is weird
 		for _,fixture in pairs(self.body:getFixtureList()) do -- TODO: getFixtures from `PhysicalBody` or similar.
 			if fixture:getUserData() ~= self then
@@ -185,7 +184,7 @@ function Hero:update (dt)
 		end
 	end
 
-	if self.punchcd <= 0 and self.punchdir == 1 then
+	if self.punchCooldown <= 0 and self.punchdir == 1 then
 		self.punchdir = 0
 	end
 end
@@ -197,9 +196,9 @@ function Hero:controlpressed (set, action, key)
 	local controlset = self:getControlSet()
 	-- Jumping
 	if action == "jump" then
-		if self.jumpnumber > 0 then
+		if self.jumpCounter > 0 then
 			-- General jump logics
-			self.jumpactive = true
+			self.isJumping = true
 			--self:playSound(6)
 			-- Spawn proper effect
 			if not self.inAir then
@@ -208,7 +207,7 @@ function Hero:controlpressed (set, action, key)
 				self:createEffect("doublejump")
 			end
 			-- Start salto if last jump
-			if self.jumpnumber == 1 then
+			if self.jumpCounter == 1 then
 				self.salto = true
 			end
 			-- Animation clear
@@ -218,7 +217,7 @@ function Hero:controlpressed (set, action, key)
 				self:setAnimation("default")
 			end
 			-- Remove jump
-			self.jumpnumber = self.jumpnumber - 1
+			self.jumpCounter = self.jumpCounter - 1
 		end
 	end
 
@@ -231,7 +230,7 @@ function Hero:controlpressed (set, action, key)
 	end
 
 	-- Punching
-	if action == "attack" and self.punchcd <= 0 then
+	if action == "attack" and self.punchCooldown <= 0 then
 		local f = self.facing
 		self.salto = false
 		if isDown(controlset, "up") then
@@ -266,8 +265,8 @@ function Hero:controlreleased (set, action, key)
 	local controlset = self:getControlSet()
 	-- Jumping
 	if action == "jump" then
-		self.jumpactive = false
-		self.jumptimer = Hero.jumptimer -- take initial from metatable
+		self.isJumping = false
+		self.jumpTimer = Hero.jumpTimer -- take initial from metatable
 	end
 	-- Walking
 	if (action == "left" or action == "right") and not
@@ -342,7 +341,7 @@ end
 -- TODO: attack functions needs to be renamed, because even I have problems understanding them.
 function Hero:hit (direction)
 	-- start cooldown
-	self.punchcd = Hero.punchcd -- INITIAL from metatable
+	self.punchCooldown = Hero.punchCooldown -- INITIAL from metatable
 	-- actual punch
 	-- TODO: use `PhysicalBody.addFixture`.
 	local fixture
@@ -389,7 +388,7 @@ function Hero:damage (direction)
 	self:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:setAnimation("damage")
 	self.combo = math.min(99, self.combo + 1)
-	self.punchcd = 0.08 + self.combo*0.006
+	self.punchCooldown = 0.08 + self.combo*0.006
 	self:playSound(2)
 end
 
