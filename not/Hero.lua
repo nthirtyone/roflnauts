@@ -75,6 +75,7 @@ function Hero:init (name, world, x, y)
 end
 
 -- Control set managment
+-- TODO: move these two to `not.Player`.
 function Hero:assignControlSet (set)
 	self.controlset = set
 end
@@ -87,14 +88,14 @@ end
 function Hero:update (dt)
 	PhysicalBody.update(self, dt)
 	-- locals
-	local x, y = self.body:getLinearVelocity()
+	local x, y = self:getLinearVelocity()
 	local isDown = Controller.isDown
 	local controlset = self:getControlSet()
 	
 	-- # VERTICAL MOVEMENT
 	-- Jumping
 	if self.jumpactive and self.jumptimer > 0 then
-		self.body:setLinearVelocity(x,-160)
+		self:setLinearVelocity(x,-160)
 		self.jumptimer = self.jumptimer - dt
 	end
 
@@ -109,18 +110,18 @@ function Hero:update (dt)
 	-- Walking
 	if isDown(controlset, "left") then
 		self.facing = -1
-		self.body:applyForce(-250, 0)
+		self:applyForce(-250, 0)
 		-- Controlled speed limit
 		if x < -self.max_velocity then
-			self.body:applyForce(250, 0)
+			self:applyForce(250, 0)
 		end
 	end
 	if isDown(controlset, "right") then
 		self.facing = 1
-		self.body:applyForce(250, 0)
+		self:applyForce(250, 0)
 		-- Controlled speed limit
 		if x > self.max_velocity then
-			self.body:applyForce(-250, 0)
+			self:applyForce(-250, 0)
 		end
 	end
 
@@ -136,9 +137,9 @@ function Hero:update (dt)
 		else
 			face = 0
 		end
-		self.body:applyForce(40*face,0)
+		self:applyForce(40*face,0)
 		if not self.inAir then
-			self.body:applyForce(80*face,0)
+			self:applyForce(80*face,0)
 		end
 	end
 
@@ -163,8 +164,8 @@ function Hero:update (dt)
 	-- # PUNCH
 	-- Cooldown
 	self.punchcd = self.punchcd - dt
-	if not self.body:isDestroyed() then -- This is weird
-		for _,fixture in pairs(self.body:getFixtureList()) do
+	if not self.body:isDestroyed() then -- TODO: This is weird
+		for _,fixture in pairs(self.body:getFixtureList()) do -- TODO: getFixtures from `PhysicalBody` or similar.
 			if fixture:getUserData() ~= self then
 				fixture:setUserData({fixture:getUserData()[1] - dt, fixture:getUserData()[2]})
 				if fixture:getUserData()[1] < 0 then
@@ -178,9 +179,9 @@ function Hero:update (dt)
 	local c,a = self.current, self.animations
 	if (c == a.attack_up or c == a.attack_down or c == a.attack) and self.frame < c.frames then
 		if self.punchdir == 0 then
-			self.body:setLinearVelocity(0,0)
+			self:setLinearVelocity(0,0)
 		else
-			self.body:setLinearVelocity(38*self.facing,0)
+			self:setLinearVelocity(38*self.facing,0)
 		end
 	end
 
@@ -281,7 +282,7 @@ end
 function Hero:getAngle ()
 	return self.angle
 end
-function Hero:getHorizontalMirror()
+function Hero:getHorizontalMirror ()
 	return self.facing
 end
 function Hero:getOffset ()
@@ -289,7 +290,6 @@ function Hero:getOffset ()
 end
 
 -- Draw of `Hero`
--- TODO: see `not.PhysicalBody.draw` and `not.Sprite.draw`.
 function Hero:draw (offset_x, offset_y, scale, debug)
 	if not self.alive then return end
 	PhysicalBody.draw(self, offset_x, offset_y, scale, debug)
@@ -339,10 +339,12 @@ end
 -- Punch of `Hero`
 -- direction: left, right, up, down
 -- creates temporary fixture for player's body that acts as sensor; fixture is deleted after time set in UserData[1]; deleted by Hero:update(dt)
+-- TODO: attack functions needs to be renamed, because even I have problems understanding them.
 function Hero:hit (direction)
 	-- start cooldown
 	self.punchcd = Hero.punchcd -- INITIAL from metatable
 	-- actual punch
+	-- TODO: use `PhysicalBody.addFixture`.
 	local fixture
 	if direction == "left" then
 		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-2,-6, -20,-6, -20,6, -2,6), 0)
@@ -382,8 +384,8 @@ function Hero:damage (direction)
 		vertical = 1
 	end
 	self:createEffect("hit")
-	local x,y = self.body:getLinearVelocity()
-	self.body:setLinearVelocity(x,0)
+	local x,y = self:getLinearVelocity()
+	self:setLinearVelocity(x,0)
 	self.body:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:setAnimation("damage")
 	self.combo = math.min(27, self.combo + 1)
@@ -398,21 +400,22 @@ function Hero:die ()
 	self.lives = self.lives - 1
 	self.alive = false
 	self.spawntimer = Hero.spawntimer -- INITIAL from metatable
-	self.body:setActive(false)
+	self:setBodyActive(false)
 	self.world:onNautKilled(self)
 end
 
 -- And then respawn. Like Jon Snow.
 function Hero:respawn ()
 	self.alive = true
-	self.body:setLinearVelocity(0,0)
-	self.body:setPosition(self.world:getSpawnPosition())
-	self.body:setActive(true)
+	self:setLinearVelocity(0,0)
+	self:setPosition(self.world:getSpawnPosition()) -- TODO: I'm not convinced about getting new position like this.
+	self:setBodyActive(true)
 	self:createEffect("respawn")
 	self:playSound(7)
 end
 
 -- Sounds
+-- TODO: Possibly export to nonexistent SoundEmitter class. Can be used by World (Stage), too.
 function Hero:playSound (sfx, force)
 	if self.alive or force then
 		local source = love.audio.newSource(self.sfx[sfx])

@@ -38,6 +38,14 @@ function PhysicalBody:setPosition (x, y)
 	self.body:setPosition(x, y)
 end
 
+-- Velocity-related methods.
+function PhysicalBody:setLinearVelocity (x, y)
+	self.body:setLinearVelocity(x, y)
+end
+function PhysicalBody:getLinearVelocity ()
+	return self.body:getLinearVelocity()
+end
+
 -- Various setters from Body.
 -- type: BodyType ("static", "dynamic", "kinematic")
 function PhysicalBody:setBodyType (type)
@@ -45,6 +53,17 @@ function PhysicalBody:setBodyType (type)
 end
 function PhysicalBody:setBodyFixedRotation (bool)
 	self.body:setFixedRotation(bool)
+end
+function PhysicalBody:setBodyActive (bool)
+	self.body:setActive(bool)
+end
+
+-- Physical influence methods.
+function PhysicalBody:applyLinearImpulse (x, y)
+	self.body:applyLinearImpulse(x, y)
+end
+function PhysicalBody:applyForce (x, y)
+	self.body:applyForce(x, y)
 end
 
 -- Update of `PhysicalBody`.
