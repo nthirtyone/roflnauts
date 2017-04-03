@@ -16,7 +16,7 @@ function Player:new (...)
 	return o
 end
 
--- Initializator of `Player`.
+-- Initializer of `Player`.
 function Player:init (...)
 	Hero.init(self, ...)
 end

@@ -18,7 +18,7 @@ function Decoration:new (x, y, imagePath)
 	return o
 end
 
--- Initializator of `Decoration`.
+-- Initializer of `Decoration`.
 function Decoration:init (x, y, imagePath)
 	Sprite.init(self, imagePath)
 	self:setPosition(x, y)

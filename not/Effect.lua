@@ -21,7 +21,7 @@ function Effect:new (name, x, y)
 	return o
 end
 
--- Initializator of `Effect`.
+-- Initializer of `Effect`.
 function Effect:init (name, x, y)
 	Decoration.init(self, x, y, nil)
 	self:setAnimationsList(require("effects"))

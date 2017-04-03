@@ -17,7 +17,7 @@ function PhysicalBody:new (world, x, y, imagePath)
 end
 ]]
 
--- Initializator of `PhysicalBody`.
+-- Initializer of `PhysicalBody`.
 function PhysicalBody:init (world, x, y, imagePath)
 	Sprite.init(self, imagePath)
 	self.body = love.physics.newBody(world.world, x, y)

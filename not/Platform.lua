@@ -19,7 +19,7 @@ function Platform:new (game, world, x, y, shape, sprite, animations)
 	return o
 end
 
--- Initializator of `Platform`.
+-- Initializer of `Platform`.
 function Platform:init (animations, shape, world, x, y, imagePath)
 	PhysicalBody.init(self, world, x, y, imagePath)
 	self:setAnimationsList(animations)

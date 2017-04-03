@@ -50,7 +50,7 @@ function Hero:new (game, world, x, y, name)
 	return o
 end
 
--- Initializator of `Hero`.
+-- Initializer of `Hero`.
 function Hero:init (name, world, x, y)
 	-- Find imagePath based on hero name.
 	local fileName = name or Hero.name -- INITIAL from metatable

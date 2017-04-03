@@ -42,7 +42,7 @@ function Cloud:new (x, y, t, v)
 	return o
 end
 
--- Initializator of `Cloud`.
+-- Initializer of `Cloud`.
 function Cloud:init (x, y, t, v)
 	Decoration.init(self, x, y, nil)
 	self:setAnimationsList(animations)

@@ -1,5 +1,6 @@
 -- `World`
 -- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
+-- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
 
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
@@ -36,6 +37,7 @@ World = {
 }
 
 -- Constructor of `World` ZA WARUDO!
+-- TODO: push stuff to initialization method.
 function World:new(map, nauts)
 	-- Meta
 	local o = {}
@@ -46,6 +48,7 @@ function World:new(map, nauts)
 	o.world = love.physics.newWorld(0, 9.81*64, true)
 	o.world:setCallbacks(o.beginContact, o.endContact)
 	-- Empty tables for objects
+	-- TODO: DEAR DEER, do you see it?
 	local n = {}
 	o.Nauts = n
 	local p     = {}
@@ -58,7 +61,7 @@ function World:new(map, nauts)
 	o.Decorations = d
 	local r = {}
 	o.Rays = r
-	-- Random init
+	-- Random init; TODO: use LOVE2D's random.
 	math.randomseed(os.time())
 	-- Map
 	local map = map or "default"
@@ -86,6 +89,7 @@ function World:delete()
 end
 
 -- Load map from file
+-- TODO: Change current map model to function-based one.
 function World:loadMap(name)
 	local name = name or "default"
 	name = "maps/" .. name .. ".lua"
@@ -125,11 +129,14 @@ function World:getSpawnPosition()
 end
 
 -- Add new platform to the world
+-- TODO: follow new parameters in `not.Platform.new` based on `not.Platform.init`.
 function World:createPlatform(x, y, polygon, sprite, animations)
 	table.insert(self.Platforms, Platform:new(self, self.world, x, y, polygon, sprite, animations))
 end
 
 -- Add new naut to the world
+-- TODO: separate two methods for `not.Hero` and `not.Player`.
+-- TODO: follow new parameters in `not.Player.new` based on `not.Player.init`.
 function World:createNaut(x, y, name)
 	local naut = Hero:new(self, self.world, x, y, name)
 	table.insert(self.Nauts, naut)
@@ -137,11 +144,14 @@ function World:createNaut(x, y, name)
 end
 
 -- Add new decoration to the world
+-- TODO: follow new parameters in `not.Decoration.new` based on `not.Decoration.init`.
 function World:createDecoration(x, y, sprite)
 	table.insert(self.Decorations, Decoration:new(x, y, sprite))
 end
 
 -- Add new cloud to the world
+-- TODO: extend variables names to provide better readability.
+-- TODO: follow new parameters in `not.Cloud.new` based on `not.Cloud.init`.
 function World:createCloud(x, y, t, v)
 	table.insert(self.Clouds, Cloud:new(x, y, t, v))
 end
@@ -167,6 +177,8 @@ function World:randomizeCloud(outside)
 end
 
 -- Add an effect behind nauts
+-- TODO: follow new parameters in `not.Effect.new` based on `not.Effect.init`.
+-- TODO: along with `createRay` move this nearer reast of `create*` methods for readability.
 function World:createEffect(name, x, y)
 	table.insert(self.Effects, Effect:new(name, x, y))
 end
@@ -288,7 +300,7 @@ function World:draw()
 	-- Background
 	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
 	
-	-- This needs to be reworked!
+	-- TODO: this needs to be reworked!
 	-- Draw clouds
 	for _,cloud in pairs(self.Clouds) do
 		cloud:draw(offset_x, offset_y, scale)
@@ -403,6 +415,7 @@ function World.endContact(a, b, coll)
 end
 
 -- Controller callbacks
+-- TODO: names of this methods don't follow naming patterns in this project. See `Controller` and change it.
 function World:controlpressed(set, action, key)
 	if key == "f6" and debug then
 		local map = self:getMapName()
