@@ -126,8 +126,8 @@ function Hero:update (dt)
 	end
 
 	-- Custom linear damping
-	if  not isDown(controlset, "left") and
-		not isDown(controlset, "right")
+	if not isDown(controlset, "left") and
+	   not isDown(controlset, "right")
 	then
 		local face = nil
 		if x < -12 then
@@ -388,7 +388,7 @@ function Hero:damage (direction)
 	self:setLinearVelocity(x,0)
 	self:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
 	self:setAnimation("damage")
-	self.combo = math.min(27, self.combo + 1)
+	self.combo = math.min(99, self.combo + 1)
 	self.punchcd = 0.08 + self.combo*0.006
 	self:playSound(2)
 end
