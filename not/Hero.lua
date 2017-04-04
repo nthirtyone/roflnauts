@@ -238,22 +238,22 @@ function Hero:controlpressed (set, action, key)
 			if self.current ~= self.animations.damage then
 				self:setAnimation("attack_up")
 			end
-			self:hit("up")
+			self:punch("up")
 		elseif isDown(controlset, "down") then
 			-- Punch down
 			if self.current ~= self.animations.damage then
 				self:setAnimation("attack_down")
 			end
-			self:hit("down")
+			self:punch("down")
 		else
 			-- Punch horizontal
 			if self.current ~= self.animations.damage then
 				self:setAnimation("attack")
 			end
 			if f == 1 then
-				self:hit("right")
+				self:punch("right")
 			else
-				self:hit("left")
+				self:punch("left")
 			end
 			self.punchdir = 1
 		end
@@ -335,39 +335,31 @@ function Hero:createEffect (name)
 	end
 end
 
--- Punch of `Hero`
--- direction: left, right, up, down
--- creates temporary fixture for player's body that acts as sensor; fixture is deleted after time set in UserData[1]; deleted by Hero:update(dt)
--- TODO: attack functions needs to be renamed, because even I have problems understanding them.
-function Hero:hit (direction)
-	-- start cooldown
+-- Creates temporary fixture for hero's body that acts as sensor.
+-- direction:  ("left", "right", "up", "down")
+-- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.
+-- TODO: Magic numbers present in `not.Hero.punch`.
+function Hero:punch (direction)
 	self.punchCooldown = Hero.punchCooldown -- INITIAL from metatable
-	-- actual punch
-	-- TODO: use `PhysicalBody.addFixture`.
-	local fixture
-	if direction == "left" then
-		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-2,-6, -20,-6, -20,6, -2,6), 0)
-	end
-	if direction == "right" then
-		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(2,-6, 20,-6, 20,6, 2,6), 0)
-	end
-	if direction == "up" then
-		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-8,-4, -8,-20, 8,-20, 8,-4), 0)
-	end
-	if direction == "down" then
-		fixture = love.physics.newFixture(self.body, love.physics.newPolygonShape(-8,4, -8,20, 8,20, 8,4), 0)
-	end
+	-- Choose shape based on punch direction.
+	local shape
+	if direction == "left" then shape = {-2,-6, -20,-6, -20,6, -2,6} end
+	if direction == "right" then shape = {2,-6, 20,-6, 20,6, 2,6} end
+	if direction == "up" then shape = {-8,-4, -8,-20, 8,-20, 8,-4} end
+	if direction == "down" then shape = {-8,4, -8,20, 8,20, 8,4} end
+	-- Create and set sensor fixture.
+	local fixture = self:addFixture(shape, 0)
 	fixture:setSensor(true)
 	fixture:setCategory(3)
 	fixture:setMask(1,3)
 	fixture:setGroupIndex(self.group)
 	fixture:setUserData({0.08, direction})
-	-- sound
 	self:playSound(4)
 end
 
 -- Taking damage of `Hero` by successful hit test
 -- currently called from World's startContact
+-- TODO: attack functions needs to be renamed, because even I have problems understanding them.
 function Hero:damage (direction)
 	local horizontal, vertical = 0, 0
 	if direction == "left" then
