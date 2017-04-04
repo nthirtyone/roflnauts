@@ -86,6 +86,7 @@ end
 -- TODO: Explode this function (method, kek), move controler-related parts to `not.Player`, physics parts to `not.PhysicalBody`.
 function Hero:update (dt)
 	PhysicalBody.update(self, dt)
+	if self.body:isDestroyed() then return end
 	-- locals
 	local x, y = self:getLinearVelocity()
 	local isDown = Controller.isDown

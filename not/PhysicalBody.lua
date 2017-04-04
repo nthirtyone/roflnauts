@@ -69,7 +69,6 @@ end
 -- Update of `PhysicalBody`.
 function PhysicalBody:update (dt)
 	Sprite.update(self, dt)
-	if self.body:isDestroyed() then return end
 end
 
 -- Draw of `PhysicalBody`.
