@@ -305,7 +305,7 @@ function Hero:drawHUD (x,y,scale,elevation)
 		love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
 		local dy = 30 * elevation
 		love.graphics.setFont(Font)
-		love.graphics.print((self.combo*10).."%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
+		love.graphics.print((self.combo).."%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
 		love.graphics.print(math.max(0, self.lives),(x+24)*scale,(y-3+dy)*scale,0,scale,scale)
 	end
 end
@@ -378,10 +378,10 @@ function Hero:damage (direction)
 	self:createEffect("hit")
 	local x,y = self:getLinearVelocity()
 	self:setLinearVelocity(x,0)
-	self:applyLinearImpulse((42+10*self.combo)*horizontal, (68+10*self.combo)*vertical + 15)
+	self:applyLinearImpulse((42+self.combo)*horizontal, (68+self.combo)*vertical + 15)
 	self:setAnimation("damage")
-	self.combo = math.min(99, self.combo + 1)
-	self.punchCooldown = 0.08 + self.combo*0.006
+	self.combo = math.min(999, self.combo + 10)
+	self.punchCooldown = 0.08 + self.combo*0.0006
 	self:playSound(2)
 end
 
