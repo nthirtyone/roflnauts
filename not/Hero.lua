@@ -1,5 +1,5 @@
 --- `Hero`
--- Hero (naut) entity that exists in a game world.
+-- Hero (often referred to as: "naut") entity that exists in a game world.
 -- Collision category: [2]
 Hero = {
 	-- General and physics
@@ -22,8 +22,6 @@ Hero = {
 	isJumping = false,
 	jumpTimer = 0.16,
 	jumpCounter = 2,
-	-- Keys
-	controlset = nil,
 	-- Statics
 	portrait_sprite = nil,
 	portrait_frame  = nil,
@@ -71,15 +69,6 @@ function Hero:init (name, world, x, y)
 	self.name = name
 	self:setAnimationsList(require("animations"))
 	self:createEffect("respawn")
-end
-
--- Control set managment
--- TODO: move these two to `not.Player`.
-function Hero:assignControlSet (set)
-	self.controlset = set
-end
-function Hero:getControlSet ()
-	return self.controlset
 end
 
 -- Update callback of `Hero`

@@ -5,7 +5,7 @@
 -- WHOLE CODE HAS FLAG OF "need a cleanup"
 
 require "not.Platform"
-require "not.Hero"
+require "not.Player"
 require "not.Cloud"
 require "not.Effect"
 require "not.Decoration"
@@ -136,9 +136,9 @@ end
 
 -- Add new naut to the world
 -- TODO: separate two methods for `not.Hero` and `not.Player`.
--- TODO: follow new parameters in `not.Player.new` based on `not.Player.init`.
+-- TODO: follow new parameters in `not.(Player/Hero).new` based on `not.(Player/Hero).init`.
 function World:createNaut(x, y, name)
-	local naut = Hero:new(self, self.world, x, y, name)
+	local naut = Player:new(self, self.world, x, y, name)
 	table.insert(self.Nauts, naut)
 	return naut
 end
