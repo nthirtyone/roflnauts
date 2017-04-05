@@ -72,21 +72,9 @@ function Hero:init (name, world, x, y)
 end
 
 -- Update callback of `Hero`
--- TODO: Explode this function (method, kek), move controler-related parts to `not.Player`, physics parts to `not.PhysicalBody`.
 function Hero:update (dt)
 	PhysicalBody.update(self, dt)
 	if self.body:isDestroyed() then return end
-	-- locals
-	local x, y = self:getLinearVelocity()
-	local isDown = Controller.isDown
-	local controlset = self:getControlSet()
-	
-	-- # VERTICAL MOVEMENT
-	-- Jumping
-	if self.isJumping and self.jumpTimer > 0 then
-		self:setLinearVelocity(x,-160)
-		self.jumpTimer = self.jumpTimer - dt
-	end
 
 	-- Salto
 	if self.salto and (self.current == self.animations.walk or self.current == self.animations.default) then
@@ -95,54 +83,18 @@ function Hero:update (dt)
 		self.angle = 0
 	end
 
-	-- # HORIZONTAL MOVEMENT
-	-- Walking
-	if isDown(controlset, "left") then
-		self.facing = -1
-		self:applyForce(-250, 0)
-		-- Controlled speed limit
-		if x < -self.max_velocity then
-			self:applyForce(250, 0)
-		end
-	end
-	if isDown(controlset, "right") then
-		self.facing = 1
-		self:applyForce(250, 0)
-		-- Controlled speed limit
-		if x > self.max_velocity then
-			self:applyForce(-250, 0)
-		end
-	end
-
-	-- Custom linear damping
-	if not isDown(controlset, "left") and
-	   not isDown(controlset, "right")
-	then
-		local face = nil
-		if x < -12 then
-			face = 1
-		elseif x > 12 then
-			face = -1
-		else
-			face = 0
-		end
-		self:applyForce(40*face,0)
-		if not self.inAir then
-			self:applyForce(80*face,0)
-		end
-	end
-
-	-- # DEATH
-	-- We all die in the end.
+	-- Could you please die?
+	-- TODO: World/Map function for testing if Point is inside playable area.
 	local m = self.world.map
-	if (self.body:getX() < m.center_x - m.width*1.5 or self.body:getX() > m.center_x + m.width*1.5  or
-	    self.body:getY() < m.center_y - m.height*1.5 or self.body:getY() > m.center_y + m.height*1.5) and
+	local x, y = self:getPosition()
+	if (x < m.center_x - m.width*1.5 or x > m.center_x + m.width*1.5  or
+	    y < m.center_y - m.height*1.5 or y > m.center_y + m.height*1.5) and
 	    self.alive
 	then
 		self:die()
 	end
 
-	-- respawn
+	-- Respawn timer.
 	if self.spawntimer > 0 then
 		self.spawntimer = self.spawntimer - dt
 	end
@@ -179,94 +131,6 @@ function Hero:update (dt)
 	end
 end
 
--- Controller callbacks
-function Hero:controlpressed (set, action, key)
-	if set ~= self:getControlSet() then return end
-	local isDown = Controller.isDown
-	local controlset = self:getControlSet()
-	-- Jumping
-	if action == "jump" then
-		if self.jumpCounter > 0 then
-			-- General jump logics
-			self.isJumping = true
-			--self:playSound(6)
-			-- Spawn proper effect
-			if not self.inAir then
-				self:createEffect("jump")
-			else
-				self:createEffect("doublejump")
-			end
-			-- Start salto if last jump
-			if self.jumpCounter == 1 then
-				self.salto = true
-			end
-			-- Animation clear
-			if (self.current == self.animations.attack) or
-			   (self.current == self.animations.attack_up) or
-			   (self.current == self.animations.attack_down) then
-				self:setAnimation("default")
-			end
-			-- Remove jump
-			self.jumpCounter = self.jumpCounter - 1
-		end
-	end
-
-	-- Walking
-	if (action == "left" or action == "right") and 
-	   (self.current ~= self.animations.attack) and
-	   (self.current ~= self.animations.attack_up) and
-	   (self.current ~= self.animations.attack_down) then
-		self:setAnimation("walk")
-	end
-
-	-- Punching
-	if action == "attack" and self.punchCooldown <= 0 then
-		local f = self.facing
-		self.salto = false
-		if isDown(controlset, "up") then
-			-- Punch up
-			if self.current ~= self.animations.damage then
-				self:setAnimation("attack_up")
-			end
-			self:punch("up")
-		elseif isDown(controlset, "down") then
-			-- Punch down
-			if self.current ~= self.animations.damage then
-				self:setAnimation("attack_down")
-			end
-			self:punch("down")
-		else
-			-- Punch horizontal
-			if self.current ~= self.animations.damage then
-				self:setAnimation("attack")
-			end
-			if f == 1 then
-				self:punch("right")
-			else
-				self:punch("left")
-			end
-			self.punchdir = 1
-		end
-	end
-end
-function Hero:controlreleased (set, action, key)
-	if set ~= self:getControlSet() then return end
-	local isDown = Controller.isDown
-	local controlset = self:getControlSet()
-	-- Jumping
-	if action == "jump" then
-		self.isJumping = false
-		self.jumpTimer = Hero.jumpTimer -- take initial from metatable
-	end
-	-- Walking
-	if (action == "left" or action == "right") and not
-	   (isDown(controlset, "left") or isDown(controlset, "right")) and
-	   self.current == self.animations.walk
-	then
-		self:setAnimation("default")
-	end
-end
-
 -- TODO: comment them and place them somewhere properly
 function Hero:getAngle ()
 	return self.angle
@@ -275,7 +139,7 @@ function Hero:getHorizontalMirror ()
 	return self.facing
 end
 function Hero:getOffset ()
-	return 12,15 -- TODO: WHY? How about creating body as polygon and using 0,0 instead. LIKE EVERYWHERE ELSE? Make it obsolete both in here and in `not.Sprite`.
+	return 12,15
 end
 
 -- Draw of `Hero`
