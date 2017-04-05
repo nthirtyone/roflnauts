@@ -38,7 +38,7 @@ World = {
 
 -- Constructor of `World` ZA WARUDO!
 -- TODO: push stuff to initialization method.
-function World:new(map, nauts)
+function World:new (map, nauts)
 	-- Meta
 	local o = {}
 	setmetatable(o, self)
@@ -76,7 +76,7 @@ function World:new(map, nauts)
 end
 
 -- The end of the world
-function World:delete()
+function World:delete ()
 	self.world:destroy()
 	for _,platform in pairs(self.Platforms) do
 	 	platform:delete()
@@ -90,7 +90,7 @@ end
 
 -- Load map from file
 -- TODO: Change current map model to function-based one.
-function World:loadMap(name)
+function World:loadMap (name)
 	local name = name or "default"
 	name = "maps/" .. name .. ".lua"
 	local map = love.filesystem.load(name)
@@ -114,7 +114,7 @@ function World:loadMap(name)
 end
 
 -- Spawn all the nauts for the round
-function World:spawnNauts(nauts)
+function World:spawnNauts (nauts)
 	for _,naut in pairs(nauts) do
 		local x,y = self:getSpawnPosition()
 		local spawn = self:createNaut(x, y, naut[1])
@@ -123,41 +123,40 @@ function World:spawnNauts(nauts)
 end
 
 -- Get respawn location
-function World:getSpawnPosition()
+function World:getSpawnPosition ()
 	local n = math.random(1, #self.map.respawns)
 	return self.map.respawns[n].x, self.map.respawns[n].y
 end
 
 -- Add new platform to the world
--- TODO: follow new parameters in `not.Platform.new` based on `not.Platform.init`.
-function World:createPlatform(x, y, polygon, sprite, animations)
-	table.insert(self.Platforms, Platform:new(self, self.world, x, y, polygon, sprite, animations))
+-- TODO: it would be nice if function parameters would be same as `not.Platform.new`.
+function World:createPlatform (x, y, polygon, sprite, animations)
+	table.insert(self.Platforms, Platform:new(animations, polygon, self, x, y, sprite))
 end
 
 -- Add new naut to the world
 -- TODO: separate two methods for `not.Hero` and `not.Player`.
--- TODO: follow new parameters in `not.(Player/Hero).new` based on `not.(Player/Hero).init`.
-function World:createNaut(x, y, name)
-	local naut = Player:new(self, self.world, x, y, name)
+function World:createNaut (x, y, name)
+	local naut = Player:new(name, self, x, y)
 	table.insert(self.Nauts, naut)
 	return naut
 end
 
 -- Add new decoration to the world
--- TODO: follow new parameters in `not.Decoration.new` based on `not.Decoration.init`.
-function World:createDecoration(x, y, sprite)
+-- TODO: `not.World.create*` functions often have different naming for parameters. It is not ground-breaking but it makes reading code harder for no good reason.
+function World:createDecoration (x, y, sprite)
 	table.insert(self.Decorations, Decoration:new(x, y, sprite))
 end
 
 -- Add new cloud to the world
 -- TODO: extend variables names to provide better readability.
 -- TODO: follow new parameters in `not.Cloud.new` based on `not.Cloud.init`.
-function World:createCloud(x, y, t, v)
+function World:createCloud (x, y, t, v)
 	table.insert(self.Clouds, Cloud:new(x, y, t, v))
 end
 
 -- Randomize Cloud creation
-function World:randomizeCloud(outside)
+function World:randomizeCloud (outside)
 	if outside == nil then
 		outside = true
 	else
@@ -179,18 +178,18 @@ end
 -- Add an effect behind nauts
 -- TODO: follow new parameters in `not.Effect.new` based on `not.Effect.init`.
 -- TODO: along with `createRay` move this nearer reast of `create*` methods for readability.
-function World:createEffect(name, x, y)
+function World:createEffect (name, x, y)
 	table.insert(self.Effects, Effect:new(name, x, y))
 end
 
 -- Add a ray
-function World:createRay(naut)
+function World:createRay (naut)
 	table.insert(self.Rays, Ray:new(naut, self))
 end
 
 -- get Nauts functions
 -- more than -1 lives
-function World:getNautsPlayable()
+function World:getNautsPlayable ()
 	local nauts = {}
 	for _,naut in pairs(self.Nauts) do
 		if naut.lives > -1 then
@@ -200,7 +199,7 @@ function World:getNautsPlayable()
 	return nauts
 end
 -- are alive
-function World:getNautsAlive()
+function World:getNautsAlive ()
 	local nauts = {}
 	for _,naut in self.Nauts do
 		if naut.alive then
@@ -210,17 +209,17 @@ function World:getNautsAlive()
 	return nauts
 end
 -- all of them
-function World:getNautsAll()
+function World:getNautsAll ()
 	return self.Nauts
 end
 
 -- get Map name
-function World:getMapName()
+function World:getMapName ()
 	return self.map.name
 end
 
 -- Event: when player is killed
-function World:onNautKilled(naut)
+function World:onNautKilled (naut)
 	self.camera:startShake()
 	self:createRay(naut)
 	local nauts = self:getNautsPlayable()
@@ -232,14 +231,14 @@ function World:onNautKilled(naut)
 	end
 end
 
-function World:getBounce(f)
+function World:getBounce (f)
 	local f = f or 1
 	return math.sin(self.win_move*f*math.pi)
 end
 
 -- LÖVE2D callbacks
 -- Update ZU WARUDO
-function World:update(dt)
+function World:update (dt)
 	-- Physical world
 	self.world:update(dt)
 	-- Camera
@@ -291,7 +290,7 @@ function World:update(dt)
 	end
 end
 -- Draw
-function World:draw()
+function World:draw ()
 	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
 	local scale = self.camera.scale
@@ -382,7 +381,7 @@ end
 
 -- Box2D callbacks
 -- beginContact
-function World.beginContact(a, b, coll)
+function World.beginContact (a, b, coll)
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
@@ -408,7 +407,7 @@ function World.beginContact(a, b, coll)
 	end
 end
 -- endContact
-function World.endContact(a, b, coll)
+function World.endContact (a, b, coll)
 	if a:getCategory() == 1 then
 		print(b:getUserData().name .. " is in air")
 		-- Move them to Hero
@@ -418,7 +417,7 @@ end
 
 -- Controller callbacks
 -- TODO: names of this methods don't follow naming patterns in this project. See `Controller` and change it.
-function World:controlpressed(set, action, key)
+function World:controlpressed (set, action, key)
 	if key == "f6" and debug then
 		local map = self:getMapName()
 		local nauts = {}
@@ -432,7 +431,7 @@ function World:controlpressed(set, action, key)
 		naut:controlpressed(set, action, key)
 	end
 end
-function World:controlreleased(set, action, key)
+function World:controlreleased (set, action, key)
 	for k,naut in pairs(self:getNautsAll()) do
 		naut:controlreleased(set, action, key)
 	end

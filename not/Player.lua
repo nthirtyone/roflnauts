@@ -12,7 +12,7 @@ setmetatable(Player, Hero)
 
 -- Constructor of `Player`.
 -- TODO: I'm sure it is a duplicate, but `not.World.create*` methods need to pass proper parameters.
-function Player:new (game, world, x, y, name)
+function Player:new (name, game, x, y)
 	local o = setmetatable({}, self)
 	o:init(name, game, x, y)
 	-- Load portraits statically to `not.Hero`.

@@ -13,7 +13,7 @@ Platform.__index = Platform
 setmetatable(Platform, PhysicalBody)
 
 -- Constructor of `Platform`
-function Platform:new (game, world, x, y, shape, sprite, animations)
+function Platform:new (animations, shape, game, x, y, sprite)
 	local o = setmetatable({}, self)
 	o:init(animations, shape, game, x, y, sprite)
 	return o
