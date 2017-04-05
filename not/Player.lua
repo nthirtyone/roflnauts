@@ -2,7 +2,7 @@
 -- Special `not.Hero` controllable by a player.
 Player = {
 	-- TODO: move functions and properties related to controls from `not.Hero`.
-	controlSet = --[[Controller.sets.*]]nil,
+	controllerSet = --[[Controller.sets.*]]nil,
 }
 
 -- `Player` is a child of `Hero`.
@@ -29,16 +29,16 @@ function Player:init (...)
 end
 
 -- Controller set manipulation.
-function Player:assignControlSet (set)
-	self.controlset = set
+function Player:assignControllerSet (set)
+	self.controllerSet = set
 end
-function Player:getControlSet ()
-	return self.controlset
+function Player:getControllerSet ()
+	return self.controllerSet
 end
 
 -- Check if control of assigned controller is pressed.
 function Player:isControlDown (control)
-	return Controller.isDown(self:getControlSet(), control)
+	return Controller.isDown(self:getControllerSet(), control)
 end
 
 -- Update of `Player`.
@@ -91,7 +91,7 @@ end
 
 -- Controller callbacks.
 function Player:controlpressed (set, action, key)
-	if set ~= self:getControlSet() then return end
+	if set ~= self:getControllerSet() then return end
 	-- Jumping
 	if action == "jump" then
 		if self.jumpCounter > 0 then
@@ -160,7 +160,7 @@ function Player:controlpressed (set, action, key)
 	end
 end
 function Player:controlreleased (set, action, key)
-	if set ~= self:getControlSet() then return end
+	if set ~= self:getControllerSet() then return end
 	-- Jumping
 	if action == "jump" then
 		self.isJumping = false

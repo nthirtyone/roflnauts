@@ -118,7 +118,7 @@ function World:spawnNauts (nauts)
 	for _,naut in pairs(nauts) do
 		local x,y = self:getSpawnPosition()
 		local spawn = self:createNaut(x, y, naut[1])
-		spawn:assignControlSet(naut[2])
+		spawn:assignControllerSet(naut[2])
 	end
 end
 
