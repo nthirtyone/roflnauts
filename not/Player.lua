@@ -92,8 +92,6 @@ end
 -- Controller callbacks.
 function Player:controlpressed (set, action, key)
 	if set ~= self:getControlSet() then return end
-	local isDown = Controller.isDown
-	local controlset = self:getControlSet()
 	-- Jumping
 	if action == "jump" then
 		if self.jumpCounter > 0 then
@@ -122,24 +120,26 @@ function Player:controlpressed (set, action, key)
 	end
 
 	-- Walking
-	if (action == "left" or action == "right") and 
-	   (self.current ~= self.animations.attack) and
-	   (self.current ~= self.animations.attack_up) and
-	   (self.current ~= self.animations.attack_down) then
-		self:setAnimation("walk")
+	if (action == "left" or action == "right") then
+		self.isWalking = true
+		if (self.current ~= self.animations.attack) and
+		   (self.current ~= self.animations.attack_up) and
+		   (self.current ~= self.animations.attack_down) then
+			self:setAnimation("walk")
+		end
 	end
 
 	-- Punching
 	if action == "attack" and self.punchCooldown <= 0 then
 		local f = self.facing
 		self.salto = false
-		if isDown(controlset, "up") then
+		if self:isControlDown("up") then
 			-- Punch up
 			if self.current ~= self.animations.damage then
 				self:setAnimation("attack_up")
 			end
 			self:punch("up")
-		elseif isDown(controlset, "down") then
+		elseif self:isControlDown("down") then
 			-- Punch down
 			if self.current ~= self.animations.damage then
 				self:setAnimation("attack_down")
@@ -161,18 +161,17 @@ function Player:controlpressed (set, action, key)
 end
 function Player:controlreleased (set, action, key)
 	if set ~= self:getControlSet() then return end
-	local isDown = Controller.isDown
-	local controlset = self:getControlSet()
 	-- Jumping
 	if action == "jump" then
 		self.isJumping = false
 		self.jumpTimer = Hero.jumpTimer -- take initial from metatable
 	end
 	-- Walking
-	if (action == "left" or action == "right") and not
-	   (isDown(controlset, "left") or isDown(controlset, "right")) and
-	   self.current == self.animations.walk
-	then
-		self:setAnimation("default")
+	if (action == "left" or action == "right") then
+		self.isWalking = false
+		if not (self:isControlDown("left") or self:isControlDown("right")) and
+		   self.current == self.animations.walk then
+			self:setAnimation("default")
+		end
 	end
 end

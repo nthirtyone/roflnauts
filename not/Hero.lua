@@ -20,6 +20,7 @@ Hero = {
 	inAir = true,
 	salto = false,
 	isJumping = false,
+	isWalking = false,
 	jumpTimer = 0.16,
 	jumpCounter = 2,
 	-- Statics
@@ -166,12 +167,9 @@ end
 -- Change animation of `Hero`
 -- default, walk, attack, attack_up, attack_down, damage
 function Hero:goToNextFrame ()
-	local isDown = Controller.isDown
-	local controlset = self:getControlSet()
 	if self.current.repeated or not (self.frame == self.current.frames) then
 		self.frame = (self.frame % self.current.frames) + 1
-	elseif isDown(controlset, "right") or isDown(controlset, "left") then
-		-- If nonrepeatable animation is finished and player is walking
+	elseif self.isWalking then
 		self:setAnimation("walk")
 	elseif self.current == self.animations.damage then
 		self:setAnimation("default")
