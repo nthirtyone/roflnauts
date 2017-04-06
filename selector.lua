@@ -275,6 +275,7 @@ function Selector:update(dt)
 end
 
 -- Controller callbacks
+-- TODO: Add action to perform when key is pressed and selector is locked in e.g. to move into character selection from map selection.
 function Selector:controlpressed(set, action, key)
 	if set and self.focused then
 		local n = self:checkNumber(set)

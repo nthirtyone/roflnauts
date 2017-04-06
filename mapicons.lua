@@ -1,5 +1,5 @@
 -- Maps icons list generation file
--- REWORK NEEDED, it is so similar to `nautsicons.lua` they could be merged together into one function that returns icon quad sequences.
+-- TODO: it is so similar to `nautsicons.lua` they could be merged together into one function that returns icon quad sequences (`createIconList(image, width, number, mask...) --[[ body ]] return image, icons, list end` or similar). On the other hand extended lists with maps/nauts in config would be enough.
 local maps = require "maplist"
 local w, h = 532, 37
 local icons = {}
