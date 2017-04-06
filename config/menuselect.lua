@@ -41,7 +41,7 @@ return {
 		:setText("Go back")
 		:setPosition(bx,150)
 		:set("active", function (self)
-				self.parent:load("menuhost")
+				self.parent:open("menuhost")
 			end)
 	,
 	element:new(menu)

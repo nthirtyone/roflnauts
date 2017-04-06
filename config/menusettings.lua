@@ -105,7 +105,7 @@ local a = {
 		:setText("Go back")
 		:setPosition(bx,144)
 		:set("active", function (self)
-				self.parent:load("menumain")
+				self.parent:open("menumain")
 			end)
 	,
 	dimmer

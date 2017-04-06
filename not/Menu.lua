@@ -1,24 +1,20 @@
--- `Menu` (Scene)
+--- `Menu`
 -- It creates single screen of a menu
 -- I do know that model I used here and in `World` loading configuration files is not flawless but I did not want to rewrite `World`s one but wanted to keep things similar at least in project scope.
-
-require "not.Music"
-
--- Here it begins
 Menu = {
 	scale = getScale(),
-	elements, --table
+	elements = --[[{not.Element}]]nil,
 	active = 1,
-	music,
-	sprite,
-	background,
-	asteroids,
-	stars,
+	music = --[[not.Music]]nil,
+	sprite = --[[love.graphics.newImage]]nil,
+	background = --[[love.graphics.newImage]]nil,
+	asteroids = --[[love.graphics.newImage]]nil,
+	stars = --[[love.graphics.newImage]]nil,
 	asteroids_bounce = 0,
 	stars_frame = 1,
 	stars_delay = 0.8,
 	allowMove = true,
-	quads = {
+	quads = { -- TODO: Could be moved to config file or perhaps QuadManager to manage all quads for animations etc.
 		button = {
 			normal = love.graphics.newQuad(0, 0, 58,15, 80,130),
 			active = love.graphics.newQuad(0, 0, 58,15, 80,130)
@@ -39,46 +35,54 @@ Menu = {
 		},
 	}
 }
-function Menu:new(name)
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
-	self.sprite = love.graphics.newImage("assets/menu.png")
-	self.background = love.graphics.newImage("assets/backgrounds/menu.png")
-	self.asteroids = love.graphics.newImage("assets/asteroids.png")
-	self.stars = love.graphics.newImage("assets/stars.png")
-	o.elements = {}
-	o:load(name)
-	o.music = Music:new("menu.ogg")
+
+Menu.__index = Menu
+
+require "not.Music"
+
+function Menu:new (name)
+	local o = setmetatable({}, self)
+	-- Load statically.
+	if self.sprite == nil then
+		self.sprite = love.graphics.newImage("assets/menu.png")
+		self.background = love.graphics.newImage("assets/backgrounds/menu.png")
+		self.asteroids = love.graphics.newImage("assets/asteroids.png")
+		self.stars = love.graphics.newImage("assets/stars.png")
+	end
+	o:init(name)
 	return o
 end
-function Menu:delete()
+
+function Menu:init (name)
+	self.music = Music:new("menu.ogg")
+	self:open(name)
+end
+
+function Menu:delete ()
 	self.music:delete()
 end
 
--- Load menu from file
-function Menu:load(name)
-	local name = "config/" .. (name or "menumain") .. ".lua"
-	local menu = love.filesystem.load(name)
-	self.active = 1
-	self.elements = menu(self)
+function Menu:open (name)
+	local name = name or "menumain"
+	self.active = Menu.active --Menu.active is initial
+	self.elements = love.filesystem.load(string.format("config/%s.lua", name))(self)
 	self.elements[self.active]:focus()
 end
 
 -- Return reference to quads table and menu sprite
-function Menu:getSheet()
+function Menu:getSheet ()
 	return self.sprite, self.quads
 end
 
 -- Cycle elements
-function Menu:next()
+function Menu:next ()
 	self.elements[self.active]:blur()
 	self.active = (self.active%#self.elements)+1
 	if not self.elements[self.active]:focus() then
 		self:next()
 	end
 end
-function Menu:previous()
+function Menu:previous ()
 	self.elements[self.active]:blur()
 	if self.active == 1 then
 		self.active = #self.elements
@@ -91,7 +95,7 @@ function Menu:previous()
 end
 
 -- LÖVE2D callbacks
-function Menu:update(dt)
+function Menu:update (dt)
 	for _,element in pairs(self.elements) do
 		element:update(dt)
 	end
@@ -107,7 +111,7 @@ function Menu:update(dt)
 		end
 	end
 end
-function Menu:draw()
+function Menu:draw ()
 	local scale = self.scale
 	local scaler = getRealScale()
 	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
@@ -120,7 +124,7 @@ function Menu:draw()
 end
 
 -- Controller callbacks
-function Menu:controlpressed(set, action, key)
+function Menu:controlpressed (set, action, key)
 	if self.allowMove then
 		if action == "down" then
 			self:next()
@@ -133,7 +137,7 @@ function Menu:controlpressed(set, action, key)
 		element:controlpressed(set, action, key)
 	end
 end
-function Menu:controlreleased(set, action, key)
+function Menu:controlreleased (set, action, key)
 	for _,element in pairs(self.elements) do
 		element:controlreleased(set, action, key)
 	end

@@ -29,14 +29,14 @@ return {
 			end)
 		:set("active", function (self)
 				MAP = map_selector:getFullSelection(true)[1][1] -- please, don't kill me for this, kek
-				self.parent:load("menuselect")
+				self.parent:open("menuselect")
 			end)
 	,
 	button:new(menu)
 		:setText("Go back")
 		:setPosition(bx,117)
 		:set("active", function (self)
-				self.parent:load("menumain")
+				self.parent:open("menumain")
 			end)
 	,
 }
