@@ -31,6 +31,7 @@ require "not.Cloud"
 require "not.Effect"
 require "not.Decoration"
 require "not.Ray"
+require "not.Music"
 
 -- Constructor of `World` ZA WARUDO!
 function World:new (map, nauts)

@@ -28,7 +28,6 @@ require "not.World"
 require "camera"
 require "menu"
 require "controller"
-require "music"
 require "settings"
 
 -- Temporary debug
