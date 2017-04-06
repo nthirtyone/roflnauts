@@ -25,7 +25,7 @@ end
 
 -- Require
 require "not.World"
-require "camera"
+require "not.Camera"
 require "not.Menu"
 require "not.Controller"
 require "not.Settings"

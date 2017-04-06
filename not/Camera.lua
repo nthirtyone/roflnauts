@@ -1,7 +1,5 @@
--- `Camera`
+--- `Camera`
 -- Used in drawing.
-
--- Metatable of `Camera`
 Camera = {
 	x = 0,
 	y = 0,
@@ -16,7 +14,7 @@ Camera = {
 	origin_y = 0,
 	shake_x = 0,
 	shake_y = 0,
-	world = nil, --  game world
+	world = --[[not.World]]nil,
 }
 
 -- Constructor of `Camera`
@@ -62,7 +60,7 @@ function Camera:getDestination ()
 end
 
 -- Translate points
-function Camera:translatePosition(x, y)
+function Camera:translatePosition (x, y)
 	local x = x or 0
 	local y = y or 0
 	return (x-self.x)*self.scale, (y-self.y)*self.scale
