@@ -43,9 +43,9 @@ end
 
 -- Update of `Player`.
 function Player:update (dt)
-	local x, y = self:getLinearVelocity()
 	Hero.update(self, dt) -- TODO: It would be probably a good idea to add return to update functions to terminate if something goes badly in parent's update.
-
+	if self.body:isDestroyed() then return end
+	local x, y = self:getLinearVelocity()
 	-- Jumping.
 	if self.isJumping and self.jumpTimer > 0 then
 		self:setLinearVelocity(x,-160)

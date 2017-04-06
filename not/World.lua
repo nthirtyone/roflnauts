@@ -11,7 +11,6 @@ World = {
 	Effects = nil,
 	Rays = nil,
 	camera = nil,
-	isActive = true,
 	-- cloud generator
 	clouds_delay = 5,
 	-- Map
@@ -234,7 +233,6 @@ end
 -- LÖVE2D callbacks
 -- Update ZU WARUDO
 function World:update (dt)
-	
 	self.world:update(dt)
 	self.camera:update(dt)
 	-- Engine world: Nauts, Grounds (kek) and Decorations - all Animateds (top kek)
