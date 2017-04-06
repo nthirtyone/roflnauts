@@ -84,6 +84,23 @@ function Hero:update (dt)
 		self.angle = 0
 	end
 
+	-- Custom linear damping.
+	if not self.isWalking then
+		local face = nil
+		local x, y = self:getLinearVelocity()
+		if x < -12 then
+			face = 1
+		elseif x > 12 then
+			face = -1
+		else
+			face = 0
+		end
+		self:applyForce(40*face,0)
+		if not self.inAir then
+			self:applyForce(80*face,0)
+		end
+	end
+
 	-- Could you please die?
 	-- TODO: World/Map function for testing if Point is inside playable area.
 	local m = self.world.map

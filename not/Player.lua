@@ -69,24 +69,6 @@ function Player:update (dt)
 			self:applyForce(-250, 0)
 		end
 	end
-
-	-- Limiting walking speed.
-	if not self:isControlDown("left") and
-	   not self:isControlDown("right")
-	then
-		local face = nil
-		if x < -12 then
-			face = 1
-		elseif x > 12 then
-			face = -1
-		else
-			face = 0
-		end
-		self:applyForce(40*face,0)
-		if not self.inAir then
-			self:applyForce(80*face,0)
-		end
-	end
 end
 
 -- Controller callbacks.
