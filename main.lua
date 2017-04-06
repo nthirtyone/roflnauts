@@ -28,7 +28,7 @@ require "not.World"
 require "camera"
 require "not.Menu"
 require "controller"
-require "settings"
+require "not.Settings"
 
 -- Temporary debug
 debug = false
