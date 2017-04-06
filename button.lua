@@ -1,51 +1,48 @@
--- `Button`
--- Button used in `Menu`
-
+--- `Button`
+-- Menu element that can be activated by user.
 Button = {
-	text = "",
-	focused = false,
+	parent = --[[not.Menu]]nil,
 	x = 0,
 	y = 0,
+	text = "",
+	focused = false,
 	sprite,
 	quads,
 	delay = 2,
 	parent,
 }
 
-function Button:new(parent)
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
+-- `Button` is a child of `Element`.
+require "element"
+Button.__index = Button
+setmetatable(Button, Element)
+
+function Button:new (parent)
+	local o = setmetatable({}, self)
 	o.parent = parent
 	o.sprite, o.quads = parent:getSheet()
 	return o
 end
-function Button:setText(text)
+
+function Button:setText (text)
 	self.text = text or ""
 	return self
 end
-function Button:setPosition(x, y)
-	self.x = x or 0
-	self.y = y or 0
-	return self
-end
-function Button:getPosition() return self.x,self.y end
+
 function Button:focus(next)
 	self.focused = true
 	return true
 end
-function Button:blur()
+function Button:blur ()
 	self.focused = false
 end
-function Button:active() end
-function Button:isEnabled() return true end
-function Button:set(name, func)
-	if type(name) == "string" and type(func) == "function" then
-		self[name] = func
-	end
-	return self
+
+function Button:active () end
+function Button:isEnabled ()
+	return true
 end
-function Button:draw(scale)
+
+function Button:draw (scale)
 	local x,y = self:getPosition()
 	local quad = self.quads
 	local sprite = self.sprite
@@ -62,17 +59,18 @@ function Button:draw(scale)
 	love.graphics.setFont(Font)
 	love.graphics.printf(self.text, (x+2)*scale, (y+4)*scale, 54, "center", 0, scale, scale)
 end
-function Button:update(dt)
+
+function Button:update (dt)
 	self.delay = self.delay + dt
 	if self.delay > Button.delay then -- Button.delay is initial
 		self.delay = self.delay - Button.delay
 	end
 end
-function Button:controlpressed(set, action, key)
+
+function Button:controlpressed (set, action, key)
 	if action == "attack" and self.focused and self:isEnabled() then
 		self:active()
 	end
 end
-function Button:controlreleased(set, action, key) end
 
 return Button
