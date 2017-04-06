@@ -1,18 +1,6 @@
--- `World`
+--- `World`
 -- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
 -- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
-
--- WHOLE CODE HAS FLAG OF "need a cleanup"
-
-require "not.Platform"
-require "not.Player"
-require "not.Cloud"
-require "not.Effect"
-require "not.Decoration"
-require "not.Ray"
-
--- Metatable of `World`
--- nils initialized in constructor
 World = {
 	-- inside
 	world = nil,
@@ -23,6 +11,7 @@ World = {
 	Effects = nil,
 	Rays = nil,
 	camera = nil,
+	isActive = true,
 	-- cloud generator
 	clouds_delay = 5,
 	-- Map
@@ -36,48 +25,54 @@ World = {
 	music = nil
 }
 
+World.__index = World
+
+require "not.Platform"
+require "not.Player"
+require "not.Cloud"
+require "not.Effect"
+require "not.Decoration"
+require "not.Ray"
+
 -- Constructor of `World` ZA WARUDO!
 -- TODO: push stuff to initialization method.
 function World:new (map, nauts)
-	-- Meta
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
-	-- Physical world initialization
+	local o = setmetatable({}, self)
+	o:init(map, nauts)
+	return o
+end
+
+-- Init za warudo
+function World:init (map, nauts)
+	-- Box2D physical world.
 	love.physics.setMeter(64)
-	o.world = love.physics.newWorld(0, 9.81*64, true)
-	o.world:setCallbacks(o.beginContact, o.endContact)
-	-- Empty tables for objects
-	-- TODO: DEAR DEER, do you see it?
+	self.world = love.physics.newWorld(0, 9.81*64, true)
+	self.world:setCallbacks(self.beginContact, self.endContact)
+	-- Tables for entities. TODO: DEAR DEER, do you see it?
 	local n = {}
-	o.Nauts = n
+	self.Nauts = n
 	local p     = {}
-	o.Platforms = {}
+	self.Platforms = {}
 	local c  = {}
-	o.Clouds = c
+	self.Clouds = c
 	local e   = {}
-	o.Effects = e
+	self.Effects = e
 	local d = {}
-	o.Decorations = d
+	self.Decorations = d
 	local r = {}
-	o.Rays = r
+	self.Rays = r
 	-- Random init; TODO: use LOVE2D's random.
 	math.randomseed(os.time())
-	-- Map
+	-- Map and misc.
 	local map = map or "default"
-	o:loadMap(map)
-	-- Nauts
-	o:spawnNauts(nauts)
-	-- Create camera
-	o.camera = Camera:new(o)
-	-- Play music
-	o.music = Music:new(o.map.theme)
-	return o
+	self:loadMap(map)
+	self:spawnNauts(nauts)
+	self.camera = Camera:new(self)
+	self.music = Music:new(self.map.theme)
 end
 
 -- The end of the world
 function World:delete ()
-	self.world:destroy()
 	for _,platform in pairs(self.Platforms) do
 	 	platform:delete()
 	end
@@ -85,7 +80,7 @@ function World:delete ()
 		naut:delete()
 	end
 	self.music:delete()
-	self = nil
+	self.world:destroy()
 end
 
 -- Load map from file
@@ -202,7 +197,7 @@ end
 function World:getNautsAlive ()
 	local nauts = {}
 	for _,naut in self.Nauts do
-		if naut.alive then
+		if naut.isAlive then
 			table.insert(nauts, naut)
 		end
 	end
@@ -239,9 +234,8 @@ end
 -- LÖVE2D callbacks
 -- Update ZU WARUDO
 function World:update (dt)
-	-- Physical world
+	
 	self.world:update(dt)
-	-- Camera
 	self.camera:update(dt)
 	-- Engine world: Nauts, Grounds (kek) and Decorations - all Animateds (top kek)
 	for _,naut in pairs(self.Nauts) do
@@ -385,9 +379,7 @@ function World.beginContact (a, b, coll)
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
-			-- TODO: remove debug messages
 			-- TODO: move landing to `not.Hero`
-			print(b:getUserData().name .. " is not in air")
 			-- Move them to Hero
 			b:getUserData().inAir = false
 			b:getUserData().jumpCounter = 2
@@ -409,7 +401,6 @@ end
 -- endContact
 function World.endContact (a, b, coll)
 	if a:getCategory() == 1 then
-		print(b:getUserData().name .. " is in air")
 		-- Move them to Hero
 		b:getUserData().inAir = true
 	end

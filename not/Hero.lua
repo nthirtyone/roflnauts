@@ -13,7 +13,7 @@ Hero = {
 	combo = 0,
 	lives = 3,
 	spawntimer = 2,
-	alive = true,
+	isAlive = true,
 	punchCooldown = 0.25,
 	punchdir = 0, -- a really bad thing
 	-- Movement
@@ -90,7 +90,7 @@ function Hero:update (dt)
 	local x, y = self:getPosition()
 	if (x < m.center_x - m.width*1.5 or x > m.center_x + m.width*1.5  or
 	    y < m.center_y - m.height*1.5 or y > m.center_y + m.height*1.5) and
-	    self.alive
+	    self.isAlive
 	then
 		self:die()
 	end
@@ -99,7 +99,7 @@ function Hero:update (dt)
 	if self.spawntimer > 0 then
 		self.spawntimer = self.spawntimer - dt
 	end
-	if self.spawntimer <= 0 and not self.alive and self.lives >= 0 then
+	if self.spawntimer <= 0 and not self.isAlive and self.lives >= 0 then
 		self:respawn()
 	end
 
@@ -145,7 +145,7 @@ end
 
 -- Draw of `Hero`
 function Hero:draw (offset_x, offset_y, scale, debug)
-	if not self.alive then return end
+	if not self.isAlive then return end
 	PhysicalBody.draw(self, offset_x, offset_y, scale, debug)
 end
 
@@ -153,7 +153,7 @@ end
 -- elevation: 1 bottom, 0 top
 function Hero:drawHUD (x,y,scale,elevation)
 	-- hud displays only if player is alive
-	if self.alive then
+	if self.isAlive then
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.draw(self.portrait_frame, self.portrait_box, (x)*scale, (y)*scale, 0, scale, scale)
 		love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
@@ -241,7 +241,7 @@ function Hero:die ()
 	self:playSound(1)
 	self.combo = Hero.combo -- INITIAL from metatable
 	self.lives = self.lives - 1
-	self.alive = false
+	self.isAlive = false
 	self.spawntimer = Hero.spawntimer -- INITIAL from metatable
 	self:setBodyActive(false)
 	self.world:onNautKilled(self)
@@ -249,7 +249,7 @@ end
 
 -- And then respawn. Like Jon Snow.
 function Hero:respawn ()
-	self.alive = true
+	self.isAlive = true
 	self:setLinearVelocity(0,0)
 	self:setPosition(self.world:getSpawnPosition()) -- TODO: I'm not convinced about getting new position like this.
 	self:setBodyActive(true)
@@ -260,7 +260,7 @@ end
 -- Sounds
 -- TODO: Possibly export to nonexistent SoundEmitter class. Can be used by World (Stage), too.
 function Hero:playSound (sfx, force)
-	if self.alive or force then
+	if self.isAlive or force then
 		local source = love.audio.newSource(self.sfx[sfx])
 		source:play()
 	end
