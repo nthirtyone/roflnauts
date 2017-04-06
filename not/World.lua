@@ -2,15 +2,14 @@
 -- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
 -- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
 World = {
-	-- inside
-	world = nil,
-	Nauts = nil,
-	Platforms = nil,
-	Clouds = nil,
-	Decorations = nil,
-	Effects = nil,
-	Rays = nil,
-	camera = nil,
+	world = --[[love.physics.newWorld]]nil,
+	Nauts = --[[{not.Hero}]]nil,
+	Platforms = --[[{not.Platform}]]nil,
+	Clouds = --[[{not.Cloud}]]nil,
+	Decorations = --[[{not.Decoration}]]nil,
+	Effects = --[[{not.Effect}]]nil,
+	Rays = --[[{not.Ray}]]nil,
+	camera = --[[not.Camera]]nil,
 	-- cloud generator
 	clouds_delay = 5,
 	-- Map
@@ -34,7 +33,6 @@ require "not.Decoration"
 require "not.Ray"
 
 -- Constructor of `World` ZA WARUDO!
--- TODO: push stuff to initialization method.
 function World:new (map, nauts)
 	local o = setmetatable({}, self)
 	o:init(map, nauts)
@@ -47,19 +45,13 @@ function World:init (map, nauts)
 	love.physics.setMeter(64)
 	self.world = love.physics.newWorld(0, 9.81*64, true)
 	self.world:setCallbacks(self.beginContact, self.endContact)
-	-- Tables for entities. TODO: DEAR DEER, do you see it?
-	local n = {}
-	self.Nauts = n
-	local p     = {}
+	-- Tables for entities. TODO: It is still pretty bad!
+	self.Nauts = {}
 	self.Platforms = {}
-	local c  = {}
-	self.Clouds = c
-	local e   = {}
-	self.Effects = e
-	local d = {}
-	self.Decorations = d
-	local r = {}
-	self.Rays = r
+	self.Clouds = {}
+	self.Effects = {}
+	self.Decorations = {}
+	self.Rays = {}
 	-- Random init; TODO: use LOVE2D's random.
 	math.randomseed(os.time())
 	-- Map and misc.
