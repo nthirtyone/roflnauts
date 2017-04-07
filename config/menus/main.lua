@@ -1,8 +1,8 @@
 local menu = ...
 
-local button = require "button"
-local header = require "header"
-local element = require "element"
+local button = require "not.Button"
+local header = require "not.Header"
+local element = require "not.Element"
 
 local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29

@@ -35,7 +35,7 @@ Selector = {
 }
 
 -- `Selector` is a child of `Element`.
-require "element"
+require "not.Element"
 Selector.__index = Selector
 setmetatable(Selector, Element)
 

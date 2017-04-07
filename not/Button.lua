@@ -13,7 +13,7 @@ Button = {
 }
 
 -- `Button` is a child of `Element`.
-require "element"
+require "not.Element"
 Button.__index = Button
 setmetatable(Button, Element)
 

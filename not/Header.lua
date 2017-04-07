@@ -9,7 +9,7 @@ Header = {
 }
 
 -- `Header` is a child of `Element`.
-require "element"
+require "not.Element"
 Header.__index = Header
 setmetatable(Header, Element)
 
