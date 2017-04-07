@@ -79,8 +79,7 @@ end
 -- TODO: Change current map model to function-based one.
 function World:loadMap (name)
 	local name = name or "default"
-	name = "maps/" .. name .. ".lua"
-	local map = love.filesystem.load(name)
+	local map = love.filesystem.load(string.format("config/maps/%s.lua", name))
 	self.map = map()
 	-- Platforms
 	for _,platform in pairs(self.map.platforms) do
