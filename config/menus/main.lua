@@ -14,7 +14,7 @@ return {
 		:setText("Start")
 		:setPosition(bx, 80)
 		:set("active", function (self)
-				self.parent:open("menuhost")
+				self.parent:open("host")
 			end)
 	,
 	button:new(menu)
@@ -28,14 +28,14 @@ return {
 		:setText("Settings")
 		:setPosition(bx, 112)
 		:set("active", function (self)
-				self.parent:open("menusettings")
+				self.parent:open("settings")
 			end)
 	,
 	button:new(menu)
 		:setText("Credits")
 		:setPosition(bx, 128)
 		:set("active", function (self)
-				self.parent:open("menucredits")
+				self.parent:open("credits")
 			end)
 	,
 	button:new(menu)

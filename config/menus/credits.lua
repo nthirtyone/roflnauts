@@ -11,7 +11,7 @@ return {
 		:setText("Go back")
 		:setPosition(bx,144)
 		:set("active", function (self)
-				self.parent:open("menumain")
+				self.parent:open("main")
 			end)
 	,
 	element:new(menu)
