@@ -23,6 +23,7 @@ function getRealScale ()
 end
 
 -- Require
+require "iconsList"
 require "not.World"
 require "not.Camera"
 require "not.Menu"

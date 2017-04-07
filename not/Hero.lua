@@ -26,7 +26,7 @@ Hero = {
 	-- Statics
 	portrait_sprite = nil,
 	portrait_frame  = nil,
-	portrait_sheet  = require "nautsicons",
+	portrait_sheet  = getNautsIconsList(),
 	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
 	sfx = require "sounds",
 }

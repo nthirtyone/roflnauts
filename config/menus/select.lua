@@ -10,15 +10,18 @@ local bx = width/2-29
 local naut_selector = selector:new(menu)
 local start_button = button:new(menu)
 
+require "iconsList"
+local nautsIcons, nautsList = getNautsIconsList()
+
 return {
 	naut_selector
 		:setPosition(width/2,60)
 		:setMargin(8)
 		:setSize(32, 32)
-		:set("list", require "nautslist")
+		:set("list", nautsList)
 		:set("global", false)
 		:set("icons_i", love.graphics.newImage("assets/portraits.png"))
-		:set("icons_q", require "nautsicons")
+		:set("icons_q", nautsIcons)
 		:init()
 	,
 	start_button

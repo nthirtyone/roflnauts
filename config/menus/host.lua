@@ -8,6 +8,9 @@ local bx = width/2-29
 
 local map_selector = selector:new(menu)
 
+require "iconsList"
+local icons, maps = getMapsIconsList()
+
 return {
 	map_selector
 		:setPosition(width/2, 40)
@@ -15,9 +18,9 @@ return {
 		:setMargin(0)
 		:set("global", true)
 		:set("first", true)
-		:set("list", require "maplist")
+		:set("list", maps)
 		:set("icons_i", love.graphics.newImage("assets/maps.png"))
-		:set("icons_q", require "mapicons")
+		:set("icons_q", icons)
 		:set("shape", "panorama")
 		:init()
 	,

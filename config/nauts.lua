@@ -32,4 +32,9 @@ return {
 	"biker", -- chucho
 	"vrooom", -- lux
 	"shutter", -- max
+	"disco", -- esc rocco
+	"yarr", -- ted pirate
+	"blblal", -- blabl zork
+	"kong", -- ronimo
+	"rock", -- rock
 }
