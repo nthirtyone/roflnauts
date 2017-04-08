@@ -28,7 +28,7 @@ Hero = {
 	portrait_frame  = nil,
 	portrait_sheet  = getNautsIconsList(),
 	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
-	sfx = require "sounds",
+	sfx = require "config.sounds",
 }
 
 -- `Hero` is a child of `PhysicalBody`.
@@ -68,7 +68,7 @@ function Hero:init (name, world, x, y)
 	self.world = world
 	self.punchCooldown = 0
 	self.name = name
-	self:setAnimationsList(require("animations"))
+	self:setAnimationsList(require("config.animations.hero"))
 	self:createEffect("respawn")
 end
 

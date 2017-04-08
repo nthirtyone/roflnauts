@@ -24,7 +24,7 @@ end
 -- Initializer of `Effect`.
 function Effect:init (name, x, y)
 	Decoration.init(self, x, y, nil)
-	self:setAnimationsList(require("effects"))
+	self:setAnimationsList(require("config.animations.effects"))
 	self:setAnimation(name)
 end
 
