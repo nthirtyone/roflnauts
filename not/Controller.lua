@@ -1,14 +1,12 @@
--- `Controller`
+--- `Controller`
 -- Module to manage player input. 
 -- It uses `love.keypressed`, `love.keyreleased`, `love.gamepadreleased`, `love.gamepadpressed`, `love.joystickadded`, so be sure not to use them by yourself.
 -- Rather than that use functions provided by this module: `Controller.controlpressed` and `Controller.controlreleased`.
--- For information on additional functions, look below.
-
--- Namespace
-Controller = {}
-Controller.sets = {}
-Controller.axes = {}
-Controller.deadzone = .3
+Controller = {
+	sets = {},
+	axes = {},
+	deadzone = .3
+}
 
 -- Declared to avoid calling nil. Be sure to define yours after this line is performed.
 function Controller.controlpressed(set, action, key) end

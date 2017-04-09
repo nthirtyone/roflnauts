@@ -1,8 +1,8 @@
 local menu = ...
 
-local button = require "button"
-local header = require "header"
-local element = require "element"
+local button = require "not.Button"
+local header = require "not.Header"
+local element = require "not.Element"
 
 local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
@@ -14,7 +14,7 @@ return {
 		:setText("Start")
 		:setPosition(bx, 80)
 		:set("active", function (self)
-				self.parent:load("menuhost")
+				self.parent:open("host")
 			end)
 	,
 	button:new(menu)
@@ -28,14 +28,14 @@ return {
 		:setText("Settings")
 		:setPosition(bx, 112)
 		:set("active", function (self)
-				self.parent:load("menusettings")
+				self.parent:open("settings")
 			end)
 	,
 	button:new(menu)
 		:setText("Credits")
 		:setPosition(bx, 128)
 		:set("active", function (self)
-				self.parent:load("menucredits")
+				self.parent:open("credits")
 			end)
 	,
 	button:new(menu)

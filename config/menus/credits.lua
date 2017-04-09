@@ -1,7 +1,7 @@
 local menu = ...
 
-local button = require "button"
-local element = require "element"
+local button = require "not.Button"
+local element = require "not.Element"
 
 local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.getHeight()/getRealScale()
 local bx = width/2-29
@@ -11,7 +11,7 @@ return {
 		:setText("Go back")
 		:setPosition(bx,144)
 		:set("active", function (self)
-				self.parent:load("menumain")
+				self.parent:open("main")
 			end)
 	,
 	element:new(menu)

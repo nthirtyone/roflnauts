@@ -1,4 +1,4 @@
--- `Selector` (Element)
+--- `Selector`
 -- Used in Menu for selecting various things from list. Works for each Controller set or globally.
 --[[
 How to use `Selector` in `Menu` config file?
@@ -12,9 +12,8 @@ selector:new(menu)
 	:set("global", false) -- true: single selector; false: selector for each controller set present
 	:init()
 ]]
-
 Selector = {
-	parent,
+	parent = --[[not.Menu]]nil,
 	x = 0,
 	y = 0,
 	width = 0,
@@ -35,53 +34,39 @@ Selector = {
 	icons_q
 }
 
+-- `Selector` is a child of `Element`.
+require "not.Element"
+Selector.__index = Selector
+setmetatable(Selector, Element)
+
 -- Constructor
-function Selector:new(parent)
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
+function Selector:new (parent)
+	local o = setmetatable({}, self)
 	o.parent = parent
 	o.sprite, o.quads = parent:getSheet()
 	return o
 end
 
--- Position
-function Selector:getPosition()
-	return self.x, self.y
-end
-function Selector:setPosition(x,y)
-	self.x, self.y = x, y
-	return self
-end
-
 -- Size of single block
-function Selector:getSize()
+function Selector:getSize ()
 	return self.width, self.height
 end
-function Selector:setSize(width, height)
+function Selector:setSize (width, height)
 	self.width, self.height = width, height
 	return self
 end
 
 -- Spacing between two blocks
-function Selector:getMargin()
+function Selector:getMargin ()
 	return self.margin
 end
-function Selector:setMargin(margin)
+function Selector:setMargin (margin)
 	self.margin = margin
 	return self
 end
 
--- General setter for Menu configuration files
-function Selector:set(name, func)
-	if type(name) == "string" and func ~= nil then
-		self[name] = func
-	end
-	return self
-end
-
 -- Initialize Selector with current settings.
-function Selector:init()
+function Selector:init ()
 	-- Make sure that there is list present
 	if self.list == nil then
 		self.list = {}
@@ -105,17 +90,17 @@ function Selector:init()
 end
 
 -- Cycle through list on given number
-function Selector:next(n)
+function Selector:next (n)
 	local current = self.selections[n]
 	self:setSelection(n, current + 1)
 end
-function Selector:previous(n)
+function Selector:previous (n)
 	local current = self.selections[n]
 	self:setSelection(n, current - 1)
 end
 
 -- Get number associated with a given set
-function Selector:checkNumber(set)
+function Selector:checkNumber (set)
 	if self.global then return 1 end -- For global Selector
 	for n,check in pairs(self.sets) do
 		if check == set then return n end
@@ -123,13 +108,13 @@ function Selector:checkNumber(set)
 end
 
 -- Check if given number is locked
-function Selector:isLocked(n)
+function Selector:isLocked (n)
 	local n = n or 1
 	return self.locks[n]
 end
 
 -- Sets value of selection of given number. Returns old.
-function Selector:setSelection(n, new)
+function Selector:setSelection (n, new)
 	-- Functception. It sounds like fun but it isn't.
 	local function limit(new, total)
 		if new > total then
@@ -147,18 +132,18 @@ function Selector:setSelection(n, new)
 end
 
 -- Get value of selection of given number
-function Selector:getSelection(n)
+function Selector:getSelection (n)
 	local n = n or 1
 	return self.selections[n]
 end
 
 -- Get value from list by selection
-function Selector:getListValue(i)
+function Selector:getListValue (i)
 	return self.list[i]
 end
 
 -- Checks if selection of given number is unique within Selector scope.
-function Selector:isUnique(n)
+function Selector:isUnique (n)
 	local selection = self:getSelection(n)
 	for fn,v in pairs(self.selections) do
 		if fn ~= n and self:isLocked(fn) and v == selection then
@@ -169,7 +154,7 @@ function Selector:isUnique(n)
 end
 
 -- Get list of selections, checks if not locked are allowed.
-function Selector:getFullSelection(allowed)
+function Selector:getFullSelection (allowed)
 	local allowed = allowed
 	if allowed == nil then allowed = false end
 	local t = {}
@@ -186,7 +171,7 @@ function Selector:getFullSelection(allowed)
 end
 
 -- Rolls and returns random selection from list that is not locked.
-function Selector:rollRandom(avoids)
+function Selector:rollRandom (avoids)
 	-- Me: You should make it simpler.
 	-- Inner me: Nah, it works. Leave it.
 	-- Me: Ok, let's leave it as it is.
@@ -209,7 +194,7 @@ function Selector:rollRandom(avoids)
 end
 
 -- Draw single block of Selector
-function Selector:drawBlock(n, x, y, scale)
+function Selector:drawBlock (n, x, y, scale)
 	if self.quads == nil or self.sprite == nil then return end
 	local x, y = x or 0, y or 0
 	local name = self:getListValue(self:getSelection(n))
@@ -249,16 +234,16 @@ function Selector:drawBlock(n, x, y, scale)
 end
 
 -- Menu callbacks
-function Selector:focus() -- Called when Element gains focus
+function Selector:focus () -- Called when Element gains focus
 	self.focused = true
 	return true
 end 
-function Selector:blur() -- Called when Element loses focus
+function Selector:blur () -- Called when Element loses focus
 	self.focused = false
 end 
 
 -- LÖVE2D callbacks
-function Selector:draw(scale)
+function Selector:draw (scale)
 	local x,y = self:getPosition()
 	local margin = self:getMargin()
 	local width = self:getSize()
@@ -267,7 +252,7 @@ function Selector:draw(scale)
 		self:drawBlock(n, x+(margin+width)*(n-1)+margin*n, y, scale)
 	end
 end
-function Selector:update(dt)
+function Selector:update (dt)
 	self.delay = self.delay + dt
 	if self.delay > Selector.delay then -- Selector.delay is initial
 		self.delay = self.delay - Selector.delay
@@ -275,7 +260,8 @@ function Selector:update(dt)
 end
 
 -- Controller callbacks
-function Selector:controlpressed(set, action, key)
+-- TODO: Add action to perform when key is pressed and selector is locked in e.g. to move into character selection from map selection.
+function Selector:controlpressed (set, action, key)
 	if set and self.focused then
 		local n = self:checkNumber(set)
 		local locked = self:isLocked(n)
@@ -300,6 +286,5 @@ function Selector:controlpressed(set, action, key)
 		end
 	end
 end
-function Selector:controlreleased(set, action, key) end
 
 return Selector

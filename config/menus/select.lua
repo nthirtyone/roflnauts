@@ -1,8 +1,8 @@
 local menu = ...
 
-local button = require "button"
-local selector = require "selector"
-local element = require "element"
+local button = require "not.Button"
+local selector = require "not.Selector"
+local element = require "not.Element"
 
 local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
@@ -10,15 +10,18 @@ local bx = width/2-29
 local naut_selector = selector:new(menu)
 local start_button = button:new(menu)
 
+require "iconsList"
+local nautsIcons, nautsList = getNautsIconsList()
+
 return {
 	naut_selector
 		:setPosition(width/2,60)
 		:setMargin(8)
 		:setSize(32, 32)
-		:set("list", require "nautslist")
+		:set("list", nautsList)
 		:set("global", false)
 		:set("icons_i", love.graphics.newImage("assets/portraits.png"))
-		:set("icons_q", require "nautsicons")
+		:set("icons_q", nautsIcons)
 		:init()
 	,
 	start_button
@@ -41,7 +44,7 @@ return {
 		:setText("Go back")
 		:setPosition(bx,150)
 		:set("active", function (self)
-				self.parent:load("menuhost")
+				self.parent:open("host")
 			end)
 	,
 	element:new(menu)

@@ -16,14 +16,16 @@ local quads = {
 		[2] = love.graphics.newQuad( 24,  0, 24,24, 168,120),
 		[3] = love.graphics.newQuad( 48,  0, 24,24, 168,120),
 		[4] = love.graphics.newQuad( 72,  0, 24,24, 168,120),
-		frames = 4
+		frames = 4,
+		repeated = false
 	},
 	doublejump = {
 		[1] = love.graphics.newQuad(  0, 24, 24,24, 168,120),
 		[2] = love.graphics.newQuad( 24, 24, 24,24, 168,120),
 		[3] = love.graphics.newQuad( 48, 24, 24,24, 168,120),
 		[4] = love.graphics.newQuad( 72, 24, 24,24, 168,120),
-		frames = 4
+		frames = 4,
+		repeated = false
 	},
 	land = {
 		[1] = love.graphics.newQuad(  0, 48, 24,24, 168,120),
@@ -31,7 +33,8 @@ local quads = {
 		[3] = love.graphics.newQuad( 48, 48, 24,24, 168,120),
 		[4] = love.graphics.newQuad( 72, 48, 24,24, 168,120),
 		[5] = love.graphics.newQuad( 96, 48, 24,24, 168,120),
-		frames = 5
+		frames = 5,
+		repeated = false
 	},
 	respawn = {
 		[1] = love.graphics.newQuad(  0, 72, 24,24, 168,120),
@@ -41,7 +44,8 @@ local quads = {
 		[5] = love.graphics.newQuad( 96, 72, 24,24, 168,120),
 		[6] = love.graphics.newQuad(120, 72, 24,24, 168,120),
 		[7] = love.graphics.newQuad(144, 72, 24,24, 168,120),
-		frames = 7
+		frames = 7,
+		repeated = false
 	},
 	clash = {
 		[1] = love.graphics.newQuad(  0, 96, 24,24, 168,120),
@@ -50,20 +54,23 @@ local quads = {
 		[4] = love.graphics.newQuad( 72, 96, 24,24, 168,120),
 		[5] = love.graphics.newQuad( 96, 96, 24,24, 168,120),
 		[6] = love.graphics.newQuad(120, 96, 24,24, 168,120),
-		frames = 6
+		frames = 6,
+		repeated = false
 	},
 	trail = {
 		[1] = love.graphics.newQuad(104,  0, 16,16, 168,120),
 		[2] = love.graphics.newQuad(120,  0, 16,16, 168,120),
 		[3] = love.graphics.newQuad(136,  0, 16,16, 168,120),
 		[4] = love.graphics.newQuad(152,  0, 16,16, 168,120),
-		frames = 4
+		frames = 4,
+		repeated = false
 	},
 	hit = {
 		[1] = love.graphics.newQuad(106, 18, 16,16, 168,120),
 		[2] = love.graphics.newQuad(122, 18, 16,16, 168,120),
 		[3] = love.graphics.newQuad(138, 18, 16,16, 168,120),
-		frames = 3
+		frames = 3,
+		repeated = false
 	}
 }
 return quads

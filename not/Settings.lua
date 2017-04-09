@@ -1,5 +1,9 @@
-Settings = {}
-Settings.current = {}
+--- `Settings`
+-- Stores, loads, saves and changes game settings including Controller sets.
+Settings = {
+	current = {}
+}
+
 function Settings.load()
 	if Controller then
 		if not love.filesystem.exists("settings") then
@@ -27,6 +31,7 @@ function Settings.load()
 		end
 	end
 end
+
 function Settings.save() 
 	local new = love.filesystem.newFile("settings")
 	local sets = Settings.current
@@ -51,6 +56,7 @@ function Settings.save()
 	new:write(string)
 	new:close()
 end
+
 function Settings.change(n, left, right, up, down, attack, jump, joystick)
 	local bool
 	if joystick then

@@ -1,27 +1,15 @@
--- `World`
+--- `World`
 -- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
-
--- WHOLE CODE HAS FLAG OF "need a cleanup"
-
-require "platform"
-require "player"
-require "cloud"
-require "effect"
-require "decoration"
-require "ray"
-
--- Metatable of `World`
--- nils initialized in constructor
+-- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
 World = {
-	-- inside
-	world = nil,
-	Nauts = nil,
-	Platforms = nil,
-	Clouds = nil,
-	Decorations = nil,
-	Effects = nil,
-	Rays = nil,
-	camera = nil,
+	world = --[[love.physics.newWorld]]nil,
+	Nauts = --[[{not.Hero}]]nil,
+	Platforms = --[[{not.Platform}]]nil,
+	Clouds = --[[{not.Cloud}]]nil,
+	Decorations = --[[{not.Decoration}]]nil,
+	Effects = --[[{not.Effect}]]nil,
+	Rays = --[[{not.Ray}]]nil,
+	camera = --[[not.Camera]]nil,
 	-- cloud generator
 	clouds_delay = 5,
 	-- Map
@@ -35,46 +23,48 @@ World = {
 	music = nil
 }
 
+World.__index = World
+
+require "not.Platform"
+require "not.Player"
+require "not.Cloud"
+require "not.Effect"
+require "not.Decoration"
+require "not.Ray"
+require "not.Music"
+
 -- Constructor of `World` ZA WARUDO!
-function World:new(map, nauts)
-	-- Meta
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
-	-- Physical world initialization
-	love.physics.setMeter(64)
-	o.world = love.physics.newWorld(0, 9.81*64, true)
-	o.world:setCallbacks(o.beginContact, o.endContact)
-	-- Empty tables for objects
-	local n = {}
-	o.Nauts = n
-	local p     = {}
-	o.Platforms = {}
-	local c  = {}
-	o.Clouds = c
-	local e   = {}
-	o.Effects = e
-	local d = {}
-	o.Decorations = d
-	local r = {}
-	o.Rays = r
-	-- Random init
-	math.randomseed(os.time())
-	-- Map
-	local map = map or "default"
-	o:loadMap(map)
-	-- Nauts
-	o:spawnNauts(nauts)
-	-- Create camera
-	o.camera = Camera:new(o)
-	-- Play music
-	o.music = Music:new(o.map.theme)
+function World:new (map, nauts)
+	local o = setmetatable({}, self)
+	o:init(map, nauts)
 	return o
 end
 
+-- Init za warudo
+function World:init (map, nauts)
+	-- Box2D physical world.
+	love.physics.setMeter(64)
+	self.world = love.physics.newWorld(0, 9.81*64, true)
+	self.world:setCallbacks(self.beginContact, self.endContact)
+	-- Tables for entities. TODO: It is still pretty bad!
+	self.Nauts = {}
+	self.Platforms = {}
+	self.Clouds = {}
+	self.Effects = {}
+	self.Decorations = {}
+	self.Rays = {}
+	-- Random init; TODO: use LOVE2D's random.
+	math.randomseed(os.time())
+	-- Map and misc.
+	local map = map or "default"
+	self:loadMap(map)
+	self:spawnNauts(nauts)
+	self.camera = Camera:new(self)
+	self.music = Music:new(self.map.theme)
+end
+
 -- The end of the world
-function World:delete()
-	self.world:destroy()
+function World:delete ()
 	for _,platform in pairs(self.Platforms) do
 	 	platform:delete()
 	end
@@ -82,14 +72,14 @@ function World:delete()
 		naut:delete()
 	end
 	self.music:delete()
-	self = nil
+	self.world:destroy()
 end
 
 -- Load map from file
-function World:loadMap(name)
+-- TODO: Change current map model to function-based one.
+function World:loadMap (name)
 	local name = name or "default"
-	name = "maps/" .. name .. ".lua"
-	local map = love.filesystem.load(name)
+	local map = love.filesystem.load(string.format("config/maps/%s.lua", name))
 	self.map = map()
 	-- Platforms
 	for _,platform in pairs(self.map.platforms) do
@@ -110,44 +100,49 @@ function World:loadMap(name)
 end
 
 -- Spawn all the nauts for the round
-function World:spawnNauts(nauts)
+function World:spawnNauts (nauts)
 	for _,naut in pairs(nauts) do
 		local x,y = self:getSpawnPosition()
 		local spawn = self:createNaut(x, y, naut[1])
-		spawn:assignControlSet(naut[2])
+		spawn:assignControllerSet(naut[2])
 	end
 end
 
 -- Get respawn location
-function World:getSpawnPosition()
+function World:getSpawnPosition ()
 	local n = math.random(1, #self.map.respawns)
 	return self.map.respawns[n].x, self.map.respawns[n].y
 end
 
 -- Add new platform to the world
-function World:createPlatform(x, y, polygon, sprite, animations)
-	table.insert(self.Platforms, Platform:new(self, self.world, x, y, polygon, sprite, animations))
+-- TODO: it would be nice if function parameters would be same as `not.Platform.new`.
+function World:createPlatform (x, y, polygon, sprite, animations)
+	table.insert(self.Platforms, Platform:new(animations, polygon, self, x, y, sprite))
 end
 
 -- Add new naut to the world
-function World:createNaut(x, y, name)
-	local naut = Player:new(self, self.world, x, y, name)
+-- TODO: separate two methods for `not.Hero` and `not.Player`.
+function World:createNaut (x, y, name)
+	local naut = Player:new(name, self, x, y)
 	table.insert(self.Nauts, naut)
 	return naut
 end
 
 -- Add new decoration to the world
-function World:createDecoration(x, y, sprite)
+-- TODO: `not.World.create*` functions often have different naming for parameters. It is not ground-breaking but it makes reading code harder for no good reason.
+function World:createDecoration (x, y, sprite)
 	table.insert(self.Decorations, Decoration:new(x, y, sprite))
 end
 
 -- Add new cloud to the world
-function World:createCloud(x, y, t, v)
+-- TODO: extend variables names to provide better readability.
+-- TODO: follow new parameters in `not.Cloud.new` based on `not.Cloud.init`.
+function World:createCloud (x, y, t, v)
 	table.insert(self.Clouds, Cloud:new(x, y, t, v))
 end
 
 -- Randomize Cloud creation
-function World:randomizeCloud(outside)
+function World:randomizeCloud (outside)
 	if outside == nil then
 		outside = true
 	else
@@ -167,18 +162,20 @@ function World:randomizeCloud(outside)
 end
 
 -- Add an effect behind nauts
-function World:createEffect(name, x, y)
+-- TODO: follow new parameters in `not.Effect.new` based on `not.Effect.init`.
+-- TODO: along with `createRay` move this nearer reast of `create*` methods for readability.
+function World:createEffect (name, x, y)
 	table.insert(self.Effects, Effect:new(name, x, y))
 end
 
 -- Add a ray
-function World:createRay(naut)
+function World:createRay (naut)
 	table.insert(self.Rays, Ray:new(naut, self))
 end
 
 -- get Nauts functions
 -- more than -1 lives
-function World:getNautsPlayable()
+function World:getNautsPlayable ()
 	local nauts = {}
 	for _,naut in pairs(self.Nauts) do
 		if naut.lives > -1 then
@@ -188,27 +185,27 @@ function World:getNautsPlayable()
 	return nauts
 end
 -- are alive
-function World:getNautsAlive()
+function World:getNautsAlive ()
 	local nauts = {}
 	for _,naut in self.Nauts do
-		if naut.alive then
+		if naut.isAlive then
 			table.insert(nauts, naut)
 		end
 	end
 	return nauts
 end
 -- all of them
-function World:getNautsAll()
+function World:getNautsAll ()
 	return self.Nauts
 end
 
 -- get Map name
-function World:getMapName()
+function World:getMapName ()
 	return self.map.name
 end
 
 -- Event: when player is killed
-function World:onNautKilled(naut)
+function World:onNautKilled (naut)
 	self.camera:startShake()
 	self:createRay(naut)
 	local nauts = self:getNautsPlayable()
@@ -220,17 +217,15 @@ function World:onNautKilled(naut)
 	end
 end
 
-function World:getBounce(f)
+function World:getBounce (f)
 	local f = f or 1
 	return math.sin(self.win_move*f*math.pi)
 end
 
 -- LÖVE2D callbacks
 -- Update ZU WARUDO
-function World:update(dt)
-	-- Physical world
+function World:update (dt)
 	self.world:update(dt)
-	-- Camera
 	self.camera:update(dt)
 	-- Engine world: Nauts, Grounds (kek) and Decorations - all Animateds (top kek)
 	for _,naut in pairs(self.Nauts) do
@@ -279,7 +274,7 @@ function World:update(dt)
 	end
 end
 -- Draw
-function World:draw()
+function World:draw ()
 	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
 	local scale = self.camera.scale
@@ -288,7 +283,7 @@ function World:draw()
 	-- Background
 	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
 	
-	-- This needs to be reworked!
+	-- TODO: this needs to be reworked!
 	-- Draw clouds
 	for _,cloud in pairs(self.Clouds) do
 		cloud:draw(offset_x, offset_y, scale)
@@ -370,14 +365,14 @@ end
 
 -- Box2D callbacks
 -- beginContact
-function World.beginContact(a, b, coll)
+function World.beginContact (a, b, coll)
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
-			print(b:getUserData().name .. " is not in air")
-			-- Move them to Player
+			-- TODO: move landing to `not.Hero`
+			-- Move them to Hero
 			b:getUserData().inAir = false
-			b:getUserData().jumpnumber = 2
+			b:getUserData().jumpCounter = 2
 			b:getUserData().salto = false
 			b:getUserData():createEffect("land")
 		end
@@ -394,16 +389,16 @@ function World.beginContact(a, b, coll)
 	end
 end
 -- endContact
-function World.endContact(a, b, coll)
+function World.endContact (a, b, coll)
 	if a:getCategory() == 1 then
-		print(b:getUserData().name .. " is in air")
-		-- Move them to Player
+		-- Move them to Hero
 		b:getUserData().inAir = true
 	end
 end
 
 -- Controller callbacks
-function World:controlpressed(set, action, key)
+-- TODO: names of this methods don't follow naming patterns in this project. See `Controller` and change it.
+function World:controlpressed (set, action, key)
 	if key == "f6" and debug then
 		local map = self:getMapName()
 		local nauts = {}
@@ -417,7 +412,7 @@ function World:controlpressed(set, action, key)
 		naut:controlpressed(set, action, key)
 	end
 end
-function World:controlreleased(set, action, key)
+function World:controlreleased (set, action, key)
 	for k,naut in pairs(self:getNautsAll()) do
 		naut:controlreleased(set, action, key)
 	end
