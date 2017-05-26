@@ -1,29 +1,27 @@
+require "not.Object"
+
 --- `World`
 -- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
 -- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
-World = {
-	world = --[[love.physics.newWorld]]nil,
-	Nauts = --[[{not.Hero}]]nil,
-	Platforms = --[[{not.Platform}]]nil,
-	Clouds = --[[{not.Cloud}]]nil,
-	Decorations = --[[{not.Decoration}]]nil,
-	Effects = --[[{not.Effect}]]nil,
-	Rays = --[[{not.Ray}]]nil,
-	camera = --[[not.Camera]]nil,
-	-- cloud generator
-	clouds_delay = 5,
-	-- Map
-	map = nil,
-	background = nil,
-	-- Gameplay status
-	lastNaut = false,
-	-- "WINNER"
-	win_move = 0,
-	-- Music
-	music = nil
-}
+World = Object:extends()
 
-World.__index = World
+World.world =--[[love.physics.newWorld]]nil
+World.Nauts =--[[{not.Hero}]]nil
+World.Platforms =--[[{not.Platform}]]nil
+World.Clouds =--[[{not.Cloud}]]nil
+World.Decorations =--[[{not.Decoration}]]nil
+World.Effects =--[[{not.Effect}]]nil
+World.Rays =--[[{not.Ray}]]nil
+World.camera =--[[not.Camera]]nil
+World.music =--[[not.Music]]nil
+-- cloud generator
+World.clouds_delay = 5
+-- Map
+World.map = nil
+World.background = nil
+-- Gameplay status
+World.lastNaut = false
+World.win_move = 0 -- "WINNER"
 
 require "not.Platform"
 require "not.Player"
@@ -35,13 +33,6 @@ require "not.Music"
 
 -- Constructor of `World` ZA WARUDO!
 function World:new (map, nauts)
-	local o = setmetatable({}, self)
-	o:init(map, nauts)
-	return o
-end
-
--- Init za warudo
-function World:init (map, nauts)
 	-- Box2D physical world.
 	love.physics.setMeter(64)
 	self.world = love.physics.newWorld(0, 9.81*64, true)
@@ -401,9 +392,9 @@ function World:controlpressed (set, action, key)
 		local map = self:getMapName()
 		local nauts = {}
 		for _,naut in pairs(self:getNautsAll()) do
-			table.insert(nauts, {naut.name, naut:getControlSet()})
+			table.insert(nauts, {naut.name, naut:getControllerSet()})
 		end
-		local new = World:new(map, nauts)
+		local new = World(map, nauts)
 		changeScene(new)
 	end
 	for k,naut in pairs(self:getNautsAll()) do
