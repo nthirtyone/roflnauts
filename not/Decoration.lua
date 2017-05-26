@@ -1,26 +1,15 @@
+require "not.Entity"
+
 --- `Decoration`
 -- Positioned sprite used to decorate maps with additional graphics.
-Decoration = {
-	world = --[[not.World]]nil,
-	x = 0,
-	y = 0
-}
+Decoration = Entity:extends()
 
--- `Decoration` is a child of `Sprite`.
-require "not.Sprite"
-Decoration.__index = Decoration
-setmetatable(Decoration, Sprite)
+Decoration.x = 0
+Decoration.y = 0
 
 -- Constructor of `Decoration`.
-function Decoration:new (x, y, imagePath)
-	local o = setmetatable({}, self)
-	o:init(x, y, imagePath)
-	return o
-end
-
--- Initializer of `Decoration`.
-function Decoration:init (x, y, imagePath)
-	Sprite.init(self, imagePath)
+function Decoration:new (x, y, world, imagePath)
+	Decoration.__super.new(self, world, imagePath)
 	self:setPosition(x, y)
 end
 
@@ -31,3 +20,5 @@ end
 function Decoration:setPosition (x, y)
 	self.x, self.y = x, y
 end
+
+return Decoration
