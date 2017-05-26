@@ -53,8 +53,6 @@ function World:init (map, nauts)
 	self.Effects = {}
 	self.Decorations = {}
 	self.Rays = {}
-	-- Random init; TODO: use LOVE2D's random.
-	math.randomseed(os.time())
 	-- Map and misc.
 	local map = map or "default"
 	self:loadMap(map)
@@ -110,7 +108,7 @@ end
 
 -- Get respawn location
 function World:getSpawnPosition ()
-	local n = math.random(1, #self.map.respawns)
+	local n = love.math.random(1, #self.map.respawns)
 	return self.map.respawns[n].x, self.map.respawns[n].y
 end
 
@@ -151,13 +149,13 @@ function World:randomizeCloud (outside)
 	local x,y,t,v
 	local m = self.map
 	if outside then
-		x = m.center_x-m.width*1.2+math.random(-50,20)
+		x = m.center_x-m.width*1.2+love.math.random(-50,20)
 	else
-		x = math.random(m.center_x-m.width/2,m.center_x+m.width/2)
+		x = love.math.random(m.center_x-m.width/2,m.center_x+m.width/2)
 	end
-	y = math.random(m.center_y-m.height/2, m.center_y+m.height/2)
-	t = math.random(1,3)
-	v = math.random(8,18)
+	y = love.math.random(m.center_y-m.height/2, m.center_y+m.height/2)
+	t = love.math.random(1,3)
+	v = love.math.random(8,18)
 	self:createCloud(x, y, t, v)
 end
 
