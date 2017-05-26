@@ -1,60 +1,48 @@
+require "not.PhysicalBody"
+
 --- `Hero`
 -- Hero (often referred to as: "naut") entity that exists in a game world.
 -- Collision category: [2]
-Hero = {
-	-- General and physics
-	name = "empty",
-	angle = 0,
-	facing = 1,
-	max_velocity = 105,
-	world = --[[not.World]]nil,
-	group = nil,
-	-- Combat
-	combo = 0,
-	lives = 3,
-	spawntimer = 2,
-	isAlive = true,
-	punchCooldown = 0.25,
-	punchdir = 0, -- a really bad thing
-	-- Movement
-	inAir = true,
-	salto = false,
-	isJumping = false,
-	isWalking = false,
-	jumpTimer = 0.16,
-	jumpCounter = 2,
-	-- Statics
-	portrait_sprite = nil,
-	portrait_frame  = nil,
-	portrait_sheet  = getNautsIconsList(),
-	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
-	sfx = require "config.sounds",
-}
+Hero = PhysicalBody:extends()
 
--- `Hero` is a child of `PhysicalBody`.
-require "not.PhysicalBody"
-Hero.__index = Hero
-setmetatable(Hero, PhysicalBody)
+Hero.name = "empty"
+Hero.angle = 0
+Hero.facing = 1
+Hero.max_velocity = 105
+Hero.group = nil
+-- Combat
+Hero.combo = 0
+Hero.lives = 3
+Hero.spawntimer = 2
+Hero.isAlive = true
+Hero.punchCooldown = 0.25
+Hero.punchdir = 0 -- a really bad thing
+-- Movement
+Hero.inAir = true
+Hero.salto = false
+Hero.isJumping = false
+Hero.isWalking = false
+Hero.jumpTimer = 0.16
+Hero.jumpCounter = 2
+-- Statics
+Hero.portrait_sprite = nil
+Hero.portrait_frame = nil
+Hero.portrait_sheet = getNautsIconsList()
+Hero.portrait_box = love.graphics.newQuad(0, 15, 32,32, 80,130)
+Hero.sfx = require "config.sounds"
 
 -- Constructor of `Hero`.
-function Hero:new (game, world, x, y, name)
-	local o = setmetatable({}, self)
-	o:init(name, game, x, y)
-	-- Load portraits statically.
-	if self.portrait_sprite == nil then
-		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
-		self.portrait_frame = love.graphics.newImage("assets/menu.png")
+function Hero:new (name, x, y, world)
+	-- TODO: Statics moved temporarily here. Should be moved to e.g. `load()`.
+	if Hero.portrait_sprite == nil then
+		Hero.portrait_sprite = love.graphics.newImage("assets/portraits.png")
+		Hero.portrait_frame = love.graphics.newImage("assets/menu.png")
 	end
-	return o
-end
-
--- Initializer of `Hero`.
-function Hero:init (name, world, x, y)
 	-- Find imagePath based on hero name.
-	local fileName = name or Hero.name -- INITIAL from metatable
+	local fileName = name or Hero.name -- INITIAL from prototype
 	local imagePath = string.format("assets/nauts/%s.png", fileName)
 	-- `PhysicalBody` initialization.
-	PhysicalBody.init(self, world, x, y, imagePath)
+	Hero.__super.new(self, x, y, world, imagePath)
 	self:setBodyType("dynamic")
 	self:setBodyFixedRotation(true)
 	self.group = -1-#world.Nauts
@@ -74,7 +62,7 @@ end
 
 -- Update callback of `Hero`
 function Hero:update (dt)
-	PhysicalBody.update(self, dt)
+	Hero.__super.update(self, dt)
 	if self.body:isDestroyed() then return end
 
 	-- Salto
@@ -163,7 +151,7 @@ end
 -- Draw of `Hero`
 function Hero:draw (offset_x, offset_y, scale, debug)
 	if not self.isAlive then return end
-	PhysicalBody.draw(self, offset_x, offset_y, scale, debug)
+	Hero.__super.draw(self, offset_x, offset_y, scale, debug)
 end
 
 -- Draw HUD of `Hero`
@@ -209,7 +197,7 @@ end
 -- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.
 -- TODO: Magic numbers present in `not.Hero.punch`.
 function Hero:punch (direction)
-	self.punchCooldown = Hero.punchCooldown -- INITIAL from metatable
+	self.punchCooldown = Hero.punchCooldown -- INITIAL from prototype
 	-- Choose shape based on punch direction.
 	local shape
 	if direction == "left" then shape = {-2,-6, -20,-6, -20,6, -2,6} end
@@ -256,10 +244,10 @@ end
 -- DIE
 function Hero:die ()
 	self:playSound(1)
-	self.combo = Hero.combo -- INITIAL from metatable
+	self.combo = Hero.combo -- INITIAL from prototype
 	self.lives = self.lives - 1
 	self.isAlive = false
-	self.spawntimer = Hero.spawntimer -- INITIAL from metatable
+	self.spawntimer = Hero.spawntimer -- INITIAL from prototype
 	self:setBodyActive(false)
 	self.world:onNautKilled(self)
 end

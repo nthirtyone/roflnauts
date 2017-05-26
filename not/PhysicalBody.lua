@@ -1,25 +1,15 @@
+require "not.Entity"
+
 --- `PhysicalBody`
 -- Abstract class for drawable entity existing in `not.World`.
-PhysicalBody = {
-	body =--[[love.physics.newBody]]nil,
-}
+PhysicalBody = Entity:extends()
 
--- `PhysicalBody` is a child of `Sprite`.
-require "not.Sprite"
-PhysicalBody.__index = PhysicalBody
-setmetatable(PhysicalBody, Sprite)
+PhysicalBody.body =--[[love.physics.newBody]]nil
 
---[[ Constructor of `PhysicalBody`.
-function PhysicalBody:new (world, x, y, imagePath)
-	local o = setmetatable({}, self)
-	o:init(world, x, y, imagePath)
-	return o
-end
-]]
-
--- Initializer of `PhysicalBody`.
-function PhysicalBody:init (world, x, y, imagePath)
-	Sprite.init(self, imagePath)
+-- Constructor of `PhysicalBody`.
+-- `world` and `imagePath` are passed to parent's constructor (`Entity`).
+function PhysicalBody:new (x, y, world, imagePath)
+	PhysicalBody.__super.new(self, world, imagePath)
 	self.body = love.physics.newBody(world.world, x, y)
 end
 
@@ -68,12 +58,12 @@ end
 
 -- Update of `PhysicalBody`.
 function PhysicalBody:update (dt)
-	Sprite.update(self, dt)
+	PhysicalBody.__super.update(self, dt)
 end
 
 -- Draw of `PhysicalBody`.
 function PhysicalBody:draw (offset_x, offset_y, scale, debug)
-	Sprite.draw(self, offset_x, offset_y, scale)
+	PhysicalBody.__super.draw(self, offset_x, offset_y, scale)
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
 			local category = fixture:getCategory()
@@ -86,8 +76,9 @@ function PhysicalBody:draw (offset_x, offset_y, scale, debug)
 			if category == 3 then
 				love.graphics.setColor(137, 0, 255, 40)
 			end
-			-- TODO: `world` is not a member of `PhysicalBody` or its instance normally.
 			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
 		end
 	end
 end
+
+return PhysicalBody

@@ -117,13 +117,13 @@ end
 -- Add new platform to the world
 -- TODO: it would be nice if function parameters would be same as `not.Platform.new`.
 function World:createPlatform (x, y, polygon, sprite, animations)
-	table.insert(self.Platforms, Platform:new(animations, polygon, self, x, y, sprite))
+	table.insert(self.Platforms, Platform(animations, polygon, self, x, y, sprite))
 end
 
 -- Add new naut to the world
 -- TODO: separate two methods for `not.Hero` and `not.Player`.
 function World:createNaut (x, y, name)
-	local naut = Player:new(name, self, x, y)
+	local naut = Player(name, x, y, self)
 	table.insert(self.Nauts, naut)
 	return naut
 end
@@ -131,14 +131,14 @@ end
 -- Add new decoration to the world
 -- TODO: `not.World.create*` functions often have different naming for parameters. It is not ground-breaking but it makes reading code harder for no good reason.
 function World:createDecoration (x, y, sprite)
-	table.insert(self.Decorations, Decoration:new(x, y, sprite))
+	table.insert(self.Decorations, Decoration(x, y, sprite))
 end
 
 -- Add new cloud to the world
 -- TODO: extend variables names to provide better readability.
 -- TODO: follow new parameters in `not.Cloud.new` based on `not.Cloud.init`.
 function World:createCloud (x, y, t, v)
-	table.insert(self.Clouds, Cloud:new(x, y, t, v))
+	table.insert(self.Clouds, Cloud(x, y, t, v))
 end
 
 -- Randomize Cloud creation
@@ -165,12 +165,12 @@ end
 -- TODO: follow new parameters in `not.Effect.new` based on `not.Effect.init`.
 -- TODO: along with `createRay` move this nearer reast of `create*` methods for readability.
 function World:createEffect (name, x, y)
-	table.insert(self.Effects, Effect:new(name, x, y))
+	table.insert(self.Effects, Effect(name, x, y))
 end
 
 -- Add a ray
 function World:createRay (naut)
-	table.insert(self.Rays, Ray:new(naut, self))
+	table.insert(self.Rays, Ray(naut, self))
 end
 
 -- get Nauts functions

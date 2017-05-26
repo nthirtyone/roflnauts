@@ -1,31 +1,15 @@
+require "not.Hero"
+
 --- `Player`
 -- Special `not.Hero` controllable by a player.
-Player = {
-	-- TODO: move functions and properties related to controls from `not.Hero`.
-	controllerSet = --[[Controller.sets.*]]nil,
-}
+-- TODO: move functions and properties related to controls from `not.Hero`.
+Player = Hero:extends()
 
--- `Player` is a child of `Hero`.
-require "not.Hero"
-Player.__index = Player
-setmetatable(Player, Hero)
+Player.controllerSet =--[[Controller.sets.*]]nil
 
 -- Constructor of `Player`.
-function Player:new (name, game, x, y)
-	local o = setmetatable({}, self)
-	o:init(name, game, x, y)
-	-- Load portraits statically to `not.Hero`.
-	-- TODO: this is heresy, put it into `load` method or something similar.
-	if Hero.portrait_sprite == nil then
-		Hero.portrait_sprite = love.graphics.newImage("assets/portraits.png")
-		Hero.portrait_frame = love.graphics.newImage("assets/menu.png")
-	end
-	return o
-end
-
--- Initializer of `Player`.
-function Player:init (...)
-	Hero.init(self, ...)
+function Player:new (name, x, y, world)
+	Player.__super.new(self, name, x, y, world)
 end
 
 -- Controller set manipulation.
@@ -43,7 +27,7 @@ end
 
 -- Update of `Player`.
 function Player:update (dt)
-	Hero.update(self, dt) -- TODO: It would be probably a good idea to add return to update functions to terminate if something goes badly in parent's update.
+	Player.__super.update(self, dt) -- TODO: It would be probably a good idea to add return to update functions to terminate if something goes badly in parent's update.
 	if self.body:isDestroyed() then return end
 	local x, y = self:getLinearVelocity()
 	-- Jumping.
@@ -157,3 +141,5 @@ function Player:controlreleased (set, action, key)
 		end
 	end
 end
+
+return Player

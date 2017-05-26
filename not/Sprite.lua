@@ -1,32 +1,25 @@
+require "not.Object"
+
 --- `Sprite`
 -- Abstract class for drawable animated entities.
-Sprite = {
-	animations =--[[table with animations]]nil,
-	current =--[[animations.default]]nil,
-	image =--[[love.graphics.newImage]]nil,
-	frame = 1,
-	delay = .1,
-}
-Sprite.__index = Sprite
+Sprite = Object:extends()
 
---[[ Constructor of `Sprite`.
+Sprite.animations =--[[table with animations]]nil
+Sprite.current =--[[animations.default]]nil
+Sprite.image =--[[love.graphics.newImage]]nil
+Sprite.frame = 1
+Sprite.delay = .1
+
+-- Constructor of `Sprite`.
 function Sprite:new (imagePath)
-	local o = setmetatable({}, self)
-	o:init(imagePath)
-	return o
+	if type(imagePath) == "string" then
+		self:setImage(Sprite.newImage(imagePath))
+	end
 end
-]]
 
 -- Cleans up reference to image on deletion.
 function Sprite:delete ()
 	self.image = nil
-end
-
--- Initializes new Sprite instance.
-function Sprite:init (imagePath)
-	if type(imagePath) == "string" then
-		self:setImage(Sprite.newImage(imagePath))
-	end
 end
 
 -- Creates new Image object from path. Key-colours two shades of green. Static.
@@ -64,7 +57,7 @@ end
 -- Sets current animation by table key.
 function Sprite:setAnimation (animation)
 	self.frame = 1
-	self.delay = Sprite.delay -- INITIAL from metatable
+	self.delay = Sprite.delay -- INITIAL from prototype
 	self.current = self.animations[animation]
 end
 -- Returns current animation table.
@@ -79,26 +72,15 @@ function Sprite:getQuad ()
 	end
 end
 
--- TODO: Following five methods are stupid, do something about them!
--- Sprite can't be moved by itself. Positioning should be handled by children's methods.
-function Sprite:getPosition ()
-	return 0,0
-end
--- Sprite can't be rotated by itself. Rotation should be handled by children's methods.
-function Sprite:getAngle ()
-	return 0
-end
--- Sprite can't be mirrored by itself. Mirroring should be handled by children's methods.
-function Sprite:getHorizontalMirror ()
-	return 1
-end
-function Sprite:getVerticalMirror ()
-	return 1
-end
--- Sprite can't be offset by itself. Offsetting should be handled by children's methods.
-function Sprite:getOffset ()
-	return 0,0
-end
+-- Sprite's position. Can be overriden to add functionality.
+function Sprite:getPosition () return 0,0 end
+-- Sprite's angle. Can be overriden to add functionality.
+function Sprite:getAngle () return 0 end
+-- Sprite's horizontal and vertical mirrors. Can be overriden to add functionality.
+function Sprite:getHorizontalMirror () return 1 end
+function Sprite:getVerticalMirror () return 1 end
+-- Sprite's drawing offset from position. Can be overriden to add functionality.
+function Sprite:getOffset () return 0,0 end
 
 -- Drawing self to LOVE2D buffer.
 -- If there is no Quad, it will draw entire image. It won't draw anything if there is no image.
@@ -136,7 +118,7 @@ function Sprite:update (dt)
 	if self.animations and self.current then
 		self.delay = self.delay - dt
 		if self.delay < 0 then
-			self.delay = self.delay + Sprite.delay -- INITIAL from metatable
+			self.delay = self.delay + Sprite.delay -- INITIAL from prototype
 			self:goToNextFrame()
 		end
 	end
@@ -150,3 +132,5 @@ function Sprite:goToNextFrame ()
 		self:setAnimation("default")
 	end
 end
+
+return Sprite
