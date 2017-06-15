@@ -14,12 +14,9 @@ World.Effects =--[[{not.Effect}]]nil
 World.Rays =--[[{not.Ray}]]nil
 World.camera =--[[not.Camera]]nil
 World.music =--[[not.Music]]nil
--- cloud generator
 World.clouds_delay = 5
--- Map
-World.map = nil
-World.background = nil
--- Gameplay status
+World.map =--[[config.maps.*]]nil
+World.background =--[[image?]]nil
 World.lastNaut = false
 World.win_move = 0 -- "WINNER"
 
