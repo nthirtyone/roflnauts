@@ -72,9 +72,6 @@ function love.keyreleased (key) Controller.keyreleased(key) end
 -- Controller callbacks
 function Controller.controlpressed (set, action, key)
 	Scene:controlpressed(set, action, key)
-	if key == "escape" then
-		love.event.quit()
-	end
 	if key == "f5" then
 		debug = not debug
 	end
