@@ -31,6 +31,12 @@ Hero.portrait_sheet = getNautsIconsList()
 Hero.portrait_box = love.graphics.newQuad(0, 15, 32,32, 80,130)
 Hero.sfx = require "config.sounds"
 
+Hero.PUNCH_FIXTURE_LIFETIME = 0.08
+Hero.PUNCH_LEFT = {-2,-6, -20,-6, -20,6, -2,6}
+Hero.PUNCH_RIGHT = {2,-6, 20,-6, 20,6, 2,6}
+Hero.PUNCH_UP = {-8,-4, -8,-20, 8,-20, 8,-4}
+Hero.PUNCH_DOWN = {-8,4, -8,20, 8,20, 8,4}
+
 -- Constructor of `Hero`.
 function Hero:new (name, x, y, world)
 	-- TODO: Statics moved temporarily here. Should be moved to e.g. `load()`.
@@ -39,7 +45,7 @@ function Hero:new (name, x, y, world)
 		Hero.portrait_frame = love.graphics.newImage("assets/menu.png")
 	end
 	-- Find imagePath based on hero name.
-	local fileName = name or Hero.name -- INITIAL from prototype
+	local fileName = name or Hero.name -- INITIAL
 	local imagePath = string.format("assets/nauts/%s.png", fileName)
 	-- `PhysicalBody` initialization.
 	Hero.__super.new(self, x, y, world, imagePath)
@@ -195,22 +201,21 @@ end
 -- Creates temporary fixture for hero's body that acts as sensor.
 -- direction:  ("left", "right", "up", "down")
 -- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.
--- TODO: Magic numbers present in `not.Hero.punch`.
 function Hero:punch (direction)
-	self.punchCooldown = Hero.punchCooldown -- INITIAL from prototype
+	self.punchCooldown = Hero.punchCooldown
 	-- Choose shape based on punch direction.
 	local shape
-	if direction == "left" then shape = {-2,-6, -20,-6, -20,6, -2,6} end
-	if direction == "right" then shape = {2,-6, 20,-6, 20,6, 2,6} end
-	if direction == "up" then shape = {-8,-4, -8,-20, 8,-20, 8,-4} end
-	if direction == "down" then shape = {-8,4, -8,20, 8,20, 8,4} end
+	if direction == "left" then shape = Hero.PUNCH_LEFT end
+	if direction == "right" then shape = Hero.PUNCH_RIGHT end
+	if direction == "up" then shape = Hero.PUNCH_UP end
+	if direction == "down" then shape = Hero.PUNCH_DOWN end
 	-- Create and set sensor fixture.
 	local fixture = self:addFixture(shape, 0)
 	fixture:setSensor(true)
 	fixture:setCategory(3)
 	fixture:setMask(1,3)
 	fixture:setGroupIndex(self.group)
-	fixture:setUserData({0.08, direction})
+	fixture:setUserData({Hero.PUNCH_FIXTURE_LIFETIME, direction})
 	self:playSound(4)
 end
 
@@ -270,3 +275,5 @@ function Hero:playSound (sfx, force)
 		source:play()
 	end
 end
+
+return Hero
