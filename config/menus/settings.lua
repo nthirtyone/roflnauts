@@ -74,7 +74,7 @@ local a = {
 		:set("stopChange", stopChange)
 		:set("active", startChange)
 	,
-		Button(menu)
+	Button(menu)
 		:setText("Keyboard 2")
 		:setPosition(bx,96)
 		:set("setNumber", function () return 2 end)
@@ -83,7 +83,7 @@ local a = {
 		:set("stopChange", stopChange)
 		:set("active", startChange)
 	,
-		Button(menu)
+	Button(menu)
 		:setText("Gamepad 1")
 		:setPosition(bx,112)
 		:set("setNumber", function () return 3 end)
