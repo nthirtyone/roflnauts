@@ -1,27 +1,18 @@
+require "not.Element"
+
 --- `Button`
 -- Menu element that can be activated by user.
-Button = {
-	parent = --[[not.Menu]]nil,
-	x = 0,
-	y = 0,
-	text = "",
-	focused = false,
-	sprite,
-	quads,
-	delay = 2,
-	parent,
-}
+Button = Element:extends()
 
--- `Button` is a child of `Element`.
-require "not.Element"
-Button.__index = Button
-setmetatable(Button, Element)
+Button.text = ""
+Button.focused = false
+Button.sprite = --[[]]nil
+Button.quads = --[[]]nil
+Button.delay = 2
 
 function Button:new (parent)
-	local o = setmetatable({}, self)
-	o.parent = parent
-	o.sprite, o.quads = parent:getSheet()
-	return o
+	Button.__super.new(self, parent)
+	self.sprite, self.quads = parent:getSheet()
 end
 
 function Button:setText (text)

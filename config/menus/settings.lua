@@ -1,15 +1,15 @@
 local menu = ...
 
-local button = require "not.Button"
-local selector = require "not.Selector"
-local element = require "not.Element"
+local Button = require "not.Button"
+local Selector = require "not.Selector"
+local Element = require "not.Element"
 
 local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.getHeight()/getRealScale()
 local bx = width/2-29
 
 local keys = {"Left", "Right", "Up", "Down", "Attack", "Jump"}
 
-local dimmer = element:new(menu)
+local dimmer = Element(menu)
 	:setPosition(width/2, 15)
 	:set("visible", false)
 	:set("currentControl", "Left") -- it actually means control that is being set CURRENTLY
@@ -65,7 +65,7 @@ local controlreleased = function(self, set, action, key)
 end
 
 local a = {
-	button:new(menu)
+	Button(menu)
 		:setText("Keyboard 1")
 		:setPosition(bx,80)
 		:set("setNumber", function () return 1 end)
@@ -74,7 +74,7 @@ local a = {
 		:set("stopChange", stopChange)
 		:set("active", startChange)
 	,
-		button:new(menu)
+		Button(menu)
 		:setText("Keyboard 2")
 		:setPosition(bx,96)
 		:set("setNumber", function () return 2 end)
@@ -83,7 +83,7 @@ local a = {
 		:set("stopChange", stopChange)
 		:set("active", startChange)
 	,
-		button:new(menu)
+		Button(menu)
 		:setText("Gamepad 1")
 		:setPosition(bx,112)
 		:set("setNumber", function () return 3 end)
@@ -92,7 +92,7 @@ local a = {
 		:set("stopChange", stopChange)
 		:set("active", startChange)
 	,
-	button:new(menu)
+	Button(menu)
 		:setText("Gamepad 2")
 		:setPosition(bx,128)
 		:set("setNumber", function () return 4 end)
@@ -101,7 +101,7 @@ local a = {
 		:set("stopChange", stopChange)
 		:set("active", startChange)
 	,
-	button:new(menu)
+	Button(menu)
 		:setText("Go back")
 		:setPosition(bx,144)
 		:set("active", function (self)
