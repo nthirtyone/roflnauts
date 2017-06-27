@@ -26,7 +26,7 @@ require "not.Cloud"
 require "not.Effect"
 require "not.Decoration"
 require "not.Ray"
-require "not.Music"
+require "not.MusicPlayer"
 
 -- Constructor of `World` ZA WARUDO!
 function World:new (map, nauts)
@@ -46,7 +46,7 @@ function World:new (map, nauts)
 	self:loadMap(map)
 	self:spawnNauts(nauts)
 	self.camera = Camera:new(self)
-	self.music = Music:new(self.map.theme)
+	self.music = MusicPlayer(self.map.theme)
 end
 
 -- The end of the world

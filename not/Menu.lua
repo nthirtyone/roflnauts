@@ -38,7 +38,7 @@ Menu = {
 
 Menu.__index = Menu
 
-require "not.Music"
+require "not.MusicPlayer"
 
 function Menu:new (name)
 	local o = setmetatable({}, self)
@@ -54,7 +54,7 @@ function Menu:new (name)
 end
 
 function Menu:init (name)
-	self.music = Music:new("menu.ogg")
+	self.music = MusicPlayer("menu.ogg")
 	self:open(name)
 end
 

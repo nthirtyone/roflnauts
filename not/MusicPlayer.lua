@@ -1,4 +1,4 @@
-require "not.object"
+require "not.Object"
 
 --- `MusicPlayer`
 -- Simple music player object that plays and loops selected track.
@@ -22,7 +22,7 @@ function MusicPlayer:setTrack (trackName)
 	if MusicPlayer.TRACKS[trackName] then
 		self.source = MusicPlayer.TRACKS[trackName]
 	else
-		local source = love.audio.newSource("assets/music" .. trackName)
+		local source = love.audio.newSource("assets/music/" .. trackName)
 		source:setLooping(true)
 		source:setVolume(.7)
 		self.source = source
