@@ -134,10 +134,11 @@ function Player:controlreleased (set, action, key)
 	end
 	-- Walking
 	if (action == "left" or action == "right") then
-		self.isWalking = false
-		if not (self:isControlDown("left") or self:isControlDown("right")) and
-		   self.current == self.animations.walk then
-			self:setAnimation("default")
+		if not (self:isControlDown("left") or self:isControlDown("right")) then
+			self.isWalking = false
+			if self.current == self.animations.walk then
+				self:setAnimation("default")
+			end
 		end
 	end
 end
