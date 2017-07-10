@@ -1,17 +1,6 @@
 --- Roflnauts 2
 -- TODO: Any lua source file in root directory that is not `main` (this file), `conf` should be moved to a proper directory. Its name should be changed to show what it contains.
 
--- Pretend you didn't see this
--- This is work for scene manager
--- TODO: Create SceneManager or similar class.
-Scene = nil
-function changeScene (scene)
-	if Scene ~= nil then
-		Scene:delete()
-	end
-	Scene = scene
-end
-
 -- Should be moved to scene/camera
 -- TODO: move following functions to `Camera`.
 function getScale ()
@@ -24,6 +13,7 @@ end
 
 -- Require
 require "iconsList"
+require "not.SceneManager"
 require "not.World"
 require "not.Camera"
 require "not.Menu"
