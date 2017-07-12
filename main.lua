@@ -11,9 +11,17 @@ function getRealScale ()
 	return math.max(1, math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180))
 end
 
+-- TODO: They don't look nice like this; move them to some kind of core/game object.
+musicPlayer = require "not.MusicPlayer"()
+sceneManager = require "not.SceneManager"()
+
+-- TODO: This is a temporary wrapper! Remove all use cases of `changeScene()`.
+function changeScene (scene)
+	sceneManager:changeScene(scene)
+end
+
 -- Require
 require "iconsList"
-require "not.SceneManager"
 require "not.World"
 require "not.Camera"
 require "not.Menu"
@@ -34,11 +42,11 @@ function love.load ()
 	love.graphics.setFont(Font)
 	Controller.load()
 	Settings.load()
-	Scene = Menu:new()
+	sceneManager:changeScene(Menu:new())
 end
 
 function love.draw ()
-	Scene:draw()
+	sceneManager:getScene():draw()
 	if debug then
 		local scale = getScale()
 		love.graphics.setFont(Font)
@@ -49,7 +57,7 @@ function love.draw ()
 	end
 end
 
-function love.update (dt) Scene:update(dt) end
+function love.update (dt) sceneManager:getScene():update(dt) end
 function love.quit () Settings.save() end
 
 -- Pass input to Controller
@@ -61,12 +69,12 @@ function love.keyreleased (key) Controller.keyreleased(key) end
 
 -- Controller callbacks
 function Controller.controlpressed (set, action, key)
-	Scene:controlpressed(set, action, key)
+	sceneManager:getScene():controlpressed(set, action, key)
 	if key == "f5" then
 		debug = not debug
 	end
 end
 
 function Controller.controlreleased (set, action, key)
-	Scene:controlreleased(set, action, key)
+	sceneManager:getScene():controlreleased(set, action, key)
 end
