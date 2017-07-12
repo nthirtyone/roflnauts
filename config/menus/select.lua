@@ -36,7 +36,7 @@ return {
 		:set("active", function (self)
 				local nauts = naut_Selector:getFullSelection(false)
 				if #nauts > 1 then
-					changeScene(World(MAP, nauts))
+					sceneManager:changeScene(World(MAP, nauts))
 				end
 			end)
 	,

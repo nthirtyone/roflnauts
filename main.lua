@@ -15,11 +15,6 @@ end
 musicPlayer = require "not.MusicPlayer"()
 sceneManager = require "not.SceneManager"()
 
--- TODO: This is a temporary wrapper! Remove all use cases of `changeScene()`.
-function changeScene (scene)
-	sceneManager:changeScene(scene)
-end
-
 -- Require
 require "iconsList"
 require "not.World"

@@ -195,7 +195,7 @@ function World:onNautKilled (naut)
 	self:createRay(naut)
 	local nauts = self:getNautsPlayable()
 	if self.lastNaut then
-		changeScene(Menu())
+		sceneManager:changeScene(Menu())
 	elseif #nauts < 2 then
 		self.lastNaut = true
 		naut:playSound(5, true)
@@ -391,7 +391,7 @@ function World:controlpressed (set, action, key)
 			table.insert(nauts, {naut.name, naut:getControllerSet()})
 		end
 		local new = World(map, nauts)
-		changeScene(new)
+		sceneManager:changeScene(new)
 	end
 	for k,naut in pairs(self:getNautsAll()) do
 		naut:controlpressed(set, action, key)
