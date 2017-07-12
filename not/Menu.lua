@@ -1,7 +1,7 @@
 --- `Menu`
 -- It creates single screen of a menu
 -- I do know that model I used here and in `World` loading configuration files is not flawless but I did not want to rewrite `World`s one but wanted to keep things similar at least in project scope.
-Menu = require "not.Object":extends()
+Menu = require "not.Scene":extends()
 
 Menu.scale = getScale()
 Menu.elements = --[[{not.Element}]]nil

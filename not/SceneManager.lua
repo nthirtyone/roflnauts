@@ -3,31 +3,55 @@
 -- TODO: Extend functionality for more than one active scene (eg. overlay menu).
 SceneManager = require "not.Object":extends()
 
-function SceneManager:changeScene (scene)
-	if self.scene ~= nil then
-		self.scene:delete()
-	end
-	self.scene = scene
+function SceneManager:new ()
+	self.scenes = {}
 end
 
-function SceneManager:getScene ()
-	return self.scene
+-- This function should be removed when multiple scenes will be handled properly by SceneManager and other things.
+function SceneManager:changeScene (scene)
+	table.remove(self.scenes, #self.scenes)
+	return self:addScene(scene)
+end
+
+function SceneManager:addScene (scene)
+	table.insert(self.scenes, scene)
+	return scene
+end
+
+function SceneManager:getAllScenes ()
+	return self.scenes
 end
 
 function SceneManager:update (dt)
-	self:getScene():update(dt)
+	for _,scene in pairs(self:getAllScenes()) do
+		if not scene:isSleeping() then
+			scene:update(dt)
+		end
+	end
 end
 
 function SceneManager:draw ()
-	self:getScene():draw()
+	for _,scene in pairs(self:getAllScenes()) do
+		if not scene:isHidden() then
+			scene:draw()
+		end
+	end
 end
 
 function SceneManager:controlpressed (set, action, key)
-	self:getScene():controlpressed(set, action, key)
+	for _,scene in pairs(self:getAllScenes()) do
+		if not scene:isInputDisabled() then
+			scene:controlpressed(set, action, key)
+		end
+	end
 end
 
 function SceneManager:controlreleased (set, action, key)
-	self:getScene():controlreleased(set, action, key)
+	for _,scene in pairs(self:getAllScenes()) do
+		if not scene:isInputDisabled() then
+			scene:controlreleased(set, action, key)
+		end
+	end
 end
 
 return SceneManager

@@ -1,9 +1,7 @@
-require "not.Object"
-
 --- `World`
 -- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
 -- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
-World = Object:extends()
+World = require "not.Scene":extends()
 
 World.world =--[[love.physics.newWorld]]nil
 World.Nauts =--[[{not.Hero}]]nil
