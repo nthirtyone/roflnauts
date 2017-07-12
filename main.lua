@@ -46,7 +46,7 @@ function love.load ()
 end
 
 function love.draw ()
-	sceneManager:getScene():draw()
+	sceneManager:draw()
 	if debug then
 		local scale = getScale()
 		love.graphics.setFont(Font)
@@ -57,7 +57,7 @@ function love.draw ()
 	end
 end
 
-function love.update (dt) sceneManager:getScene():update(dt) end
+function love.update (dt) sceneManager:update(dt) end
 function love.quit () Settings.save() end
 
 -- Pass input to Controller
@@ -69,12 +69,12 @@ function love.keyreleased (key) Controller.keyreleased(key) end
 
 -- Controller callbacks
 function Controller.controlpressed (set, action, key)
-	sceneManager:getScene():controlpressed(set, action, key)
+	sceneManager:controlpressed(set, action, key)
 	if key == "f5" then
 		debug = not debug
 	end
 end
 
 function Controller.controlreleased (set, action, key)
-	sceneManager:getScene():controlreleased(set, action, key)
+	sceneManager:controlreleased(set, action, key)
 end

@@ -14,4 +14,20 @@ function SceneManager:getScene ()
 	return self.scene
 end
 
+function SceneManager:update (dt)
+	self:getScene():update(dt)
+end
+
+function SceneManager:draw ()
+	self:getScene():draw()
+end
+
+function SceneManager:controlpressed (set, action, key)
+	self:getScene():controlpressed(set, action, key)
+end
+
+function SceneManager:controlreleased (set, action, key)
+	self:getScene():controlreleased(set, action, key)
+end
+
 return SceneManager
