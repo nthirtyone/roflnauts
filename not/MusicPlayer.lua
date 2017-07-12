@@ -6,12 +6,15 @@ MusicPlayer = Object:extends()
 
 function MusicPlayer:new (trackName)
 	self.tracks = {}
-	self:setTrack(trackName)
+	if trackName then
+		self:setTrack(trackName)
+		self:play()
+	end
 end
 
 function MusicPlayer:delete ()
 	self.tracks = nil
-	self.source:stop()
+	self:stop()
 end
 
 function MusicPlayer:setTrack (trackName)
@@ -27,7 +30,14 @@ function MusicPlayer:setTrack (trackName)
 		self.source = source
 		self.tracks[trackName] = source
 	end
+end
+
+function MusicPlayer:play ()
 	self.source:play()
+end
+
+function MusicPlayer:stop ()
+	self.source:stop()
 end
 
 return MusicPlayer

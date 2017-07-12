@@ -38,8 +38,6 @@ Menu = {
 
 Menu.__index = Menu
 
-require "not.MusicPlayer"
-
 function Menu:new (name)
 	local o = setmetatable({}, self)
 	-- Load statically.
@@ -54,13 +52,12 @@ function Menu:new (name)
 end
 
 function Menu:init (name)
-	self.music = MusicPlayer("menu.ogg")
+	musicPlayer:setTrack("menu.ogg")
+	musicPlayer:play()
 	self:open(name)
 end
 
-function Menu:delete ()
-	self.music:delete()
-end
+function Menu:delete () end
 
 function Menu:open (name)
 	local name = name or "main"
