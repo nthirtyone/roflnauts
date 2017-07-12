@@ -195,7 +195,7 @@ function World:onNautKilled (naut)
 	self:createRay(naut)
 	local nauts = self:getNautsPlayable()
 	if self.lastNaut then
-		changeScene(Menu:new())
+		changeScene(Menu())
 	elseif #nauts < 2 then
 		self.lastNaut = true
 		naut:playSound(5, true)

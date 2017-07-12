@@ -42,7 +42,7 @@ function love.load ()
 	love.graphics.setFont(Font)
 	Controller.load()
 	Settings.load()
-	sceneManager:changeScene(Menu:new())
+	sceneManager:changeScene(Menu())
 end
 
 function love.draw ()

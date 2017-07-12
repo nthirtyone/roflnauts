@@ -1,57 +1,49 @@
 --- `Menu`
 -- It creates single screen of a menu
 -- I do know that model I used here and in `World` loading configuration files is not flawless but I did not want to rewrite `World`s one but wanted to keep things similar at least in project scope.
-Menu = {
-	scale = getScale(),
-	elements = --[[{not.Element}]]nil,
-	active = 1,
-	music = --[[not.Music]]nil,
-	sprite = --[[love.graphics.newImage]]nil,
-	background = --[[love.graphics.newImage]]nil,
-	asteroids = --[[love.graphics.newImage]]nil,
-	stars = --[[love.graphics.newImage]]nil,
-	asteroids_bounce = 0,
-	stars_frame = 1,
-	stars_delay = 0.8,
-	allowMove = true,
-	quads = { -- TODO: Could be moved to config file or perhaps QuadManager to manage all quads for animations etc.
-		button = {
-			normal = love.graphics.newQuad(0, 0, 58,15, 80,130),
-			active = love.graphics.newQuad(0, 0, 58,15, 80,130)
-		},
-		portrait = {
-			normal = love.graphics.newQuad( 0, 15, 32,32, 80,130),
-			active = love.graphics.newQuad(32, 15, 32,32, 80,130)
-		},
-		panorama = {
-			normal = love.graphics.newQuad(0,47, 80,42, 80,130),
-			active = love.graphics.newQuad(0,88, 80,42, 80,130)
-		},
-		arrow_l = love.graphics.newQuad(68, 0, 6, 6, 80,130),
-		arrow_r = love.graphics.newQuad(74, 0, 6, 6, 80,130),
-		stars = {
-			love.graphics.newQuad(  0, 0, 320, 200, 640,200),
-			love.graphics.newQuad(320, 0, 320, 200, 640,200)
-		},
-	}
+Menu = require "not.Object":extends()
+
+Menu.scale = getScale()
+Menu.elements = --[[{not.Element}]]nil
+Menu.active = 1
+Menu.music = --[[not.Music]]nil
+Menu.sprite = --[[love.graphics.newImage]]nil
+Menu.background = --[[love.graphics.newImage]]nil
+Menu.asteroids = --[[love.graphics.newImage]]nil
+Menu.stars = --[[love.graphics.newImage]]nil
+Menu.asteroids_bounce = 0
+Menu.stars_frame = 1
+Menu.stars_delay = 0.8
+Menu.allowMove = true
+Menu.quads = { -- TODO: Could be moved to config file or perhaps QuadManager to manage all quads for animations etc.
+	button = {
+		normal = love.graphics.newQuad(0, 0, 58,15, 80,130),
+		active = love.graphics.newQuad(0, 0, 58,15, 80,130)
+	},
+	portrait = {
+		normal = love.graphics.newQuad( 0, 15, 32,32, 80,130),
+		active = love.graphics.newQuad(32, 15, 32,32, 80,130)
+	},
+	panorama = {
+		normal = love.graphics.newQuad(0,47, 80,42, 80,130),
+		active = love.graphics.newQuad(0,88, 80,42, 80,130)
+	},
+	arrow_l = love.graphics.newQuad(68, 0, 6, 6, 80,130),
+	arrow_r = love.graphics.newQuad(74, 0, 6, 6, 80,130),
+	stars = {
+		love.graphics.newQuad(  0, 0, 320, 200, 640,200),
+		love.graphics.newQuad(320, 0, 320, 200, 640,200)
+	},
 }
 
-Menu.__index = Menu
-
 function Menu:new (name)
-	local o = setmetatable({}, self)
 	-- Load statically.
-	if self.sprite == nil then
-		self.sprite = love.graphics.newImage("assets/menu.png")
-		self.background = love.graphics.newImage("assets/backgrounds/menu.png")
-		self.asteroids = love.graphics.newImage("assets/asteroids.png")
-		self.stars = love.graphics.newImage("assets/stars.png")
+	if Menu.sprite == nil then
+		Menu.sprite = love.graphics.newImage("assets/menu.png")
+		Menu.background = love.graphics.newImage("assets/backgrounds/menu.png")
+		Menu.asteroids = love.graphics.newImage("assets/asteroids.png")
+		Menu.stars = love.graphics.newImage("assets/stars.png")
 	end
-	o:init(name)
-	return o
-end
-
-function Menu:init (name)
 	musicPlayer:setTrack("menu.ogg")
 	musicPlayer:play()
 	self:open(name)
@@ -139,3 +131,5 @@ function Menu:controlreleased (set, action, key)
 		element:controlreleased(set, action, key)
 	end
 end
+
+return Menu
