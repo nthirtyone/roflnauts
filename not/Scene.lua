@@ -10,6 +10,8 @@ end
 function Scene:delete () end
 function Scene:update (dt) end
 function Scene:draw () end
+function Scene:controlpressed (set, action, key) end
+function Scene:controlreleased (set, action, key) end
 
 -- Following setters and getters are a little bit too much, I think. But they do follow general coding directions.
 function Scene:setSleeping (sleeping)
