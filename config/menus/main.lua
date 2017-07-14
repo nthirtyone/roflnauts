@@ -1,4 +1,4 @@
-local menu = ...
+local menu, background = ...
 
 local Button = require "not.Button"
 local Header = require "not.Header"
@@ -9,7 +9,12 @@ local bx = width/2-29
 
 local awesometwo = love.graphics.newImage("assets/two.png")
 
+if background == nil or not background:is(require "not.MenuBackground") then
+	background = require "not.MenuBackground"(menu)
+end
+
 return {
+	background,
 	Button(menu)
 		:setText("Start")
 		:setPosition(bx, 80)

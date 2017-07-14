@@ -1,4 +1,4 @@
-local menu = ...
+local menu, background = ...
 
 local Button = require "not.Button"
 local Element = require "not.Element"
@@ -6,7 +6,12 @@ local Element = require "not.Element"
 local width, height = love.graphics.getWidth()/getRealScale(), love.graphics.getHeight()/getRealScale()
 local bx = width/2-29
 
+if background == nil or not background:is(require "not.MenuBackground") then
+	background = require "not.MenuBackground"(menu)
+end
+
 return {
+	background,
 	Button(menu)
 		:setText("Go back")
 		:setPosition(bx,144)

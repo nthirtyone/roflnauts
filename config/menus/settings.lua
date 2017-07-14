@@ -1,4 +1,4 @@
-local menu = ...
+local menu, background = ...
 
 local Button = require "not.Button"
 local Selector = require "not.Selector"
@@ -64,7 +64,12 @@ local controlreleased = function(self, set, action, key)
 	end
 end
 
+if background == nil or not background:is(require "not.MenuBackground") then
+	background = require "not.MenuBackground"(menu)
+end
+
 local a = {
+	background,
 	Button(menu)
 		:setText("Keyboard 1")
 		:setPosition(bx,80)

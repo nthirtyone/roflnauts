@@ -8,12 +8,6 @@ Menu.elements = --[[{not.Element}]]nil
 Menu.active = 1
 Menu.music = --[[not.Music]]nil
 Menu.sprite = --[[love.graphics.newImage]]nil
-Menu.background = --[[love.graphics.newImage]]nil
-Menu.asteroids = --[[love.graphics.newImage]]nil
-Menu.stars = --[[love.graphics.newImage]]nil
-Menu.asteroids_bounce = 0
-Menu.stars_frame = 1
-Menu.stars_delay = 0.8
 Menu.allowMove = true
 Menu.quads = { -- TODO: Could be moved to config file or perhaps QuadManager to manage all quads for animations etc.
 	button = {
@@ -30,22 +24,16 @@ Menu.quads = { -- TODO: Could be moved to config file or perhaps QuadManager to 
 	},
 	arrow_l = love.graphics.newQuad(68, 0, 6, 6, 80,130),
 	arrow_r = love.graphics.newQuad(74, 0, 6, 6, 80,130),
-	stars = {
-		love.graphics.newQuad(  0, 0, 320, 200, 640,200),
-		love.graphics.newQuad(320, 0, 320, 200, 640,200)
-	},
 }
 
 function Menu:new (name)
 	-- Load statically.
 	if Menu.sprite == nil then
 		Menu.sprite = love.graphics.newImage("assets/menu.png")
-		Menu.background = love.graphics.newImage("assets/backgrounds/menu.png")
-		Menu.asteroids = love.graphics.newImage("assets/asteroids.png")
-		Menu.stars = love.graphics.newImage("assets/stars.png")
 	end
 	musicPlayer:setTrack("menu.ogg")
 	musicPlayer:play()
+	self.elements = {}
 	self:open(name)
 end
 
@@ -54,8 +42,11 @@ function Menu:delete () end
 function Menu:open (name)
 	local name = name or "main"
 	self.active = Menu.active --Menu.active is initial
-	self.elements = love.filesystem.load(string.format("config/menus/%s.lua", name))(self)
-	self.elements[self.active]:focus()
+	self.elements = love.filesystem.load(string.format("config/menus/%s.lua", name))(self, self.elements[1])
+	-- Common with `next` method.
+	if not self.elements[self.active]:focus() then
+		self:next()
+	end
 end
 
 -- Return reference to quads table and menu sprite
@@ -88,24 +79,10 @@ function Menu:update (dt)
 	for _,element in pairs(self.elements) do
 		element:update(dt)
 	end
-	self.asteroids_bounce = self.asteroids_bounce + dt*0.1
-	if self.asteroids_bounce > 2 then self.asteroids_bounce = self.asteroids_bounce - 2 end
-	self.stars_delay = self.stars_delay - dt
-	if self.stars_delay < 0 then
-		self.stars_delay = self.stars_delay + Menu.stars_delay --Menu.stars_delay is initial
-		if self.stars_frame == 2 then
-			self.stars_frame = 1
-		else
-			self.stars_frame = 2
-		end
-	end
 end
 function Menu:draw ()
 	local scale = self.scale
 	local scaler = getRealScale()
-	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
-	love.graphics.draw(self.stars, self.quads.stars[self.stars_frame], 0, 0, 0, scaler, scaler)
-	love.graphics.draw(self.asteroids, 0, math.floor(64+math.sin(self.asteroids_bounce*math.pi)*4)*scaler, 0, scaler, scaler)
 	love.graphics.setFont(Font)
 	for _,element in pairs(self.elements) do
 		element:draw(scale)

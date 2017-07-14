@@ -1,4 +1,4 @@
-local menu = ...
+local menu, background = ...
 
 local Button = require "not.Button"
 local Selector = require "not.Selector"
@@ -13,7 +13,12 @@ local start_Button = Button(menu)
 require "iconsList"
 local nautsIcons, nautsList = getNautsIconsList()
 
+if background == nil or not background:is(require "not.MenuBackground") then
+	background = require "not.MenuBackground"(menu)
+end
+
 return {
+	background,
 	naut_Selector
 		:setPosition(width/2,60)
 		:setMargin(8)

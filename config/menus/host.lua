@@ -1,4 +1,4 @@
-local menu = ...
+local menu, background = ...
 
 local Button = require "not.Button"
 local Selector = require "not.Selector"
@@ -11,7 +11,12 @@ local map_Selector = Selector(menu)
 require "iconsList"
 local icons, maps = getMapsIconsList()
 
+if background == nil or not background:is(require "not.MenuBackground") then
+	background = require "not.MenuBackground"(menu)
+end
+
 return {
+	background,
 	map_Selector
 		:setPosition(width/2, 40)
 		:setSize(80, 42)

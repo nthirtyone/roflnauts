@@ -7,6 +7,10 @@ function Scene:new ()
 	self.inputDisabled = false
 end
 
+function Scene:delete () end
+function Scene:update (dt) end
+function Scene:draw () end
+
 -- Following setters and getters are a little bit too much, I think. But they do follow general coding directions.
 function Scene:setSleeping (sleeping)
 	self.sleeping = sleeping
