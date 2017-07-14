@@ -18,6 +18,11 @@ function SceneManager:addScene (scene)
 	return scene
 end
 
+-- Not nice, not nice.
+function SceneManager:removeTopScene ()
+	table.remove(self.scenes, #self.scenes)
+end
+
 function SceneManager:getAllScenes ()
 	return self.scenes
 end

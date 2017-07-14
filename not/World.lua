@@ -16,7 +16,6 @@ World.clouds_delay = 5
 World.map =--[[config.maps.*]]nil
 World.background =--[[image?]]nil
 World.lastNaut = false
-World.win_move = 0 -- "WINNER"
 
 require "not.Platform"
 require "not.Player"
@@ -193,16 +192,13 @@ function World:onNautKilled (naut)
 	self:createRay(naut)
 	local nauts = self:getNautsPlayable()
 	if self.lastNaut then
+		sceneManager:removeTopScene()
 		sceneManager:changeScene(Menu())
 	elseif #nauts < 2 then
 		self.lastNaut = true
 		naut:playSound(5, true)
+		sceneManager:addScene(Menu("win"))
 	end
-end
-
-function World:getBounce (f)
-	local f = f or 1
-	return math.sin(self.win_move*f*math.pi)
 end
 
 -- LÖVE2D callbacks
@@ -249,11 +245,6 @@ function World:update (dt)
 		if ray:update(dt) then
 			table.remove(self.Rays, _)
 		end
-	end
-	-- Bounce `winner`
-	self.win_move = self.win_move + dt
-	if self.win_move > 2 then
-		self.win_move = self.win_move - 2
 	end
 end
 -- Draw
@@ -332,17 +323,6 @@ function World:draw ()
 		local y, e = 1, 1
 		if _ < 3 then y, e = h-33, 0 end
 		naut:drawHUD(1+(_%2)*(w-34), y, scale, e)
-	end
-	
-	-- Draw winner
-	if self.lastNaut then
-		local w, h = love.graphics.getWidth()/scale, love.graphics.getHeight()/scale
-		local angle = self:getBounce(2)
-		local dy = self:getBounce()*3
-		love.graphics.setFont(Bold)
-		love.graphics.printf("WINNER",(w/2)*scale,(42+dy)*scale,336,"center",(angle*5)*math.pi/180,scale,scale,168,12)
-		love.graphics.setFont(Font)
-		love.graphics.printf("rofl, now kill yourself", w/2*scale, 18*scale, 160, "center", 0, scale, scale, 80, 3)
 	end
 end
 
