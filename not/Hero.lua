@@ -37,26 +37,13 @@ Hero.PUNCH_DOWN = {-8,4, -8,20, 8,20, 8,4}
 
 -- Constructor of `Hero`.
 function Hero:new (name, x, y, world)
-	-- TODO: Statics moved temporarily here. Should be moved to e.g. `load()`.
-	if Hero.portrait_sprite == nil then
-		Hero.portrait_sprite = love.graphics.newImage("assets/portraits.png")
-		Hero.portrait_frame = love.graphics.newImage("assets/menu.png")
-	end
-	-- Find imagePath based on hero name.
-	local fileName = name or Hero.name -- INITIAL
-	local imagePath = string.format("assets/nauts/%s.png", fileName)
-	-- `PhysicalBody` initialization.
+	local imagePath = string.format("assets/nauts/%s.png", name)
+	Hero.load()
 	Hero.__super.new(self, x, y, world, imagePath)
 	self:setBodyType("dynamic")
 	self:setBodyFixedRotation(true)
 	self.group = -1-#world.Nauts
-	-- Main fixture initialization.
-	local fixture = self:addFixture({-5,-8, 5,-8, 5,8, -5,8}, 8)
-	fixture:setUserData(self)
-	fixture:setCategory(2)
-	fixture:setMask(2)
-	fixture:setGroupIndex(self.group)
-	-- Actual `Hero` initialization.
+	self:newFixture()
 	self.world = world
 	self.punchCooldown = 0
 	self.name = name
@@ -64,33 +51,35 @@ function Hero:new (name, x, y, world)
 	self:createEffect("respawn")
 end
 
+-- TODO: This is temporarily called by constructor.
+function Hero.load ()
+	if Hero.portrait_sprite == nil then
+		Hero.portrait_sprite = love.graphics.newImage("assets/portraits.png")
+		Hero.portrait_frame = love.graphics.newImage("assets/menu.png")
+	end
+end
+
+--- Creates hero's fixture and adds it to physical body.
+function Hero:newFixture ()
+	local fixture = self:addFixture({-5,-8, 5,-8, 5,8, -5,8}, 8)
+	fixture:setUserData(self)
+	fixture:setCategory(2)
+	fixture:setMask(2)
+	fixture:setGroupIndex(self.group)
+end
+
 -- Update callback of `Hero`
 function Hero:update (dt)
 	Hero.__super.update(self, dt)
-	if self.body:isDestroyed() then return end
-
+	if self.body:isDestroyed() then
+		return
+	end
+	self:dampVelocity(dt)
 	-- Salto
 	if self.salto and (self.current == self.animations.walk or self.current == self.animations.default) then
 		self.angle = (self.angle + 17 * dt * self.facing) % 360
 	elseif self.angle ~= 0 then
 		self.angle = 0
-	end
-
-	-- Custom linear damping.
-	if not self.isWalking then
-		local face = nil
-		local x, y = self:getLinearVelocity()
-		if x < -12 then
-			face = 1
-		elseif x > 12 then
-			face = -1
-		else
-			face = 0
-		end
-		self:applyForce(40*face,0)
-		if not self.inAir then
-			self:applyForce(80*face,0)
-		end
 	end
 
 	-- Could you please die?
@@ -144,6 +133,25 @@ function Hero:update (dt)
 
 	if self.punchCooldown <= 0 and self.punchdir == 1 then
 		self.punchdir = 0
+	end
+end
+
+--- Damps linear velocity every frame by applying minor force to body.
+function Hero:dampVelocity (dt)
+	if not self.isWalking then
+		local face
+		local x, y = self:getLinearVelocity()
+		if x < -12 then
+			face = 1
+		elseif x > 12 then
+			face = -1
+		else
+			face = 0
+		end
+		self:applyForce(40*face,0)
+		if not self.inAir then
+			self:applyForce(80*face,0)
+		end
 	end
 end
 
