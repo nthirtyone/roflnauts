@@ -1,11 +1,6 @@
-require "not.Decoration"
-
 --- `Effect`
 -- Short animation with graphics that plays in various situation.
--- TODO: animation is currently slower than it used to be, check if it is ok; if not then make it possible to change it to 0.06 delay.
-Effect = Decoration:extends()
-
-Effect.finished = false
+Effect = require "not.Decoration":extends()
 
 -- Constructor of `Effect`.
 function Effect:new (name, x, y, world)
@@ -14,6 +9,7 @@ function Effect:new (name, x, y, world)
 		Effect:setImage(Sprite.newImage("assets/effects.png"))
 	end
 	Effect.__super.new(self, x, y, world, nil)
+	self.finished = false
 	self:setAnimationsList(require("config.animations.effects"))
 	self:setAnimation(name)
 end

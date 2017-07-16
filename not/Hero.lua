@@ -1,9 +1,7 @@
-require "not.PhysicalBody"
-
 --- `Hero`
 -- Hero (often referred to as: "naut") entity that exists in a game world.
 -- Collision category: [2]
-Hero = PhysicalBody:extends()
+Hero = require "not.PhysicalBody":extends()
 
 Hero.name = "empty"
 Hero.angle = 0
@@ -114,6 +112,12 @@ function Hero:update (dt)
 		self:respawn()
 	end
 
+	-- Trail spawner
+	if self.combo > 100 then
+		local dx, dy = love.math.random(-4, 4), love.math.random(-4, 4)
+		self:createEffect("trail", dx, dy)
+	end
+
 	-- # PUNCH
 	-- Cooldown
 	self.punchCooldown = self.punchCooldown - dt
@@ -188,14 +192,18 @@ function Hero:goToNextFrame ()
 end
 
 -- Spawn `Effect` relative to `Hero`
-function Hero:createEffect (name)
-	if name == "trail" or name == "hit" then
-		-- 16px effect: -7 -7
-		self.world:createEffect(name, self.body:getX()-8, self.body:getY()-8)
-	elseif name ~= nil then
-		-- 24px effect: -12 -15
-		self.world:createEffect(name, self.body:getX()-12, self.body:getY()-15)
+function Hero:createEffect (name, dx, dy)
+	local x, y = self.body:getX()-8, self.body:getY()-8 -- 16px effect: -7 -7
+	if not (name == "trail") and not (name == "hit") then
+		x, y = x-4, y-7 -- 24px effect: -12 -15
 	end
+	if dx then
+		x = x + dx
+	end
+	if dy then
+		y = y + dy
+	end
+	self.world:createEffect(name, x, y)
 end
 
 -- Creates temporary fixture for hero's body that acts as sensor.
