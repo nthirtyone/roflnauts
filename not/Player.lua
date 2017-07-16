@@ -41,7 +41,7 @@ function Player:update (dt)
 		self.facing = -1
 		self:applyForce(-250, 0)
 		-- Controlled speed limit
-		if x < -self.max_velocity then
+		if x < -self.MAX_VELOCITY then
 			self:applyForce(250, 0)
 		end
 	end
@@ -49,7 +49,7 @@ function Player:update (dt)
 		self.facing = 1
 		self:applyForce(250, 0)
 		-- Controlled speed limit
-		if x > self.max_velocity then
+		if x > self.MAX_VELOCITY then
 			self:applyForce(-250, 0)
 		end
 	end

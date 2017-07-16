@@ -3,17 +3,7 @@
 -- Collision category: [2]
 Hero = require "not.PhysicalBody":extends()
 
-Hero.name = "empty"
-Hero.angle = 0
-Hero.facing = 1
-Hero.max_velocity = 105
-Hero.group = nil
 -- Combat
-Hero.combo = 0
-Hero.lives = 3
-Hero.spawntimer = 2
-Hero.isAlive = true
-Hero.punchCooldown = 0.25
 Hero.punchdir = 0 -- a really bad thing
 -- Movement
 Hero.inAir = true
@@ -29,6 +19,9 @@ Hero.portrait_sheet = getNautsIconsList()
 Hero.portrait_box = love.graphics.newQuad(0, 15, 32,32, 80,130)
 Hero.sfx = require "config.sounds"
 
+Hero.MAX_VELOCITY = 105
+Hero.RESPAWN_TIME = 2
+Hero.PUNCH_COOLDOWN = 0.25
 Hero.PUNCH_FIXTURE_LIFETIME = 0.08
 Hero.PUNCH_LEFT = {-2,-6, -20,-6, -20,6, -2,6}
 Hero.PUNCH_RIGHT = {2,-6, 20,-6, 20,6, 2,6}
@@ -40,14 +33,23 @@ function Hero:new (name, x, y, world)
 	local imagePath = string.format("assets/nauts/%s.png", name)
 	Hero.load()
 	Hero.__super.new(self, x, y, world, imagePath)
+	-- Physics
+	self.group = -1-#world.Nauts
 	self:setBodyType("dynamic")
 	self:setBodyFixedRotation(true)
-	self.group = -1-#world.Nauts
 	self:newFixture()
+	-- General
 	self.world = world
-	self.punchCooldown = 0
 	self.name = name
+	self.lives = 3
+	self.angle = 0
+	self.facing = 1
+	self.combo = 0
+	self.punchCooldown = 0
+	self.spawntimer = 2
+	self.isAlive = true
 	self:setAnimationsList(require("config.animations.hero"))
+	-- Post-creation
 	self:createEffect("respawn")
 end
 
@@ -218,7 +220,7 @@ end
 -- direction:  ("left", "right", "up", "down")
 -- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.
 function Hero:punch (direction)
-	self.punchCooldown = Hero.punchCooldown
+	self.punchCooldown = Hero.PUNCH_COOLDOWN
 	-- Choose shape based on punch direction.
 	local shape
 	if direction == "left" then shape = Hero.PUNCH_LEFT end
@@ -265,10 +267,10 @@ end
 -- DIE
 function Hero:die ()
 	self:playSound(1)
-	self.combo = Hero.combo -- INITIAL from prototype
+	self.combo = 0
 	self.lives = self.lives - 1
 	self.isAlive = false
-	self.spawntimer = Hero.spawntimer -- INITIAL from prototype
+	self.spawntimer = Hero.RESPAWN_TIME
 	self:setBodyActive(false)
 	self.world:onNautKilled(self)
 end
