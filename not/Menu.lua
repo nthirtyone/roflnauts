@@ -31,9 +31,6 @@ function Menu:new (name)
 	if Menu.sprite == nil then
 		Menu.sprite = love.graphics.newImage("assets/menu.png")
 	end
-	-- musicPlayer calls should be moved to menu files; see issue with new win screen
-	musicPlayer:setTrack("menu.ogg")
-	musicPlayer:play()
 	self.elements = {}
 	self:open(name)
 end

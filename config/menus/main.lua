@@ -13,6 +13,10 @@ if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
+-- Wait, only here?
+musicPlayer:setTrack("menu.ogg")
+musicPlayer:play()
+
 return {
 	background,
 	Button(menu)
