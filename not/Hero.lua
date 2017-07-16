@@ -113,8 +113,8 @@ function Hero:update (dt)
 	end
 
 	-- Trail spawner
-	if self.combo > 100 then
-		local dx, dy = love.math.random(-4, 4), love.math.random(-4, 4)
+	if self.combo > 100 and self.punchCooldown > 0 then
+		local dx, dy = love.math.random(-5, 5), love.math.random(-5, 5)
 		self:createEffect("trail", dx, dy)
 	end
 
