@@ -14,8 +14,10 @@ if background == nil or not background:is(require "not.MenuBackground") then
 end
 
 -- Wait, only here?
-musicPlayer:setTrack("menu.ogg")
-musicPlayer:play()
+if musicPlayer:getCurrentTrack() ~= "menu.ogg" then
+	musicPlayer:setTrack("menu.ogg")
+	musicPlayer:play()
+end
 
 return {
 	background,

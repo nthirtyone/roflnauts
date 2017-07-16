@@ -32,6 +32,14 @@ function MusicPlayer:setTrack (trackName)
 	end
 end
 
+function MusicPlayer:getCurrentTrack ()
+	for key,track in pairs(self.tracks) do
+		if self.tracks[key] == self.source then
+			return key
+		end
+	end
+end
+
 function MusicPlayer:play ()
 	self.source:play()
 end
