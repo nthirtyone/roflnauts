@@ -371,6 +371,11 @@ function World:controlpressed (set, action, key)
 		local new = World(map, nauts)
 		sceneManager:changeScene(new)
 	end
+	if key == "escape" then
+		sceneManager:addScene(Menu("pause"))
+		self:setInputDisabled(true)
+		self:setSleeping(true)
+	end
 	for k,naut in pairs(self:getNautsAll()) do
 		naut:controlpressed(set, action, key)
 	end
