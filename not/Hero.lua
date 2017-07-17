@@ -37,17 +37,18 @@ function Hero:new (name, x, y, world)
 	-- General
 	self.world = world
 	self.name = name
-	self.lives = 3
 	self.angle = 0
 	self.facing = 1
+	-- Status
 	self.combo = 0
-	self.punchCooldown = 0
-	self.spawntimer = 2
-	self.isAlive = true
+	self.lives = 3
 	self.inAir = true
-	self.isJumping = false
-	self.isWalking = false
 	self.salto = false
+	self.isAlive = true
+	self.isWalking = false
+	self.isJumping = false
+	self.spawntimer = 2
+	self.punchCooldown = 0
 	self:setAnimationsList(require("config.animations.hero"))
 	-- Post-creation
 	self:createEffect("respawn")
