@@ -219,6 +219,15 @@ function Hero:createEffect (name, dx, dy)
 	self.world:createEffect(name, x, y)
 end
 
+-- Called by World when Hero starts contact with Platform (lands).
+function Hero:land ()
+	self.inAir = false
+	self.jumpCounter = 2
+	self.salto = false
+	self.smoke = false
+	self:createEffect("land")
+end
+
 -- Creates temporary fixture for hero's body that acts as sensor.
 -- direction:  ("left", "right", "up", "down")
 -- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.

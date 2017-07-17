@@ -332,13 +332,7 @@ function World.beginContact (a, b, coll)
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
-			-- TODO: move landing to `not.Hero`
-			-- Move them to Hero
-			b:getUserData().inAir = false
-			b:getUserData().jumpCounter = 2
-			b:getUserData().salto = false
-			b:getUserData().smoke = false
-			b:getUserData():createEffect("land")
+			b:getUserData():land()
 		end
 		local vx, vy = b:getUserData().body:getLinearVelocity()
 		if math.abs(x) == 1 or (y < -0.6 and x == 0) then
