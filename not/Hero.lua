@@ -6,19 +6,15 @@ Hero = require "not.PhysicalBody":extends()
 -- Combat
 Hero.punchdir = 0 -- a really bad thing
 -- Movement
-Hero.inAir = true
-Hero.salto = false
-Hero.isJumping = false
-Hero.isWalking = false
 Hero.jumpTimer = 0.16
 Hero.jumpCounter = 2
 -- Statics
-Hero.portrait_sprite = nil
-Hero.portrait_frame = nil
 Hero.portrait_sheet = getNautsIconsList()
 Hero.portrait_box = love.graphics.newQuad(0, 15, 32,32, 80,130)
 Hero.sfx = require "config.sounds"
 
+Hero.IMAGE_PORTRAITS = nil
+Hero.IMAGE_FRAME = nil
 Hero.MAX_VELOCITY = 105
 Hero.RESPAWN_TIME = 2
 Hero.PUNCH_COOLDOWN = 0.25
@@ -48,6 +44,10 @@ function Hero:new (name, x, y, world)
 	self.punchCooldown = 0
 	self.spawntimer = 2
 	self.isAlive = true
+	self.inAir = true
+	self.isJumping = false
+	self.isWalking = false
+	self.salto = false
 	self:setAnimationsList(require("config.animations.hero"))
 	-- Post-creation
 	self:createEffect("respawn")
@@ -55,9 +55,9 @@ end
 
 -- TODO: This is temporarily called by constructor.
 function Hero.load ()
-	if Hero.portrait_sprite == nil then
-		Hero.portrait_sprite = love.graphics.newImage("assets/portraits.png")
-		Hero.portrait_frame = love.graphics.newImage("assets/menu.png")
+	if Hero.IMAGE_PORTRAITS == nil then
+		Hero.IMAGE_PORTRAITS = love.graphics.newImage("assets/portraits.png")
+		Hero.IMAGE_FRAME = love.graphics.newImage("assets/menu.png")
 	end
 end
 
@@ -180,8 +180,8 @@ function Hero:drawHUD (x,y,scale,elevation)
 	-- hud displays only if player is alive
 	if self.isAlive then
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(self.portrait_frame, self.portrait_box, (x)*scale, (y)*scale, 0, scale, scale)
-		love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
+		love.graphics.draw(self.IMAGE_FRAME, self.portrait_box, (x)*scale, (y)*scale, 0, scale, scale)
+		love.graphics.draw(self.IMAGE_PORTRAITS, self.portrait_sheet[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
 		local dy = 30 * elevation
 		love.graphics.setFont(Font)
 		love.graphics.print((self.combo).."%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
