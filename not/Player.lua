@@ -58,6 +58,7 @@ end
 -- Controller callbacks.
 function Player:controlpressed (set, action, key)
 	if set ~= self:getControllerSet() then return end
+	self.smoke = false -- TODO: temporary
 	-- Jumping
 	if action == "jump" then
 		if self.jumpCounter > 0 then

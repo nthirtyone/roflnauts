@@ -337,6 +337,7 @@ function World.beginContact (a, b, coll)
 			b:getUserData().inAir = false
 			b:getUserData().jumpCounter = 2
 			b:getUserData().salto = false
+			b:getUserData().smoke = false
 			b:getUserData():createEffect("land")
 		end
 		local vx, vy = b:getUserData().body:getLinearVelocity()

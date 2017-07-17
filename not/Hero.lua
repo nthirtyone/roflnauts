@@ -44,6 +44,7 @@ function Hero:new (name, x, y, world)
 	self.lives = 3
 	self.inAir = true
 	self.salto = false
+	self.smoke = false
 	self.isAlive = true
 	self.isWalking = false
 	self.isJumping = false
@@ -105,7 +106,8 @@ function Hero:update (dt)
 	end
 
 	-- Trail spawner
-	if self.combo > 100 and self.punchCooldown > 0 then
+	-- TODO: lower the frequency of spawning - currently it is each frame.
+	if self.smoke and self.inAir then
 		local dx, dy = love.math.random(-5, 5), love.math.random(-5, 5)
 		self:createEffect("trail", dx, dy)
 	end
@@ -263,6 +265,9 @@ function Hero:damage (direction)
 	self.combo = math.min(999, self.combo + 10)
 	self.punchCooldown = 0.08 + self.combo*0.0006
 	self:playSound(2)
+	if self.combo > 80 then
+		self.smoke = true
+	end
 end
 
 -- DIE
