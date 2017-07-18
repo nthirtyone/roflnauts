@@ -200,10 +200,7 @@ end
 
 -- Spawn `Effect` relative to `Hero`
 function Hero:createEffect (name, dx, dy)
-	local x, y = self.body:getX()-8, self.body:getY()-8 -- 16px effect: -7 -7
-	if not (name == "trail") and not (name == "hit") then
-		x, y = x-4, y-7 -- 24px effect: -12 -15
-	end
+	local x, y = self.body:getX()-12, self.body:getY()-15
 	if dx then
 		x = x + dx
 	end
