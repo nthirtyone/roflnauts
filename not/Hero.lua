@@ -287,6 +287,8 @@ end
 -- And then respawn. Like Jon Snow.
 function Hero:respawn ()
 	self.isAlive = true
+	self.salto = false
+	self.smoke = false
 	self:setLinearVelocity(0,0)
 	self:setPosition(self.world:getSpawnPosition()) -- TODO: I'm not convinced about getting new position like this.
 	self:setBodyActive(true)
