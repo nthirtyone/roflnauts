@@ -3,14 +3,13 @@
 -- Collision category: [2]
 Hero = require "not.PhysicalBody":extends()
 
--- Movement
+-- Few are left...
 Hero.jumpTimer = 0.16
 Hero.jumpCounter = 2
--- Statics
-Hero.portrait_sheet = getNautsIconsList()
-Hero.portrait_box = love.graphics.newQuad(0, 15, 32,32, 80,130)
 Hero.sfx = require "config.sounds"
 
+Hero.QUAD_PORTRAITS = getNautsIconsList()
+Hero.QUAD_FRAME = love.graphics.newQuad(0, 15, 32,32, 80,130)
 Hero.IMAGE_PORTRAITS = nil
 Hero.IMAGE_FRAME = nil
 Hero.MAX_VELOCITY = 105
@@ -178,8 +177,8 @@ function Hero:drawHUD (x,y,scale,elevation)
 	-- hud displays only if player is alive
 	if self.isAlive then
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(self.IMAGE_FRAME, self.portrait_box, (x)*scale, (y)*scale, 0, scale, scale)
-		love.graphics.draw(self.IMAGE_PORTRAITS, self.portrait_sheet[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
+		love.graphics.draw(self.IMAGE_FRAME, self.QUAD_FRAME, (x)*scale, (y)*scale, 0, scale, scale)
+		love.graphics.draw(self.IMAGE_PORTRAITS, self.QUAD_PORTRAITS[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
 		local dy = 30 * elevation
 		love.graphics.setFont(Font)
 		love.graphics.print((self.combo).."%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
