@@ -122,7 +122,6 @@ function Player:controlpressed (set, action, key)
 			else
 				self:punch("left")
 			end
-			self.punchdir = 1
 		end
 	end
 end

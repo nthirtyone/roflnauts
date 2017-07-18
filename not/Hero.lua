@@ -3,8 +3,6 @@
 -- Collision category: [2]
 Hero = require "not.PhysicalBody":extends()
 
--- Combat
-Hero.punchdir = 0 -- a really bad thing
 -- Movement
 Hero.jumpTimer = 0.16
 Hero.jumpCounter = 2
@@ -127,17 +125,14 @@ function Hero:update (dt)
 	end
 
 	-- Stop vertical
-	local c,a = self.current, self.animations
-	if (c == a.attack_up or c == a.attack_down or c == a.attack) and self.frame < c.frames then
-		if self.punchdir == 0 then
-			self:setLinearVelocity(0,0)
-		else
-			self:setLinearVelocity(38*self.facing,0)
+	local currentAnimation = self:getAnimation()
+	if self.frame < currentAnimation.frames then
+		if currentAnimation == self.animations.attack_up or currentAnimation == self.animations.attack_down then
+			self:setLinearVelocity(0, 0)
 		end
-	end
-
-	if self.punchCooldown <= 0 and self.punchdir == 1 then
-		self.punchdir = 0
+		if currentAnimation == self.animations.attack then
+			self:setLinearVelocity(38*self.facing, 0)
+		end
 	end
 end
 
