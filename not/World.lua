@@ -327,12 +327,13 @@ function World:draw ()
 end
 
 -- Box2D callbacks
--- beginContact
+-- TODO: Rather than here, these contacts should be in `Hero` (most likely).
+-- TODO: Explode these into more functions.\
+-- TODO: Stop using magical numbers:
+--	[1] -> Platform
+--	[2] -> Hero
+--	[3] -> Punch sensor
 function World.beginContact (a, b, coll)
-	-- TODO: Stop using magical numbers:
-	-- [1] -> Platform
-	-- [2] -> Hero
-	-- [3] -> Punch sensor
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
@@ -363,10 +364,8 @@ function World.beginContact (a, b, coll)
 		end
 	end
 end
--- endContact
 function World.endContact (a, b, coll)
 	if a:getCategory() == 1 then
-		-- Move them to Hero
 		b:getUserData().inAir = true
 	end
 end
