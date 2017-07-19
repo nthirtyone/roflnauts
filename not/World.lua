@@ -329,6 +329,10 @@ end
 -- Box2D callbacks
 -- beginContact
 function World.beginContact (a, b, coll)
+	-- TODO: Stop using magical numbers:
+	-- [1] -> Platform
+	-- [2] -> Hero
+	-- [3] -> Punch sensor
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
@@ -340,10 +344,18 @@ function World.beginContact (a, b, coll)
 		end
 	end
 	if a:getCategory() == 3 then
-		b:getUserData():damage(a:getUserData()[2])
+		if b:getCategory() == 2 then
+			b:getUserData():damage(a:getUserData()[2])
+		end
+		if b:getCategory() == 3 then
+			a:getBody():getUserData():damage(b:getUserData()[2])
+			b:getBody():getUserData():damage(a:getUserData()[2])
+		end
 	end
 	if b:getCategory() == 3 then
-		a:getUserData():damage(b:getUserData()[2])
+		if a:getCategory() == 2 then
+			a:getUserData():damage(b:getUserData()[2])
+		end
 	end
 end
 -- endContact

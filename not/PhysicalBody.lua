@@ -11,6 +11,7 @@ PhysicalBody.body =--[[love.physics.newBody]]nil
 function PhysicalBody:new (x, y, world, imagePath)
 	PhysicalBody.__super.new(self, world, imagePath)
 	self.body = love.physics.newBody(world.world, x, y)
+	self.body:setUserData(self)
 end
 
 -- Add new fixture to body.
