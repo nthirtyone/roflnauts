@@ -350,6 +350,11 @@ function World.beginContact (a, b, coll)
 		if b:getCategory() == 3 then
 			a:getBody():getUserData():damage(b:getUserData()[2])
 			b:getBody():getUserData():damage(a:getUserData()[2])
+			local x1,y1 = b:getBody():getUserData():getPosition()
+			local x2,y2 = a:getBody():getUserData():getPosition()
+			local x = (x2 - x1) / 2 + x1 - 12
+			local y = (y2 - y1) / 2 + y1 - 15
+			a:getBody():getUserData().world:createEffect("clash", x, y)
 		end
 	end
 	if b:getCategory() == 3 then
