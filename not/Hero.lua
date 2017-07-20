@@ -169,6 +169,9 @@ end
 function Hero:draw (offset_x, offset_y, scale, debug)
 	if not self.isAlive then return end
 	Hero.__super.draw(self, offset_x, offset_y, scale, debug)
+	love.graphics.setFont(Font)
+	local x,y = self:getPosition()
+	love.graphics.printf(string.format("Player %d", math.abs(self.group)), (math.floor(x)+offset_x)*scale, (math.floor(y)+offset_y-26)*scale,100,'center',0,scale,scale,50,0)
 end
 
 -- Draw HUD of `Hero`
