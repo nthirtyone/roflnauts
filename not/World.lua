@@ -315,6 +315,10 @@ function World:draw ()
 		love.graphics.line(x1,y1,x2,y2)
 	end
 
+	for _,naut in pairs(self.Nauts) do
+		naut:drawTag(offset_x, offset_y, scale)
+	end
+
 	-- Draw HUDs
 	for _,naut in pairs(self.Nauts) do
 		-- I have no idea where to place them T_T
