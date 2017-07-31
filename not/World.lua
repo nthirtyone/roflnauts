@@ -251,8 +251,8 @@ end
 function World:draw ()
 	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
-	local scale = self.camera.scale
-	local scaler = self.camera.scaler
+	local scale = getScale()
+	local scaler = getRealScale()
 	
 	-- Background
 	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)

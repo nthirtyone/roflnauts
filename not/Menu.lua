@@ -3,7 +3,6 @@
 -- I do know that model I used here and in `World` loading configuration files is not flawless but I did not want to rewrite `World`s one but wanted to keep things similar at least in project scope.
 Menu = require "not.Scene":extends()
 
-Menu.scale = getScale()
 Menu.elements = --[[{not.Element}]]nil
 Menu.active = 1
 Menu.music = --[[not.Music]]nil
@@ -79,7 +78,7 @@ function Menu:update (dt)
 	end
 end
 function Menu:draw ()
-	local scale = self.scale
+	local scale = getScale()
 	local scaler = getRealScale()
 	love.graphics.setFont(Font)
 	for _,element in pairs(self.elements) do

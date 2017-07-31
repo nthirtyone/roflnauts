@@ -5,8 +5,6 @@ Camera = {
 	y = 0,
 	dest_x = 0,
 	dest_y = 0,
-	scale = getScale(),
-	scaler = getRealScale(),
 	shake = 0,
 	timer = 0,
 	delay = 0,
@@ -45,7 +43,7 @@ function Camera:getPosition ()
 end
 
 function Camera:getPositionScaled ()
-	return self.x*self.scale, self.y*self.scale
+	return self.x*getScale(), self.y*getScale()
 end
 
 -- Destination
@@ -63,7 +61,7 @@ end
 function Camera:translatePosition (x, y)
 	local x = x or 0
 	local y = y or 0
-	return (x-self.x)*self.scale, (y-self.y)*self.scale
+	return (x-self.x)*getScale().scale, (y-self.y)*getScale()
 end
 
 function Camera:translatePoints(...)
@@ -72,9 +70,9 @@ function Camera:translatePoints(...)
 	local x,y = self:getOffsets()
 	for k,v in pairs(a) do
 		if k%2 == 1 then
-			table.insert(r, (v + x) * self.scale)
+			table.insert(r, (v + x) * getScale())
 		else
-			table.insert(r, (v + y) * self.scale)
+			table.insert(r, (v + y) * getScale())
 		end
 	end
 	return r
@@ -120,8 +118,8 @@ function Camera:follow ()
 			sum_y = naut_y + sum_y
 		end
 	end
-	local x = sum_x / i - love.graphics.getWidth()/self.scale/2
-	local y = sum_y / i - love.graphics.getHeight()/self.scale/2 + 4*self.scale -- hotfix
+	local x = sum_x / i - love.graphics.getWidth()/getScale()/2
+	local y = sum_y / i - love.graphics.getHeight()/getScale()/2 + 4*getScale() -- hotfix
 	return x,y
 end
 
