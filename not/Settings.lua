@@ -4,7 +4,7 @@ Settings = {
 	current = {}
 }
 
-function Settings.load()
+function Settings.load ()
 	if Controller then
 		if not love.filesystem.exists("settings") then
 			local def = love.filesystem.newFile("settings.default")
@@ -15,9 +15,12 @@ function Settings.load()
 		end
 		local getSettings = love.filesystem.load("settings")
 		Settings.current = getSettings()
+		if not Settings.current.sets then
+			Settings.current = Settings.convertToNew()
+		end
 		Controller.reset()
 		local joysticksList = love.joystick.getJoysticks() -- local list for editing
-		for _,set in pairs(Settings.current) do
+		for _,set in pairs(Settings.current.sets) do
 			local isJoystick = set[7]
 			local joystick
 			if isJoystick then
@@ -32,12 +35,18 @@ function Settings.load()
 	end
 end
 
-function Settings.save() 
+-- Converts from old settings format to the one after `02aba07e03465205b45c41df7aec6894d4e89909`.
+function Settings.convertToNew ()
+	local old = Settings.current
+	return {sets = old, display = "fullscreen"}
+end
+
+function Settings.save () 
 	local new = love.filesystem.newFile("settings")
-	local sets = Settings.current
-	local string = "return {\n"
+	local sets = Settings.current.sets
+	local string = "return {\n\tsets = {\n"
 	for i,set in pairs(sets) do
-		string = string .. "\t{"
+		string = string .. "\t\t{"
 		for j,word in pairs(set) do
 			if j ~= 7 then
 				string = string .. "\"" .. word .. "\", "
@@ -51,13 +60,15 @@ function Settings.save()
 		end
 		string = string .. "},\n"
 	end
-	string = string .. "}"
+	string = string .. "\t},\n"
+	string = string .. "\tdisplay = \"fullscreen\",\n"
+	string = string .. "}\n"
 	new:open("w")
 	new:write(string)
 	new:close()
 end
 
-function Settings.change(n, left, right, up, down, attack, jump, joystick)
+function Settings.change (n, left, right, up, down, attack, jump, joystick)
 	local bool
 	if joystick then
 		bool = true
@@ -65,7 +76,7 @@ function Settings.change(n, left, right, up, down, attack, jump, joystick)
 		bool = false
 	end
 	-- Save current settings
-	Settings.current[n] = {left, right, up, down, attack, jump, bool}
+	Settings.current.sets[n] = {left, right, up, down, attack, jump, bool}
 	Settings.save()
 	-- Load settings
 	Settings.load()
