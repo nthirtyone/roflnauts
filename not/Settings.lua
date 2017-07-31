@@ -4,22 +4,34 @@ Settings = {
 	current = {}
 }
 
-function Settings.load ()
+-- Converts from old settings format to the one after `02aba07e03465205b45c41df7aec6894d4e89909`.
+local function convertToNew (old)
+	return {sets = old, display = "fullscreen"}
+end
+
+local function filePrepare ()
+	if not love.filesystem.exists("settings") then
+		local def = love.filesystem.newFile("settings.default")
+		local new = love.filesystem.newFile("settings")
+		new:open("w") def:open("r")
+		new:write(def:read())
+		new:close() def:close()
+	end
+end
+
+local function fileLoad ()
+	local getSettings = love.filesystem.load("settings")
+	local settings = getSettings()
+	if not settings.sets then
+		settings = convertToNew(settings)
+	end
+	Settings.current = settings
+end
+
+local function controllerLoad ()
 	if Controller then
-		if not love.filesystem.exists("settings") then
-			local def = love.filesystem.newFile("settings.default")
-			local new = love.filesystem.newFile("settings")
-			new:open("w") def:open("r")
-			new:write(def:read())
-			new:close() def:close()
-		end
-		local getSettings = love.filesystem.load("settings")
-		Settings.current = getSettings()
-		if not Settings.current.sets then
-			Settings.current = Settings.convertToNew()
-		end
 		Controller.reset()
-		local joysticksList = love.joystick.getJoysticks() -- local list for editing
+		local joysticksList = love.joystick.getJoysticks()
 		for _,set in pairs(Settings.current.sets) do
 			local isJoystick = set[7]
 			local joystick
@@ -35,10 +47,17 @@ function Settings.load ()
 	end
 end
 
--- Converts from old settings format to the one after `02aba07e03465205b45c41df7aec6894d4e89909`.
-function Settings.convertToNew ()
-	local old = Settings.current
-	return {sets = old, display = "fullscreen"}
+local function displayLoad ()
+	local width, height = 320, 180
+	love.window.setFullscreen(false)
+	love.window.setMode(width*2, height*2)
+end
+
+function Settings.load ()
+	filePrepare()
+	fileLoad()
+	controllerLoad()
+	displayLoad()
 end
 
 function Settings.save () 
