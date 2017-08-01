@@ -61,7 +61,7 @@ end
 function Camera:translatePosition (x, y)
 	local x = x or 0
 	local y = y or 0
-	return (x-self.x)*getScale().scale, (y-self.y)*getScale()
+	return (x-self.x)*getScale(), (y-self.y)*getScale()
 end
 
 function Camera:translatePoints(...)
