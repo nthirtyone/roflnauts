@@ -71,10 +71,21 @@ function Menu:previous ()
 	end
 end
 
+-- @Override
+function Menu:isInputDisabled ()
+	if self.inputBreakTimer then
+		return self.inputDisabled or self.inputBreakTimer > 0
+	end
+	return self.inputDisabled
+end
+
 -- LÖVE2D callbacks
 function Menu:update (dt)
 	for _,element in pairs(self.elements) do
 		element:update(dt)
+	end
+	if self.inputBreakTimer and self.inputBreakTimer > 0 then
+		self.inputBreakTimer = self.inputBreakTimer - dt
 	end
 end
 function Menu:draw ()
