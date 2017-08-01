@@ -13,7 +13,7 @@ function Ray:new (naut, world)
 	self.naut = naut
 	self.world = world
 	-- Cavas, this is temporary, I believe.
-	local scale = self.world.camera.scale
+	local scale = getScale()
 	local w, h = love.graphics.getWidth(), love.graphics.getHeight()
 	self.canvas = love.graphics.newCanvas(w/scale, h/scale)
 end
