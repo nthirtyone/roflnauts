@@ -104,9 +104,11 @@ function Settings.change (n, left, right, up, down, attack, jump, joystick)
 	else
 		bool = false
 	end
-	-- Save current settings
 	Settings.current.sets[n] = {left, right, up, down, attack, jump, bool}
+	Settings.reload()
+end
+
+function Settings.reload ()
 	Settings.save()
-	-- Load settings
 	Settings.load()
 end
