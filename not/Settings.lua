@@ -90,7 +90,7 @@ function Settings.save ()
 		string = string .. "},\n"
 	end
 	string = string .. "\t},\n"
-	string = string .. "\tdisplay = \"fullscreen\",\n"
+	string = string .. "\tdisplay = \"" .. Settings.current.display .. "\",\n"
 	string = string .. "}\n"
 	new:open("w")
 	new:write(string)
