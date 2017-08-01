@@ -68,8 +68,29 @@ if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
+local displayTypes = {["fullscreen"] = "fullscreen", ["1"] = "1x", ["2"] = "2x", ["3"] = "3x", ["4"] = "4x", ["5"] = "5x"}
+local displayButton = Button(menu)
+:set("types", displayTypes)
+:setText(displayTypes[Settings.current.display])
+:setPosition(bx,64)
+:set("enabled", true)
+:set("isEnabled", function (self) return self.enabled end)
+:set("active", function (self)
+	self.parent.inputBreakTimer = 0.2
+	if Settings.current.display == "fullscreen" then
+		Settings.current.display = "1"
+	elseif Settings.current.display == "5" then
+		Settings.current.display = "fullscreen"
+	else
+		Settings.current.display = tostring(tonumber(Settings.current.display) + 1)
+	end
+	self:setText(self.types[Settings.current.display])
+	Settings.reload()
+end)
+
 local a = {
 	background,
+	displayButton,
 	Button(menu)
 		:setText("Keyboard 1")
 		:setPosition(bx,80)
