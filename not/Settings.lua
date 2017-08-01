@@ -48,9 +48,21 @@ local function controllerLoad ()
 end
 
 local function displayLoad ()
-	local width, height = 320, 180
-	love.window.setFullscreen(false)
-	love.window.setMode(width*2, height*2)
+	local width, height, flags = love.window.getMode()
+	if Settings.current.display == "fullscreen" then
+		if not flags.fullscreen then
+			love.window.setFullscreen(true, "desktop")
+		end
+	else
+		local scale = tonumber(Settings.current.display) or 1
+		local expectedWidth, expectedHeight = 320 * scale, 180 * scale
+		if flags.fullscreen then
+			love.window.setFullscreen(false)
+		end
+		if width ~= expectedWidth or height ~= expectedHeight then
+			love.window.setMode(expectedWidth, expectedHeight)
+		end
+	end
 end
 
 function Settings.load ()
