@@ -1,22 +1,14 @@
+require "not.Element"
+
 --- `Header`
 -- Swinging title.
-Header = {
-	parent = --[[not.Menu]]nil,
-	x = 0,
-	y = 0,
-	text = "",
-	bounce = 2,
-}
+Header = Element:extends()
 
--- `Header` is a child of `Element`.
-require "not.Element"
-Header.__index = Header
-setmetatable(Header, Element)
+Header.text = ""
+Header.bounce = 2
 
 function Header:new (parent)
-	local o = setmetatable({}, self)
-	o.parent = parent
-	return o
+	Header.__super.new(self, parent)
 end
 
 function Header:setText (text)

@@ -1,72 +1,49 @@
 --- `Menu`
 -- It creates single screen of a menu
 -- I do know that model I used here and in `World` loading configuration files is not flawless but I did not want to rewrite `World`s one but wanted to keep things similar at least in project scope.
-Menu = {
-	scale = getScale(),
-	elements = --[[{not.Element}]]nil,
-	active = 1,
-	music = --[[not.Music]]nil,
-	sprite = --[[love.graphics.newImage]]nil,
-	background = --[[love.graphics.newImage]]nil,
-	asteroids = --[[love.graphics.newImage]]nil,
-	stars = --[[love.graphics.newImage]]nil,
-	asteroids_bounce = 0,
-	stars_frame = 1,
-	stars_delay = 0.8,
-	allowMove = true,
-	quads = { -- TODO: Could be moved to config file or perhaps QuadManager to manage all quads for animations etc.
-		button = {
-			normal = love.graphics.newQuad(0, 0, 58,15, 80,130),
-			active = love.graphics.newQuad(0, 0, 58,15, 80,130)
-		},
-		portrait = {
-			normal = love.graphics.newQuad( 0, 15, 32,32, 80,130),
-			active = love.graphics.newQuad(32, 15, 32,32, 80,130)
-		},
-		panorama = {
-			normal = love.graphics.newQuad(0,47, 80,42, 80,130),
-			active = love.graphics.newQuad(0,88, 80,42, 80,130)
-		},
-		arrow_l = love.graphics.newQuad(68, 0, 6, 6, 80,130),
-		arrow_r = love.graphics.newQuad(74, 0, 6, 6, 80,130),
-		stars = {
-			love.graphics.newQuad(  0, 0, 320, 200, 640,200),
-			love.graphics.newQuad(320, 0, 320, 200, 640,200)
-		},
-	}
+Menu = require "not.Scene":extends()
+
+Menu.elements = --[[{not.Element}]]nil
+Menu.active = 1
+Menu.music = --[[not.Music]]nil
+Menu.sprite = --[[love.graphics.newImage]]nil
+Menu.allowMove = true
+Menu.quads = { -- TODO: Could be moved to config file or perhaps QuadManager to manage all quads for animations etc.
+	button = {
+		normal = love.graphics.newQuad(0, 0, 58,15, 80,130),
+		active = love.graphics.newQuad(0, 0, 58,15, 80,130)
+	},
+	portrait = {
+		normal = love.graphics.newQuad( 0, 15, 32,32, 80,130),
+		active = love.graphics.newQuad(32, 15, 32,32, 80,130)
+	},
+	panorama = {
+		normal = love.graphics.newQuad(0,47, 80,42, 80,130),
+		active = love.graphics.newQuad(0,88, 80,42, 80,130)
+	},
+	arrow_l = love.graphics.newQuad(68, 0, 6, 6, 80,130),
+	arrow_r = love.graphics.newQuad(74, 0, 6, 6, 80,130),
 }
 
-Menu.__index = Menu
-
-require "not.Music"
-
 function Menu:new (name)
-	local o = setmetatable({}, self)
 	-- Load statically.
-	if self.sprite == nil then
-		self.sprite = love.graphics.newImage("assets/menu.png")
-		self.background = love.graphics.newImage("assets/backgrounds/menu.png")
-		self.asteroids = love.graphics.newImage("assets/asteroids.png")
-		self.stars = love.graphics.newImage("assets/stars.png")
+	if Menu.sprite == nil then
+		Menu.sprite = love.graphics.newImage("assets/menu.png")
 	end
-	o:init(name)
-	return o
-end
-
-function Menu:init (name)
-	self.music = Music:new("menu.ogg")
+	self.elements = {}
 	self:open(name)
 end
 
-function Menu:delete ()
-	self.music:delete()
-end
+function Menu:delete () end
 
 function Menu:open (name)
 	local name = name or "main"
 	self.active = Menu.active --Menu.active is initial
-	self.elements = love.filesystem.load(string.format("config/menus/%s.lua", name))(self)
-	self.elements[self.active]:focus()
+	self.elements = love.filesystem.load(string.format("config/menus/%s.lua", name))(self, self.elements[1])
+	-- Common with `next` method.
+	if not self.elements[self.active]:focus() then
+		self:next()
+	end
 end
 
 -- Return reference to quads table and menu sprite
@@ -94,29 +71,26 @@ function Menu:previous ()
 	end
 end
 
+-- @Override
+function Menu:isInputDisabled ()
+	if self.inputBreakTimer then
+		return self.inputDisabled or self.inputBreakTimer > 0
+	end
+	return self.inputDisabled
+end
+
 -- LÖVE2D callbacks
 function Menu:update (dt)
 	for _,element in pairs(self.elements) do
 		element:update(dt)
 	end
-	self.asteroids_bounce = self.asteroids_bounce + dt*0.1
-	if self.asteroids_bounce > 2 then self.asteroids_bounce = self.asteroids_bounce - 2 end
-	self.stars_delay = self.stars_delay - dt
-	if self.stars_delay < 0 then
-		self.stars_delay = self.stars_delay + Menu.stars_delay --Menu.stars_delay is initial
-		if self.stars_frame == 2 then
-			self.stars_frame = 1
-		else
-			self.stars_frame = 2
-		end
+	if self.inputBreakTimer and self.inputBreakTimer > 0 then
+		self.inputBreakTimer = self.inputBreakTimer - dt
 	end
 end
 function Menu:draw ()
-	local scale = self.scale
+	local scale = getScale()
 	local scaler = getRealScale()
-	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
-	love.graphics.draw(self.stars, self.quads.stars[self.stars_frame], 0, 0, 0, scaler, scaler)
-	love.graphics.draw(self.asteroids, 0, math.floor(64+math.sin(self.asteroids_bounce*math.pi)*4)*scaler, 0, scaler, scaler)
 	love.graphics.setFont(Font)
 	for _,element in pairs(self.elements) do
 		element:draw(scale)
@@ -142,3 +116,5 @@ function Menu:controlreleased (set, action, key)
 		element:controlreleased(set, action, key)
 	end
 end
+
+return Menu

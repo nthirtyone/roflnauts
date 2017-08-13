@@ -1,29 +1,14 @@
+require "not.PhysicalBody"
+
 --- `Platform`
 -- Static platform physical object with a sprite. `Players` can walk on it.
 -- Collision category: [1]
--- TODO: reformat code to follow new code patterns
--- TODO: comment uncovered code parts
-Platform = {
-	world = --[[not.World]]nil,
-}
-
--- `Platform` is a child of `PhysicalBody`.
-require "not.PhysicalBody"
-Platform.__index = Platform
-setmetatable(Platform, PhysicalBody)
+Platform = PhysicalBody:extends()
 
 -- Constructor of `Platform`
-function Platform:new (animations, shape, game, x, y, sprite)
-	local o = setmetatable({}, self)
-	o:init(animations, shape, game, x, y, sprite)
-	return o
-end
-
--- Initializer of `Platform`.
-function Platform:init (animations, shape, world, x, y, imagePath)
-	PhysicalBody.init(self, world, x, y, imagePath)
+function Platform:new (animations, shape, x, y, world, imagePath)
+	Platform.__super.new(self, x, y, world, imagePath)
 	self:setAnimationsList(animations)
-	self.world = world
 	-- Create table of shapes if single shape is passed.
 	if type(shape[1]) == "number" then
 		shape = {shape}
@@ -35,3 +20,5 @@ function Platform:init (animations, shape, world, x, y, imagePath)
 		fixture:setFriction(0.2)
 	end
 end
+
+return Platform

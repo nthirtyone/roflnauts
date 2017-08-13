@@ -1,10 +1,11 @@
+require "not.Decoration"
+
 --- `Cloud`
 -- That white thing moving in the background.
 -- TODO: extends variables names to be readable.
-Cloud = {
-	t = 1,  -- type (sprite number)
-	v = 13 -- velocity
-}
+Cloud = Decoration:extends()
+Cloud.t = 1  -- type (sprite number)
+Cloud.v = 13 -- velocity
 
 -- TODO: allow maps to use other quads and sprites for clouds
 -- TODO: you know this isn't right, don't you?
@@ -26,25 +27,12 @@ local animations = {
 	}
 }
 
--- `Cloud` is a child of `Decoration`.
-require "not.Decoration"
-Cloud.__index = Cloud
-setmetatable(Cloud, Decoration)
-
 -- Constructor of `Cloud`.
-function Cloud:new (x, y, t, v)
-	local o = setmetatable({}, self)
-	o:init(x, y, t, v)
-	-- Load spritesheet statically.
+function Cloud:new (x, y, t, v, world)
 	if self:getImage() == nil then
 		self:setImage(Sprite.newImage("assets/clouds.png"))
 	end
-	return o
-end
-
--- Initializer of `Cloud`.
-function Cloud:init (x, y, t, v)
-	Decoration.init(self, x, y, nil)
+	Cloud.__super.new(self, x, y, world, nil)
 	self:setAnimationsList(animations)
 	self:setVelocity(v)
 	self:setType(t)
@@ -65,7 +53,9 @@ end
 
 -- Update of `Cloud`, returns x for world to delete cloud after reaching right corner.
 function Cloud:update (dt)
-	Decoration.update(self, dt)
+	Cloud.__super.update(self, dt)
 	self.x = self.x + self.v*dt
 	return self.x
 end
+
+return Cloud

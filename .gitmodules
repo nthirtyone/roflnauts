@@ -1,0 +1,3 @@
+[submodule "lib/object"]
+	path = lib/object
+	url = https://github.com/nthirtyone/object.git

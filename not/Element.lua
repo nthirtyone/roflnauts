@@ -1,17 +1,15 @@
+require "not.Object"
+
 --- `Element`
 -- Empty element used inside `Menu`.
-Element = {
-	parent = --[[not.Menu]]nil,
-	x = 0,
-	y = 0
-}
+Element = Object:extends()
 
-Element.__index = Element
+Element.parent = --[[not.Menu]]nil
+Element.x = 0
+Element.y = 0
 
 function Element:new (parent)
-	local o = setmetatable({}, self)
-	o.parent = parent
-	return o
+	self.parent = parent
 end
 
 function Element:delete () end -- deletes Element

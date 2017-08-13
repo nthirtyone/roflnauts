@@ -1,3 +1,5 @@
+require "not.Element"
+
 --- `Selector`
 -- Used in Menu for selecting various things from list. Works for each Controller set or globally.
 --[[
@@ -12,39 +14,29 @@ selector:new(menu)
 	:set("global", false) -- true: single selector; false: selector for each controller set present
 	:init()
 ]]
-Selector = {
-	parent = --[[not.Menu]]nil,
-	x = 0,
-	y = 0,
-	width = 0,
-	height = 0,
-	margin = 0,
-	focused = false,
-	global = false,
-	delay = 2,
-	first = false,
-	list,
-	sets,
-	locks,
-	selections,
-	shape = "portrait",
-	sprite,
-	quads,
-	icons_i,
-	icons_q
-}
+Selector = Element:extends()
 
--- `Selector` is a child of `Element`.
-require "not.Element"
-Selector.__index = Selector
-setmetatable(Selector, Element)
+Selector.width = 0
+Selector.height = 0
+Selector.margin = 0
+Selector.focused = false
+Selector.global = false
+Selector.delay = 2
+Selector.first = false
+Selector.list = --[[]]nil
+Selector.sets = --[[]]nil
+Selector.locks = --[[]]nil
+Selector.selections = --[[]]nil
+Selector.shape = "portrait"
+Selector.sprite = --[[]]nil
+Selector.quads = --[[]]nil
+Selector.icons_i = --[[]]nil
+Selector.icons_q = --[[]]nil
 
 -- Constructor
 function Selector:new (parent)
-	local o = setmetatable({}, self)
-	o.parent = parent
-	o.sprite, o.quads = parent:getSheet()
-	return o
+	Selector.__super.new(self, parent)
+	self.sprite, self.quads = parent:getSheet()
 end
 
 -- Size of single block

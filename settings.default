@@ -1,6 +1,9 @@
 return {
-	{"left", "right", "up", "down", "return", "rshift", false},
-	{"a", "d", "w", "s", "g", "h", false},
-	{"axis:leftx-", "axis:leftx+", "axis:lefty-", "axis:lefty+", "a", "b", true},
-	{"axis:leftx-", "axis:leftx+", "axis:lefty-", "axis:lefty+", "a", "b", true},
+	display = "fullscreen",
+	sets = {
+		{"left", "right", "up", "down", "return", "rshift", false},
+		{"a", "d", "w", "s", "g", "h", false},
+		{"axis:leftx-", "axis:leftx+", "axis:lefty-", "axis:lefty+", "a", "b", true},
+		{"axis:leftx-", "axis:leftx+", "axis:lefty-", "axis:lefty+", "a", "b", true},
+	},
 }

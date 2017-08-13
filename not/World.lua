@@ -1,29 +1,21 @@
 --- `World`
 -- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
 -- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
-World = {
-	world = --[[love.physics.newWorld]]nil,
-	Nauts = --[[{not.Hero}]]nil,
-	Platforms = --[[{not.Platform}]]nil,
-	Clouds = --[[{not.Cloud}]]nil,
-	Decorations = --[[{not.Decoration}]]nil,
-	Effects = --[[{not.Effect}]]nil,
-	Rays = --[[{not.Ray}]]nil,
-	camera = --[[not.Camera]]nil,
-	-- cloud generator
-	clouds_delay = 5,
-	-- Map
-	map = nil,
-	background = nil,
-	-- Gameplay status
-	lastNaut = false,
-	-- "WINNER"
-	win_move = 0,
-	-- Music
-	music = nil
-}
+World = require "not.Scene":extends()
 
-World.__index = World
+World.world =--[[love.physics.newWorld]]nil
+World.Nauts =--[[{not.Hero}]]nil
+World.Platforms =--[[{not.Platform}]]nil
+World.Clouds =--[[{not.Cloud}]]nil
+World.Decorations =--[[{not.Decoration}]]nil
+World.Effects =--[[{not.Effect}]]nil
+World.Rays =--[[{not.Ray}]]nil
+World.camera =--[[not.Camera]]nil
+World.music =--[[not.Music]]nil
+World.clouds_delay = 5
+World.map =--[[config.maps.*]]nil
+World.background =--[[image?]]nil
+World.lastNaut = false
 
 require "not.Platform"
 require "not.Player"
@@ -31,17 +23,9 @@ require "not.Cloud"
 require "not.Effect"
 require "not.Decoration"
 require "not.Ray"
-require "not.Music"
 
 -- Constructor of `World` ZA WARUDO!
 function World:new (map, nauts)
-	local o = setmetatable({}, self)
-	o:init(map, nauts)
-	return o
-end
-
--- Init za warudo
-function World:init (map, nauts)
 	-- Box2D physical world.
 	love.physics.setMeter(64)
 	self.world = love.physics.newWorld(0, 9.81*64, true)
@@ -53,14 +37,13 @@ function World:init (map, nauts)
 	self.Effects = {}
 	self.Decorations = {}
 	self.Rays = {}
-	-- Random init; TODO: use LOVE2D's random.
-	math.randomseed(os.time())
 	-- Map and misc.
 	local map = map or "default"
 	self:loadMap(map)
 	self:spawnNauts(nauts)
 	self.camera = Camera:new(self)
-	self.music = Music:new(self.map.theme)
+	musicPlayer:setTrack(self.map.theme)
+	musicPlayer:play()
 end
 
 -- The end of the world
@@ -71,7 +54,6 @@ function World:delete ()
 	for _,naut in pairs(self.Nauts) do
 		naut:delete()
 	end
-	self.music:delete()
 	self.world:destroy()
 end
 
@@ -110,20 +92,20 @@ end
 
 -- Get respawn location
 function World:getSpawnPosition ()
-	local n = math.random(1, #self.map.respawns)
+	local n = love.math.random(1, #self.map.respawns)
 	return self.map.respawns[n].x, self.map.respawns[n].y
 end
 
 -- Add new platform to the world
 -- TODO: it would be nice if function parameters would be same as `not.Platform.new`.
 function World:createPlatform (x, y, polygon, sprite, animations)
-	table.insert(self.Platforms, Platform:new(animations, polygon, self, x, y, sprite))
+	table.insert(self.Platforms, Platform(animations, polygon, x, y, self, sprite))
 end
 
 -- Add new naut to the world
 -- TODO: separate two methods for `not.Hero` and `not.Player`.
 function World:createNaut (x, y, name)
-	local naut = Player:new(name, self, x, y)
+	local naut = Player(name, x, y, self)
 	table.insert(self.Nauts, naut)
 	return naut
 end
@@ -131,14 +113,14 @@ end
 -- Add new decoration to the world
 -- TODO: `not.World.create*` functions often have different naming for parameters. It is not ground-breaking but it makes reading code harder for no good reason.
 function World:createDecoration (x, y, sprite)
-	table.insert(self.Decorations, Decoration:new(x, y, sprite))
+	table.insert(self.Decorations, Decoration(x, y, self, sprite))
 end
 
 -- Add new cloud to the world
 -- TODO: extend variables names to provide better readability.
 -- TODO: follow new parameters in `not.Cloud.new` based on `not.Cloud.init`.
 function World:createCloud (x, y, t, v)
-	table.insert(self.Clouds, Cloud:new(x, y, t, v))
+	table.insert(self.Clouds, Cloud(x, y, t, v, self))
 end
 
 -- Randomize Cloud creation
@@ -151,13 +133,13 @@ function World:randomizeCloud (outside)
 	local x,y,t,v
 	local m = self.map
 	if outside then
-		x = m.center_x-m.width*1.2+math.random(-50,20)
+		x = m.center_x-m.width*1.2+love.math.random(-50,20)
 	else
-		x = math.random(m.center_x-m.width/2,m.center_x+m.width/2)
+		x = love.math.random(m.center_x-m.width/2,m.center_x+m.width/2)
 	end
-	y = math.random(m.center_y-m.height/2, m.center_y+m.height/2)
-	t = math.random(1,3)
-	v = math.random(8,18)
+	y = love.math.random(m.center_y-m.height/2, m.center_y+m.height/2)
+	t = love.math.random(1,3)
+	v = love.math.random(8,18)
 	self:createCloud(x, y, t, v)
 end
 
@@ -165,12 +147,12 @@ end
 -- TODO: follow new parameters in `not.Effect.new` based on `not.Effect.init`.
 -- TODO: along with `createRay` move this nearer reast of `create*` methods for readability.
 function World:createEffect (name, x, y)
-	table.insert(self.Effects, Effect:new(name, x, y))
+	table.insert(self.Effects, Effect(name, x, y, self))
 end
 
 -- Add a ray
 function World:createRay (naut)
-	table.insert(self.Rays, Ray:new(naut, self))
+	table.insert(self.Rays, Ray(naut, self))
 end
 
 -- get Nauts functions
@@ -210,16 +192,13 @@ function World:onNautKilled (naut)
 	self:createRay(naut)
 	local nauts = self:getNautsPlayable()
 	if self.lastNaut then
-		changeScene(Menu:new())
+		sceneManager:removeTopScene()
+		sceneManager:changeScene(Menu())
 	elseif #nauts < 2 then
 		self.lastNaut = true
 		naut:playSound(5, true)
+		sceneManager:addScene(Menu("win"))
 	end
-end
-
-function World:getBounce (f)
-	local f = f or 1
-	return math.sin(self.win_move*f*math.pi)
 end
 
 -- LÖVE2D callbacks
@@ -267,18 +246,13 @@ function World:update (dt)
 			table.remove(self.Rays, _)
 		end
 	end
-	-- Bounce `winner`
-	self.win_move = self.win_move + dt
-	if self.win_move > 2 then
-		self.win_move = self.win_move - 2
-	end
 end
 -- Draw
 function World:draw ()
 	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
-	local scale = self.camera.scale
-	local scaler = self.camera.scaler
+	local scale = getScale()
+	local scaler = getRealScale()
 	
 	-- Background
 	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
@@ -341,6 +315,10 @@ function World:draw ()
 		love.graphics.line(x1,y1,x2,y2)
 	end
 
+	for _,naut in pairs(self.Nauts) do
+		naut:drawTag(offset_x, offset_y, scale)
+	end
+
 	-- Draw HUDs
 	for _,naut in pairs(self.Nauts) do
 		-- I have no idea where to place them T_T
@@ -350,31 +328,20 @@ function World:draw ()
 		if _ < 3 then y, e = h-33, 0 end
 		naut:drawHUD(1+(_%2)*(w-34), y, scale, e)
 	end
-	
-	-- Draw winner
-	if self.lastNaut then
-		local w, h = love.graphics.getWidth()/scale, love.graphics.getHeight()/scale
-		local angle = self:getBounce(2)
-		local dy = self:getBounce()*3
-		love.graphics.setFont(Bold)
-		love.graphics.printf("WINNER",(w/2)*scale,(42+dy)*scale,336,"center",(angle*5)*math.pi/180,scale,scale,168,12)
-		love.graphics.setFont(Font)
-		love.graphics.printf("rofl, now kill yourself", w/2*scale, 18*scale, 160, "center", 0, scale, scale, 80, 3)
-	end
 end
 
 -- Box2D callbacks
--- beginContact
+-- TODO: Rather than here, these contacts should be in `Hero` (most likely).
+-- TODO: Explode these into more functions.\
+-- TODO: Stop using magical numbers:
+--	[1] -> Platform
+--	[2] -> Hero
+--	[3] -> Punch sensor
 function World.beginContact (a, b, coll)
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
-			-- TODO: move landing to `not.Hero`
-			-- Move them to Hero
-			b:getUserData().inAir = false
-			b:getUserData().jumpCounter = 2
-			b:getUserData().salto = false
-			b:getUserData():createEffect("land")
+			b:getUserData():land()
 		end
 		local vx, vy = b:getUserData().body:getLinearVelocity()
 		if math.abs(x) == 1 or (y < -0.6 and x == 0) then
@@ -382,16 +349,27 @@ function World.beginContact (a, b, coll)
 		end
 	end
 	if a:getCategory() == 3 then
-		b:getUserData():damage(a:getUserData()[2])
+		if b:getCategory() == 2 then
+			b:getUserData():damage(a:getUserData()[2])
+		end
+		if b:getCategory() == 3 then
+			a:getBody():getUserData():damage(b:getUserData()[2])
+			b:getBody():getUserData():damage(a:getUserData()[2])
+			local x1,y1 = b:getBody():getUserData():getPosition()
+			local x2,y2 = a:getBody():getUserData():getPosition()
+			local x = (x2 - x1) / 2 + x1 - 12
+			local y = (y2 - y1) / 2 + y1 - 15
+			a:getBody():getUserData().world:createEffect("clash", x, y)
+		end
 	end
 	if b:getCategory() == 3 then
-		a:getUserData():damage(b:getUserData()[2])
+		if a:getCategory() == 2 then
+			a:getUserData():damage(b:getUserData()[2])
+		end
 	end
 end
--- endContact
 function World.endContact (a, b, coll)
 	if a:getCategory() == 1 then
-		-- Move them to Hero
 		b:getUserData().inAir = true
 	end
 end
@@ -403,10 +381,15 @@ function World:controlpressed (set, action, key)
 		local map = self:getMapName()
 		local nauts = {}
 		for _,naut in pairs(self:getNautsAll()) do
-			table.insert(nauts, {naut.name, naut:getControlSet()})
+			table.insert(nauts, {naut.name, naut:getControllerSet()})
 		end
-		local new = World:new(map, nauts)
-		changeScene(new)
+		local new = World(map, nauts)
+		sceneManager:changeScene(new)
+	end
+	if key == "escape" then
+		sceneManager:addScene(Menu("pause"))
+		self:setInputDisabled(true)
+		self:setSleeping(true)
 	end
 	for k,naut in pairs(self:getNautsAll()) do
 		naut:controlpressed(set, action, key)

@@ -1,17 +1,6 @@
 --- Roflnauts 2
 -- TODO: Any lua source file in root directory that is not `main` (this file), `conf` should be moved to a proper directory. Its name should be changed to show what it contains.
 
--- Pretend you didn't see this
--- This is work for scene manager
--- TODO: Create SceneManager or similar class.
-Scene = nil
-function changeScene (scene)
-	if Scene ~= nil then
-		Scene:delete()
-	end
-	Scene = scene
-end
-
 -- Should be moved to scene/camera
 -- TODO: move following functions to `Camera`.
 function getScale ()
@@ -21,6 +10,10 @@ end
 function getRealScale ()
 	return math.max(1, math.max(love.graphics.getWidth() / 320, love.graphics.getHeight() / 180))
 end
+
+-- TODO: They don't look nice like this; move them to some kind of core/game object.
+musicPlayer = require "not.MusicPlayer"()
+sceneManager = require "not.SceneManager"()
 
 -- Require
 require "iconsList"
@@ -44,11 +37,11 @@ function love.load ()
 	love.graphics.setFont(Font)
 	Controller.load()
 	Settings.load()
-	Scene = Menu:new()
+	sceneManager:changeScene(Menu())
 end
 
 function love.draw ()
-	Scene:draw()
+	sceneManager:draw()
 	if debug then
 		local scale = getScale()
 		love.graphics.setFont(Font)
@@ -59,7 +52,7 @@ function love.draw ()
 	end
 end
 
-function love.update (dt) Scene:update(dt) end
+function love.update (dt) sceneManager:update(dt) end
 function love.quit () Settings.save() end
 
 -- Pass input to Controller
@@ -71,15 +64,12 @@ function love.keyreleased (key) Controller.keyreleased(key) end
 
 -- Controller callbacks
 function Controller.controlpressed (set, action, key)
-	Scene:controlpressed(set, action, key)
-	if key == "escape" then
-		love.event.quit()
-	end
+	sceneManager:controlpressed(set, action, key)
 	if key == "f5" then
 		debug = not debug
 	end
 end
 
 function Controller.controlreleased (set, action, key)
-	Scene:controlreleased(set, action, key)
+	sceneManager:controlreleased(set, action, key)
 end

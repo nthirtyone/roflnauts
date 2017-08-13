@@ -1,20 +1,25 @@
-local menu = ...
+local menu, background = ...
 
-local button = require "not.Button"
-local selector = require "not.Selector"
-local element = require "not.Element"
+local Button = require "not.Button"
+local Selector = require "not.Selector"
+local Element = require "not.Element"
 
 local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
 
-local naut_selector = selector:new(menu)
-local start_button = button:new(menu)
+local naut_Selector = Selector(menu)
+local start_Button = Button(menu)
 
 require "iconsList"
 local nautsIcons, nautsList = getNautsIconsList()
 
+if background == nil or not background:is(require "not.MenuBackground") then
+	background = require "not.MenuBackground"(menu)
+end
+
 return {
-	naut_selector
+	background,
+	naut_Selector
 		:setPosition(width/2,60)
 		:setMargin(8)
 		:setSize(32, 32)
@@ -24,30 +29,30 @@ return {
 		:set("icons_q", nautsIcons)
 		:init()
 	,
-	start_button
+	start_Button
 		:setText("Force start")
 		:setPosition(bx,134)
 		:set("isEnabled", function ()
-				if #naut_selector:getFullSelection(false) > 1 then
+				if #naut_Selector:getFullSelection(false) > 1 then
 					return true
 				end
 				return false
 			end)
 		:set("active", function (self)
-				local nauts = naut_selector:getFullSelection(false)
+				local nauts = naut_Selector:getFullSelection(false)
 				if #nauts > 1 then
-					changeScene(World:new(MAP, nauts))
+					sceneManager:changeScene(World(MAP, nauts))
 				end
 			end)
 	,
-	button:new(menu)
+	Button(menu)
 		:setText("Go back")
 		:setPosition(bx,150)
 		:set("active", function (self)
 				self.parent:open("host")
 			end)
 	,
-	element:new(menu)
+	Element(menu)
 		:setPosition(bx, 101)
 		:set("the_final_countdown", 9)
 		:set("draw", function (self, scale)
@@ -62,14 +67,14 @@ return {
 				end
 			end)
 		:set("update", function (self, dt)
-				local total = #naut_selector:getFullSelection(false)
+				local total = #naut_Selector:getFullSelection(false)
 				if total > 1 then
 					self.the_final_countdown = self.the_final_countdown - dt
 				else
 					self.the_final_countdown = 9
 				end
 				if self.the_final_countdown < 0 then
-					start_button:active()
+					start_Button:active()
 				end
 			end)
 	,

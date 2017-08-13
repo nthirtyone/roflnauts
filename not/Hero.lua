@@ -1,104 +1,86 @@
 --- `Hero`
 -- Hero (often referred to as: "naut") entity that exists in a game world.
 -- Collision category: [2]
-Hero = {
-	-- General and physics
-	name = "empty",
-	angle = 0,
-	facing = 1,
-	max_velocity = 105,
-	world = --[[not.World]]nil,
-	group = nil,
-	-- Combat
-	combo = 0,
-	lives = 3,
-	spawntimer = 2,
-	isAlive = true,
-	punchCooldown = 0.25,
-	punchdir = 0, -- a really bad thing
-	-- Movement
-	inAir = true,
-	salto = false,
-	isJumping = false,
-	isWalking = false,
-	jumpTimer = 0.16,
-	jumpCounter = 2,
-	-- Statics
-	portrait_sprite = nil,
-	portrait_frame  = nil,
-	portrait_sheet  = getNautsIconsList(),
-	portrait_box    = love.graphics.newQuad( 0, 15, 32,32, 80,130),
-	sfx = require "config.sounds",
-}
+Hero = require "not.PhysicalBody":extends()
 
--- `Hero` is a child of `PhysicalBody`.
-require "not.PhysicalBody"
-Hero.__index = Hero
-setmetatable(Hero, PhysicalBody)
+-- Few are left...
+Hero.jumpTimer = 0.16
+Hero.jumpCounter = 2
+Hero.sfx = require "config.sounds"
+
+Hero.QUAD_PORTRAITS = getNautsIconsList()
+Hero.QUAD_FRAME = love.graphics.newQuad(0, 15, 32,32, 80,130)
+Hero.IMAGE_PORTRAITS = nil
+Hero.IMAGE_FRAME = nil
+Hero.MAX_VELOCITY = 105
+Hero.RESPAWN_TIME = 2
+Hero.PUNCH_COOLDOWN = 0.25
+Hero.PUNCH_FIXTURE_LIFETIME = 0.08
+Hero.PUNCH_LEFT = {-2,-6, -20,-6, -20,6, -2,6}
+Hero.PUNCH_RIGHT = {2,-6, 20,-6, 20,6, 2,6}
+Hero.PUNCH_UP = {-8,-4, -8,-20, 8,-20, 8,-4}
+Hero.PUNCH_DOWN = {-8,4, -8,20, 8,20, 8,4}
 
 -- Constructor of `Hero`.
-function Hero:new (game, world, x, y, name)
-	local o = setmetatable({}, self)
-	o:init(name, game, x, y)
-	-- Load portraits statically.
-	if self.portrait_sprite == nil then
-		self.portrait_sprite = love.graphics.newImage("assets/portraits.png")
-		self.portrait_frame = love.graphics.newImage("assets/menu.png")
-	end
-	return o
-end
-
--- Initializer of `Hero`.
-function Hero:init (name, world, x, y)
-	-- Find imagePath based on hero name.
-	local fileName = name or Hero.name -- INITIAL from metatable
-	local imagePath = string.format("assets/nauts/%s.png", fileName)
-	-- `PhysicalBody` initialization.
-	PhysicalBody.init(self, world, x, y, imagePath)
+function Hero:new (name, x, y, world)
+	local imagePath = string.format("assets/nauts/%s.png", name)
+	Hero.load()
+	Hero.__super.new(self, x, y, world, imagePath)
+	-- Physics
+	self.group = -1-#world.Nauts
 	self:setBodyType("dynamic")
 	self:setBodyFixedRotation(true)
-	self.group = -1-#world.Nauts
-	-- Main fixture initialization.
+	self:newFixture()
+	-- General
+	self.world = world
+	self.name = name
+	self.angle = 0
+	self.facing = 1
+	-- Status
+	self.combo = 0
+	self.lives = 3
+	self.inAir = true
+	self.salto = false
+	self.smoke = false
+	self.isAlive = true
+	self.isWalking = false
+	self.isJumping = false
+	self.spawntimer = 2
+	self.punchCooldown = 0
+	self:setAnimationsList(require("config.animations.hero"))
+	-- Post-creation
+	self:createEffect("respawn")
+end
+
+-- TODO: This is temporarily called by constructor.
+function Hero.load ()
+	if Hero.IMAGE_PORTRAITS == nil then
+		Hero.IMAGE_PORTRAITS = love.graphics.newImage("assets/portraits.png")
+		Hero.IMAGE_FRAME = love.graphics.newImage("assets/menu.png")
+	end
+end
+
+--- Creates hero's fixture and adds it to physical body.
+function Hero:newFixture ()
 	local fixture = self:addFixture({-5,-8, 5,-8, 5,8, -5,8}, 8)
 	fixture:setUserData(self)
 	fixture:setCategory(2)
 	fixture:setMask(2)
 	fixture:setGroupIndex(self.group)
-	-- Actual `Hero` initialization.
-	self.world = world
-	self.punchCooldown = 0
-	self.name = name
-	self:setAnimationsList(require("config.animations.hero"))
-	self:createEffect("respawn")
 end
 
 -- Update callback of `Hero`
 function Hero:update (dt)
-	PhysicalBody.update(self, dt)
-	if self.body:isDestroyed() then return end
-
+	Hero.__super.update(self, dt)
+	if self.body:isDestroyed() then
+		return
+	end
+	self:dampVelocity(dt)
 	-- Salto
 	if self.salto and (self.current == self.animations.walk or self.current == self.animations.default) then
 		self.angle = (self.angle + 17 * dt * self.facing) % 360
 	elseif self.angle ~= 0 then
 		self.angle = 0
-	end
-
-	-- Custom linear damping.
-	if not self.isWalking then
-		local face = nil
-		local x, y = self:getLinearVelocity()
-		if x < -12 then
-			face = 1
-		elseif x > 12 then
-			face = -1
-		else
-			face = 0
-		end
-		self:applyForce(40*face,0)
-		if not self.inAir then
-			self:applyForce(80*face,0)
-		end
 	end
 
 	-- Could you please die?
@@ -120,6 +102,13 @@ function Hero:update (dt)
 		self:respawn()
 	end
 
+	-- Trail spawner
+	-- TODO: lower the frequency of spawning - currently it is each frame.
+	if self.smoke and self.inAir then
+		local dx, dy = love.math.random(-5, 5), love.math.random(-5, 5)
+		self:createEffect("trail", dx, dy)
+	end
+
 	-- # PUNCH
 	-- Cooldown
 	self.punchCooldown = self.punchCooldown - dt
@@ -135,17 +124,33 @@ function Hero:update (dt)
 	end
 
 	-- Stop vertical
-	local c,a = self.current, self.animations
-	if (c == a.attack_up or c == a.attack_down or c == a.attack) and self.frame < c.frames then
-		if self.punchdir == 0 then
-			self:setLinearVelocity(0,0)
-		else
-			self:setLinearVelocity(38*self.facing,0)
+	local currentAnimation = self:getAnimation()
+	if self.frame < currentAnimation.frames then
+		if currentAnimation == self.animations.attack_up or currentAnimation == self.animations.attack_down then
+			self:setLinearVelocity(0, 0)
+		end
+		if currentAnimation == self.animations.attack then
+			self:setLinearVelocity(38*self.facing, 0)
 		end
 	end
+end
 
-	if self.punchCooldown <= 0 and self.punchdir == 1 then
-		self.punchdir = 0
+--- Damps linear velocity every frame by applying minor force to body.
+function Hero:dampVelocity (dt)
+	if not self.isWalking then
+		local face
+		local x, y = self:getLinearVelocity()
+		if x < -12 then
+			face = 1
+		elseif x > 12 then
+			face = -1
+		else
+			face = 0
+		end
+		self:applyForce(40*face,0)
+		if not self.inAir then
+			self:applyForce(80*face,0)
+		end
 	end
 end
 
@@ -163,7 +168,13 @@ end
 -- Draw of `Hero`
 function Hero:draw (offset_x, offset_y, scale, debug)
 	if not self.isAlive then return end
-	PhysicalBody.draw(self, offset_x, offset_y, scale, debug)
+	Hero.__super.draw(self, offset_x, offset_y, scale, debug)
+end
+
+function Hero:drawTag (offset_x, offset_y, scale)
+	local x,y = self:getPosition()
+	love.graphics.setFont(Font)
+	love.graphics.printf(string.format("Player %d", math.abs(self.group)), (math.floor(x)+offset_x)*scale, (math.floor(y)+offset_y-26)*scale,100,'center',0,scale,scale,50,0)
 end
 
 -- Draw HUD of `Hero`
@@ -172,8 +183,8 @@ function Hero:drawHUD (x,y,scale,elevation)
 	-- hud displays only if player is alive
 	if self.isAlive then
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.draw(self.portrait_frame, self.portrait_box, (x)*scale, (y)*scale, 0, scale, scale)
-		love.graphics.draw(self.portrait_sprite, self.portrait_sheet[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
+		love.graphics.draw(self.IMAGE_FRAME, self.QUAD_FRAME, (x)*scale, (y)*scale, 0, scale, scale)
+		love.graphics.draw(self.IMAGE_PORTRAITS, self.QUAD_PORTRAITS[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
 		local dy = 30 * elevation
 		love.graphics.setFont(Font)
 		love.graphics.print((self.combo).."%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)
@@ -194,35 +205,44 @@ function Hero:goToNextFrame ()
 end
 
 -- Spawn `Effect` relative to `Hero`
-function Hero:createEffect (name)
-	if name == "trail" or name == "hit" then
-		-- 16px effect: -7 -7
-		self.world:createEffect(name, self.body:getX()-8, self.body:getY()-8)
-	elseif name ~= nil then
-		-- 24px effect: -12 -15
-		self.world:createEffect(name, self.body:getX()-12, self.body:getY()-15)
+function Hero:createEffect (name, dx, dy)
+	local x, y = self.body:getX()-12, self.body:getY()-15
+	if dx then
+		x = x + dx
 	end
+	if dy then
+		y = y + dy
+	end
+	self.world:createEffect(name, x, y)
+end
+
+-- Called by World when Hero starts contact with Platform (lands).
+function Hero:land ()
+	self.inAir = false
+	self.jumpCounter = 2
+	self.salto = false
+	self.smoke = false
+	self:createEffect("land")
 end
 
 -- Creates temporary fixture for hero's body that acts as sensor.
 -- direction:  ("left", "right", "up", "down")
 -- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.
--- TODO: Magic numbers present in `not.Hero.punch`.
 function Hero:punch (direction)
-	self.punchCooldown = Hero.punchCooldown -- INITIAL from metatable
+	self.punchCooldown = Hero.PUNCH_COOLDOWN
 	-- Choose shape based on punch direction.
 	local shape
-	if direction == "left" then shape = {-2,-6, -20,-6, -20,6, -2,6} end
-	if direction == "right" then shape = {2,-6, 20,-6, 20,6, 2,6} end
-	if direction == "up" then shape = {-8,-4, -8,-20, 8,-20, 8,-4} end
-	if direction == "down" then shape = {-8,4, -8,20, 8,20, 8,4} end
+	if direction == "left" then shape = Hero.PUNCH_LEFT end
+	if direction == "right" then shape = Hero.PUNCH_RIGHT end
+	if direction == "up" then shape = Hero.PUNCH_UP end
+	if direction == "down" then shape = Hero.PUNCH_DOWN end
 	-- Create and set sensor fixture.
 	local fixture = self:addFixture(shape, 0)
 	fixture:setSensor(true)
 	fixture:setCategory(3)
-	fixture:setMask(1,3)
+	fixture:setMask(1)
 	fixture:setGroupIndex(self.group)
-	fixture:setUserData({0.08, direction})
+	fixture:setUserData({Hero.PUNCH_FIXTURE_LIFETIME, direction})
 	self:playSound(4)
 end
 
@@ -251,15 +271,18 @@ function Hero:damage (direction)
 	self.combo = math.min(999, self.combo + 10)
 	self.punchCooldown = 0.08 + self.combo*0.0006
 	self:playSound(2)
+	if self.combo > 80 then
+		self.smoke = true
+	end
 end
 
 -- DIE
 function Hero:die ()
 	self:playSound(1)
-	self.combo = Hero.combo -- INITIAL from metatable
+	self.combo = 0
 	self.lives = self.lives - 1
 	self.isAlive = false
-	self.spawntimer = Hero.spawntimer -- INITIAL from metatable
+	self.spawntimer = Hero.RESPAWN_TIME
 	self:setBodyActive(false)
 	self.world:onNautKilled(self)
 end
@@ -267,6 +290,8 @@ end
 -- And then respawn. Like Jon Snow.
 function Hero:respawn ()
 	self.isAlive = true
+	self.salto = false
+	self.smoke = false
 	self:setLinearVelocity(0,0)
 	self:setPosition(self.world:getSpawnPosition()) -- TODO: I'm not convinced about getting new position like this.
 	self:setBodyActive(true)
@@ -282,3 +307,5 @@ function Hero:playSound (sfx, force)
 		source:play()
 	end
 end
+
+return Hero
