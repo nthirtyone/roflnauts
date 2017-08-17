@@ -37,4 +37,9 @@ return {
 	"blblal", -- blabl zork
 	"kong", -- ronimo
 	"rock", -- rock
+	"deadlift", -- deadlift
+	"dizzy", -- dizzy
+	"dundee", -- smiles
+	"missile", -- cmdr rocket
+	"swarm", -- qi'tara
 }
