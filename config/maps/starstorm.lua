@@ -1,12 +1,11 @@
-return {
-	-- CENTER AND SIZE
+return
+{
 	name = "starstorm",
 	theme = "starstorm.ogg",
-	center_x = 0,
-	center_y = -20,
+	portrait = 4, -- TODO: See `maps/ribbit`.
+	center = {x = 0, y = -20},
 	width  = 400,
 	height = 260,
-	-- RESPAWN POINTS
 	respawns = {
 		{x = 100, y = 45},
 		{x = -100, y = 45},
@@ -15,7 +14,6 @@ return {
 		{x = -110, y = -70},
 		{x = 110, y = -70}
 	},
-	-- GRAPHICS
 	clouds = false,
 	background = "assets/backgrounds/starstorm.png",
 	platforms = {

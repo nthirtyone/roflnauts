@@ -1,19 +1,17 @@
-return {
-	-- GENERAL
+return
+{
 	name = "ribbit",
 	theme = "ribbit.ogg",
-	center_x = 0,
-	center_y = 50,
+	portrait = 3, -- TODO: either separate portraits now or change `iconsList` and `menu/host`.
+	center = {x = 0, y = 50},
 	width  = 360,
 	height = 240,
-	-- RESPAWN POINTS
 	respawns = {
 		{x = -15, y = -80},
 		{x =  -5, y = -80},
 		{x =   5, y = -80},
 		{x =  15, y = -80}
 	},
-	-- GRAPHICS
 	clouds = false,
 	background = "assets/backgrounds/ribbit.png",
 	platforms = {
