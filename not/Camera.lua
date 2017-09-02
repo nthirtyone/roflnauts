@@ -108,11 +108,11 @@ end
 -- Move follow
 function Camera:follow ()
 	local map = self.world.map
-	local sum_x,sum_y,i = map.center_x, map.center_y, 1
+	local sum_x,sum_y,i = map.center.x, map.center.y, 1
 	for k,naut in pairs(self.world.Nauts) do
 		local naut_x,naut_y = naut:getPosition()
-		if math.abs(naut_x - map.center_x) < map.width/2 and
-		   math.abs(naut_y - map.center_y) < map.height/2 then
+		if math.abs(naut_x - map.center.x) < map.width/2 and
+		   math.abs(naut_y - map.center.y) < map.height/2 then
 			i = i + 1
 			sum_x = naut_x + sum_x
 			sum_y = naut_y + sum_y

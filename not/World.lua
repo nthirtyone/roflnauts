@@ -120,11 +120,11 @@ function World:randomizeCloud (outside)
 	local x,y,t,v
 	local m = self.map
 	if outside then
-		x = m.center_x-m.width*1.2+love.math.random(-50,20)
+		x = m.center.x-m.width*1.2+love.math.random(-50,20)
 	else
-		x = love.math.random(m.center_x-m.width/2,m.center_x+m.width/2)
+		x = love.math.random(m.center.x-m.width/2,m.center.x+m.width/2)
 	end
-	y = love.math.random(m.center_y-m.height/2, m.center_y+m.height/2)
+	y = love.math.random(m.center.y-m.height/2, m.center.y+m.height/2)
 	t = love.math.random(1,3)
 	v = love.math.random(8,18)
 	self:createCloud(x, y, t, v)
@@ -284,11 +284,11 @@ function World:draw ()
 		love.graphics.setLineWidth(1)
 		love.graphics.setLineStyle("rough")
 		local cx, cy = c:getPositionScaled()
-		local x1, y1 = c:translatePosition(self.map.center_x, cy)
-		local x2, y2 = c:translatePosition(self.map.center_x, cy+h)
+		local x1, y1 = c:translatePosition(self.map.center.x, cy)
+		local x2, y2 = c:translatePosition(self.map.center.x, cy+h)
 		love.graphics.line(x1,y1,x2,y2)
-		local x1, y1 = c:translatePosition(cx, self.map.center_y)
-		local x2, y2 = c:translatePosition(cx+w, self.map.center_y)
+		local x1, y1 = c:translatePosition(cx, self.map.center.y)
+		local x2, y2 = c:translatePosition(cx+w, self.map.center.y)
 		love.graphics.line(x1,y1,x2,y2)
 		-- draw ox, oy
 		love.graphics.setColor(200,200,200)

@@ -87,8 +87,8 @@ function Hero:update (dt)
 	-- TODO: World/Map function for testing if Point is inside playable area.
 	local m = self.world.map
 	local x, y = self:getPosition()
-	if (x < m.center_x - m.width*1.5 or x > m.center_x + m.width*1.5  or
-	    y < m.center_y - m.height*1.5 or y > m.center_y + m.height*1.5) and
+	if (x < m.center.x - m.width*1.5 or x > m.center.x + m.width*1.5  or
+	    y < m.center.y - m.height*1.5 or y > m.center.y + m.height*1.5) and
 	    self.isAlive
 	then
 		self:die()

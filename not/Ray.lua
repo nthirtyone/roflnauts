@@ -35,7 +35,7 @@ function Ray:draw (offset_x, offset_y, scale)
 	local x, y = self.naut:getPosition()
 	local m = self.world.map
 	local dy = m.height
-	if y > m.center_y then
+	if y > m.center.y then
 		dy = -dy
 	end
 	love.graphics.line(-x+offset_x,-y+offset_y-dy*0.7,x+offset_x,y+dy*0.7+offset_y)
