@@ -3,20 +3,6 @@
 -- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
 World = require "not.Scene":extends()
 
-World.world =--[[love.physics.newWorld]]nil
-World.Nauts =--[[{not.Hero}]]nil
-World.Platforms =--[[{not.Platform}]]nil
-World.Clouds =--[[{not.Cloud}]]nil
-World.Decorations =--[[{not.Decoration}]]nil
-World.Effects =--[[{not.Effect}]]nil
-World.Rays =--[[{not.Ray}]]nil
-World.camera =--[[not.Camera]]nil
-World.music =--[[not.Music]]nil
-World.clouds_delay = 5
-World.map =--[[config.maps.*]]nil
-World.background =--[[image?]]nil
-World.lastNaut = false
-
 require "not.Platform"
 require "not.Player"
 require "not.Cloud"
@@ -31,6 +17,7 @@ function World:new (map, nauts)
 	self.world = love.physics.newWorld(0, 9.81*64, true)
 	self.world:setCallbacks(self.beginContact, self.endContact)
 	-- Tables for entities. TODO: It is still pretty bad!
+	self.lastNaut = false
 	self.Nauts = {}
 	self.Platforms = {}
 	self.Clouds = {}
