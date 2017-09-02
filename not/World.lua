@@ -52,7 +52,8 @@ function World:loadMap (name)
 	self.map = map()
 	-- Platforms
 	for _,platform in pairs(self.map.platforms) do
-		self:createPlatform(platform.x, platform.y, platform.shape, platform.sprite, platform.animations)
+		local config = love.filesystem.load(string.format("config/platforms/%s.lua", platform.config))()
+		self:createPlatform(platform.x, platform.y, config.shape, config.sprite, platform.animations)
 	end
 	-- Decorations
 	for _,decoration in pairs(self.map.decorations) do
