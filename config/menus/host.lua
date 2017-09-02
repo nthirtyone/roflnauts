@@ -8,11 +8,25 @@ local bx = width/2-29
 
 local map_Selector = Selector(menu)
 
-require "iconsList"
-local icons, maps = getMapsIconsList()
-
 if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
+end
+
+-- TODO: Temporary fun stuff for maps, will be changed along `iconsList`.
+local icons, maps = {}, {}
+do
+	local files = love.filesystem.getDirectoryItems("config/maps")
+	for _,filename in pairs(files) do
+		local path = string.format("config/maps/%s", filename)
+		if love.filesystem.isFile(path) and filename ~= "readme.md" then
+			local map = love.filesystem.load(path)()
+			local i, name = map.portrait, map.name
+			if i then
+				icons[name] = love.graphics.newQuad((i-1)*76, 0, 76, 37, 532, 37)
+				table.insert(maps, name)
+			end
+		end
+	end
 end
 
 return {
