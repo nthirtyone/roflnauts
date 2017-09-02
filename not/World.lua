@@ -47,21 +47,23 @@ end
 -- Load map from file
 -- TODO: Change current map model to function-based one.
 function World:loadMap (name)
-	local name = name or "default"
-	local map = love.filesystem.load(string.format("config/maps/%s.lua", name))
-	self.map = map()
-	-- Platforms
-	for _,platform in pairs(self.map.platforms) do
-		local config = love.filesystem.load(string.format("config/platforms/%s.lua", platform.config))()
-		self:createPlatform(platform.x, platform.y, config.shape, config.sprite, platform.animations)
+	local map = string.format("config/maps/%s.lua", name or "default")
+	self.map = love.filesystem.load(map)()
+
+	for _,op in pairs(self.map.create) do
+		if op.platform then
+			local path = string.format("config/platforms/%s.lua", op.platform)
+			local config = love.filesystem.load(path)()
+			self:createPlatform(op.x, op.y, config.shape, config.sprite, config.animations)
+		end
+		if op.decoration then
+			self:createDecoration(op.x, op.y, op.decoration)
+		end
+		if op.background then
+			self.background = love.graphics.newImage(op.background)
+		end
 	end
-	-- Decorations
-	for _,decoration in pairs(self.map.decorations) do
-		self:createDecoration(decoration.x, decoration.y, decoration.sprite)
-	end
-	-- Background
-	self.background = love.graphics.newImage(self.map.background)
-	-- Clouds
+	
 	if self.map.clouds then
 		for i=1,6 do
 			self:randomizeCloud(false)

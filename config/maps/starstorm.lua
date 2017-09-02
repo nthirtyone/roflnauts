@@ -15,64 +15,65 @@ return
 		{x = 110, y = -70}
 	},
 	clouds = false,
-	background = "assets/backgrounds/starstorm.png",
-	platforms = {
+	create = {
+		{
+			ratio = 0,
+			background = "assets/backgrounds/starstorm.png"
+		},
 		{
 			x = -170,
 			y = -55,
-			config = "starstorm-left-top"
+			platform = "starstorm-left-top"
 		},
 		{
 			x = -156,
 			y = -2,
-			config = "starstorm-left-middle"
+			platform = "starstorm-left-middle"
 		},
 		{
 			x = -160,
 			y = 69,
-			config = "starstorm-left-bottom"
+			platform = "starstorm-left-bottom"
 		},
 		{
 			x = 52,
 			y = -55,
-			config = "starstorm-right-top"
+			platform = "starstorm-right-top"
 		},
 		{
 			x = 44,
 			y = -2,
-			config = "starstorm-right-middle"
+			platform = "starstorm-right-middle"
 		},
 		{
 			x = 55,
 			y = 69,
-			config = "starstorm-right-bottom"
+			platform = "starstorm-right-bottom"
 		},
 		{
 			x = -27,
 			y = 40,
-			config = "starstorm-center"
-		}
-	},
-	decorations = {
+			platform = "starstorm-center"
+		},
 		{
 			x = -166,
 			y = -37,
-			sprite = "assets/decorations/starstorm-left-top.png"
+			decoration = "assets/decorations/starstorm-left-top.png"
 		},
 		{
 			x = -163,
 			y = 19,
-			sprite = "assets/decorations/starstorm-left-bottom.png"
+			decoration = "assets/decorations/starstorm-left-bottom.png"
 		},
 		{
 			x = 119,
 			y = -37,
-			sprite = "assets/decorations/starstorm-right-top.png"
+			decoration = "assets/decorations/starstorm-right-top.png"
 		},
 		{
-			x = 52+77,
+			x = 129,
 			y = 19,
-			sprite = "assets/decorations/starstorm-right-bottom.png"
+			decoration = "assets/decorations/starstorm-right-bottom.png"
 		}
 	}
 }

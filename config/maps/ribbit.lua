@@ -13,28 +13,30 @@ return
 		{x =  15, y = -80}
 	},
 	clouds = false,
-	background = "assets/backgrounds/ribbit.png",
-	platforms = {
+	create = {
+		{
+			ratio = 0,
+			background = "assets/backgrounds/ribbit.png"
+		},
 		{
 			x = -154,
 			y = 10,
-			config = "ribbit-left"
+			platform = "ribbit-left"
 		},
 		{
 			x = 67,
 			y = 7,
-			config = "ribbit-right"
+			platform = "ribbit-right"
 		},
 		{
 			x = -70,
 			y = -5,
-			config = "ribbit-top"
+			platform = "ribbit-top"
 		},
 		{
 			x = -54,
 			y = 63,
-			config = "ribbit-bottom"
+			platform = "ribbit-bottom"
 		}
-	},
-	decorations = {}
+	}
 }
