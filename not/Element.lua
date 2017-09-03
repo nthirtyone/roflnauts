@@ -1,15 +1,11 @@
-require "not.Object"
-
 --- `Element`
 -- Empty element used inside `Menu`.
-Element = Object:extends()
-
-Element.parent = --[[not.Menu]]nil
-Element.x = 0
-Element.y = 0
+Element = require "not.Object":extends()
 
 function Element:new (parent)
 	self.parent = parent
+	self.x = 0
+	self.y = 0
 end
 
 function Element:delete () end -- deletes Element
