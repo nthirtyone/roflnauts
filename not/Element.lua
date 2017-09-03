@@ -8,7 +8,7 @@ function Element:new (parent)
 	self.y = 0
 end
 
-function Element:delete () end -- deletes Element
+function Element:delete () end
 
 function Element:getPosition ()
 	return self.x, self.y
