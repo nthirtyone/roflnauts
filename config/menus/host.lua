@@ -12,7 +12,7 @@ if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
--- TODO: Temporary fun stuff for maps, will be changed along `iconsList`.
+-- TODO: This is temporary solution for generating available maps list and portraits for them to pass to Selector. See also: `iconsList`.
 local icons, maps = {}, {}
 do
 	local files = love.filesystem.getDirectoryItems("config/maps")
