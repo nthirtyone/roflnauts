@@ -1,5 +1,3 @@
-require "not.Element"
-
 --- `Selector`
 -- Used in Menu for selecting various things from list. Works for each Controller set or globally.
 --[[
@@ -14,29 +12,19 @@ selector:new(menu)
 	:set("global", false) -- true: single selector; false: selector for each controller set present
 	:init()
 ]]
-Selector = Element:extends()
+Selector = require "not.Element":extends()
 
-Selector.width = 0
-Selector.height = 0
-Selector.margin = 0
-Selector.focused = false
-Selector.global = false
-Selector.delay = 2
-Selector.first = false
-Selector.list = --[[]]nil
-Selector.sets = --[[]]nil
-Selector.locks = --[[]]nil
-Selector.selections = --[[]]nil
-Selector.shape = "portrait"
-Selector.sprite = --[[]]nil
-Selector.quads = --[[]]nil
-Selector.icons_i = --[[]]nil
-Selector.icons_q = --[[]]nil
-
--- Constructor
 function Selector:new (parent)
 	Selector.__super.new(self, parent)
 	self.sprite, self.quads = parent:getSheet()
+	self.width = 0
+	self.height = 0
+	self.margin = 0
+	self.focused = false
+	self.global = false
+	self.delay = 2
+	self.first = false
+	self.shape = "portrait"
 end
 
 -- Size of single block
