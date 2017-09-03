@@ -14,6 +14,8 @@ selector:new(menu)
 ]]
 Selector = require "not.Element":extends()
 
+Selector.DEFAULT_DELAY = 2
+
 function Selector:new (parent)
 	Selector.__super.new(self, parent)
 	self.sprite, self.quads = parent:getSheet()
@@ -22,7 +24,7 @@ function Selector:new (parent)
 	self.margin = 0
 	self.focused = false
 	self.global = false
-	self.delay = 2
+	self.delay = Selector.DEFAULT_DELAY
 	self.first = false
 	self.shape = "portrait"
 end
@@ -234,8 +236,8 @@ function Selector:draw (scale)
 end
 function Selector:update (dt)
 	self.delay = self.delay + dt
-	if self.delay > Selector.delay then -- Selector.delay is initial
-		self.delay = self.delay - Selector.delay
+	if self.delay > Selector.DEFAULT_DELAY then
+		self.delay = self.delay - Selector.DEFAULT_DELAY
 	end
 end
 
