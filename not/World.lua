@@ -10,13 +10,14 @@ require "not.Effect"
 require "not.Decoration"
 require "not.Ray"
 
--- Constructor of `World` ZA WARUDO!
+--- ZA WARUDO!
+-- TODO: Missing documentation on most of World's methods.
 function World:new (map, nauts)
-	-- Box2D physical world.
 	love.physics.setMeter(64)
 	self.world = love.physics.newWorld(0, 9.81*64, true)
 	self.world:setCallbacks(self.beginContact, self.endContact)
-	-- Tables for entities. TODO: It is still pretty bad!
+	-- Tables for entities.
+	-- TODO: Move all entities into single table.
 	self.lastNaut = false
 	self.Nauts = {}
 	self.Platforms = {}
@@ -25,6 +26,7 @@ function World:new (map, nauts)
 	self.Decorations = {}
 	self.Rays = {}
 	-- Map and misc.
+	-- TODO: `map` could be table from config file rather than just string.
 	local map = map or "default"
 	self:loadMap(map)
 	self:spawnNauts(nauts)
@@ -60,8 +62,8 @@ function World:loadMap (name)
 		end
 		if op.background then
 			local image = love.graphics.newImage(op.background)
-			local x = image:getWidth() / -2
-			local y = image:getHeight() / -2
+			local x = self.map.center.x - (image:getWidth() / 2)
+			local y = self.map.center.y - (image:getHeight() / 2)
 			self:createDecoration(x, y, op.background) -- TODO: Decoration does not allow Image instead of filePath!
 		end
 	end
@@ -88,31 +90,32 @@ function World:getSpawnPosition ()
 	return self.map.respawns[n].x, self.map.respawns[n].y
 end
 
--- Add new platform to the world
--- TODO: it would be nice if function parameters would be same as `not.Platform.new`.
+-- TODO: Standardize `create*` methods with corresponding constructors. Pay attention to both params' order and names.
 function World:createPlatform (x, y, polygon, sprite, animations)
 	table.insert(self.Platforms, Platform(animations, polygon, x, y, self, sprite))
 end
 
--- Add new naut to the world
--- TODO: separate two methods for `not.Hero` and `not.Player`.
 function World:createNaut (x, y, name)
 	local naut = Player(name, x, y, self)
 	table.insert(self.Nauts, naut)
 	return naut
 end
 
--- Add new decoration to the world
--- TODO: `not.World.create*` functions often have different naming for parameters. It is not ground-breaking but it makes reading code harder for no good reason.
 function World:createDecoration (x, y, sprite)
 	table.insert(self.Decorations, Decoration(x, y, self, sprite))
 end
 
--- Add new cloud to the world
--- TODO: extend variables names to provide better readability.
--- TODO: follow new parameters in `not.Cloud.new` based on `not.Cloud.init`.
+-- TODO: Extend names of variables related to Clouds to provide better readability. See also: `not/Cloud`.
 function World:createCloud (x, y, t, v)
 	table.insert(self.Clouds, Cloud(x, y, t, v, self))
+end
+
+function World:createEffect (name, x, y)
+	table.insert(self.Effects, Effect(name, x, y, self))
+end
+
+function World:createRay (naut)
+	table.insert(self.Rays, Ray(naut, self))
 end
 
 -- Randomize Cloud creation
@@ -133,18 +136,6 @@ function World:randomizeCloud (outside)
 	t = love.math.random(1,3)
 	v = love.math.random(8,18)
 	self:createCloud(x, y, t, v)
-end
-
--- Add an effect behind nauts
--- TODO: follow new parameters in `not.Effect.new` based on `not.Effect.init`.
--- TODO: along with `createRay` move this nearer reast of `create*` methods for readability.
-function World:createEffect (name, x, y)
-	table.insert(self.Effects, Effect(name, x, y, self))
-end
-
--- Add a ray
-function World:createRay (naut)
-	table.insert(self.Rays, Ray(naut, self))
 end
 
 -- get Nauts functions
@@ -209,6 +200,7 @@ function World:update (dt)
 		decoration:update(dt)
 	end
 	-- Clouds
+	-- TODO: possibly create new class for Clouds generation. Do it along with Cloud cleaning.
 	if self.map.clouds then
 		-- generator
 		local n = table.getn(self.Clouds)
@@ -323,9 +315,8 @@ function World:draw ()
 end
 
 -- Box2D callbacks
--- TODO: Rather than here, these contacts should be in `Hero` (most likely).
--- TODO: Explode these into more functions.\
--- TODO: Stop using magical numbers:
+-- TODO: Review current state of Box2D callbacks.
+-- TODO: Stop using magical numbers in Box2D callbacks.
 --	[1] -> Platform
 --	[2] -> Hero
 --	[3] -> Punch sensor
@@ -367,7 +358,6 @@ function World.endContact (a, b, coll)
 end
 
 -- Controller callbacks
--- TODO: names of this methods don't follow naming patterns in this project. See `Controller` and change it.
 function World:controlpressed (set, action, key)
 	if key == "f6" and debug then
 		local map = self:getMapName()
