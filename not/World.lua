@@ -44,8 +44,7 @@ function World:delete ()
 	self.world:destroy()
 end
 
--- Load map from file
--- TODO: Change current map model to function-based one.
+--- Loads table from selected map config file located in `config/maps/` directory.
 function World:loadMap (name)
 	local map = string.format("config/maps/%s.lua", name or "default")
 	self.map = love.filesystem.load(map)()
@@ -60,7 +59,10 @@ function World:loadMap (name)
 			self:createDecoration(op.x, op.y, op.decoration)
 		end
 		if op.background then
-			self.background = love.graphics.newImage(op.background)
+			local image = love.graphics.newImage(op.background)
+			local x = image:getWidth() / -2
+			local y = image:getHeight() / -2
+			self:createDecoration(x, y, op.background) -- TODO: Decoration does not allow Image instead of filePath!
 		end
 	end
 	
@@ -245,7 +247,7 @@ function World:draw ()
 	local scaler = getRealScale()
 	
 	-- Background
-	love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
+	-- love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
 	
 	-- TODO: this needs to be reworked!
 	-- Draw clouds
