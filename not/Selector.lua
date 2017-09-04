@@ -14,7 +14,7 @@ function Selector:new (list, group, parent)
 	self.delay = Selector.DEFAULT_DELAY
 	self.shape = Selector.SHAPE_PORTRAIT
 	self.focused = false
-	self.locked = false
+	self.lock = false
 	self.index = 1
 end
 
@@ -56,9 +56,9 @@ function Selector:getSelected ()
 end
 
 --- Checks if selection is locked and returns item's value.
--- @return item selected from the list if locked, nil otherwise
+-- @return item selected from the list if Selector is locked, nil otherwise
 function Selector:getLocked ()
-	if self.locked then
+	if self.lock then
 		return self:getSelected()
 	end
 end
@@ -115,6 +115,26 @@ function Selector:update (dt)
 	self.delay = self.delay + dt
 	if self.delay > Selector.DEFAULT_DELAY then
 		self.delay = self.delay - Selector.DEFAULT_DELAY
+	end
+end
+
+function Selector:controlpressed (set, action, key)
+	if set and self.focused then
+		if not self.lock then
+			if action == "left" then
+				self:setIndex(self.index - 1)
+			end
+			if action == "right" then
+				self:setIndex(self.index + 1)
+			end
+			if action == "attack" then
+				self.lock = true
+			end
+		end
+
+		if action == "jump" then
+			self.lock = false
+		end
 	end
 end
 
