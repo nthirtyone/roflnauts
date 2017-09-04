@@ -8,6 +8,7 @@ function Element:new (parent)
 	self.y = 0
 end
 
+-- TODO: Element's getSize is temporary. Create BoxElement and move it there.
 function Element:getSize ()
 	return 0, 0
 end
