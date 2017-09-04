@@ -15,6 +15,13 @@ if background == nil or not background:is(require "not.MenuBackground") then
 end
 
 -- TODO: Temporary group for naut selectors. This isn't production code at any means!
+local atlas = love.graphics.newImage("assets/portraits.png")
+local nauts = require("config.nauts")
+local icons = {}
+for i=0,#nauts-1 do
+	table.insert(icons, love.graphics.newQuad(i*28, 0, 28, 27, 1008, 27))
+end
+
 local group = Group(menu)
 local
 function add (element)
@@ -23,7 +30,10 @@ function add (element)
 end
 
 for i,_ in pairs(Controller.getSets()) do
-	add(Selector(require("config.nauts"), group, menu)):setPosition(10+48*(i-1), 10)
+	add(Selector(nauts, group, menu))
+		:setPosition(10+48*(i-1), 10)
+		:set("icons_atlas", atlas)
+		:set("icons_quads", icons)
 end
 
 local
