@@ -14,7 +14,7 @@ function Group:callEach (func, ...)
 	local results = {}
 	for _,child in ipairs(self.children) do
 		if type(child[func]) == "function" then
-			table.insert(results, child[func](child, ...))
+			table.insert(results, child[func](child, ...) or nil)
 		end
 	end
 	return results
