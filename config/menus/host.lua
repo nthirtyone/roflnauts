@@ -44,7 +44,7 @@ return {
 				return mapSelector:getLocked()
 			end)
 		:set("active", function (self)
-				MAP = mapSelector:getSelected().name -- TODO: It uses map name for compatibility with old code.
+				MAP = mapSelector:getSelected()
 				self.parent:open("select")
 			end)
 	,

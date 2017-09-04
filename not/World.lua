@@ -25,12 +25,13 @@ function World:new (map, nauts)
 	self.Effects = {}
 	self.Decorations = {}
 	self.Rays = {}
-	-- Map and misc.
-	-- TODO: `map` could be table from config file rather than just string.
-	local map = map or "default"
-	self:loadMap(map)
+
+	self.map = map
+	self:buildMap()
 	self:spawnNauts(nauts)
+
 	self.camera = Camera:new(self)
+
 	musicPlayer:setTrack(self.map.theme)
 	musicPlayer:play()
 end
@@ -46,11 +47,8 @@ function World:delete ()
 	self.world:destroy()
 end
 
---- Loads table from selected map config file located in `config/maps/` directory.
-function World:loadMap (name)
-	local map = string.format("config/maps/%s.lua", name or "default")
-	self.map = love.filesystem.load(map)()
-
+--- Builds map using one of tables frin config files located in `config/maps/` directory.
+function World:buildMap ()
 	for _,op in pairs(self.map.create) do
 		if op.platform then
 			local path = string.format("config/platforms/%s.lua", op.platform)
