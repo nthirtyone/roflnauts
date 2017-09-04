@@ -3,46 +3,49 @@ local menu, background = ...
 local Button = require "not.Button"
 local Selector = require "not.Selector"
 local Element = require "not.Element"
+local Group = require "not.Group"
 
 local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
 
-local naut_Selector = Selector(menu)
 local start_Button = Button(menu)
-
-require "iconsList"
-local nautsIcons, nautsList = getNautsIconsList()
 
 if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
+-- TODO: Temporary group for naut selectors. This isn't production code at any means!
+local group = Group(menu)
+local
+function add (element)
+	table.insert(group.children, element)
+	return element
+end
+
+for i,_ in pairs(Controller.getSets()) do
+	add(Selector(require("config.nauts"), group, menu)):setPosition(10+48*(i-1), 10)
+end
+
+local
+function get ()
+	local selection = group:callEach("getSelected")
+	for i,naut in ipairs(selection) do
+		selection[i] = {naut, Controller.getSets()[i]}
+	end
+	return selection
+end
+
 return {
 	background,
-	naut_Selector
-		:setPosition(width/2,60)
-		:setMargin(8)
-		:setSize(32, 32)
-		:set("list", nautsList)
-		:set("global", false)
-		:set("icons_i", love.graphics.newImage("assets/portraits.png"))
-		:set("icons_q", nautsIcons)
-		:init()
-	,
+	group,
 	start_Button
 		:setText("Force start")
 		:setPosition(bx,134)
 		:set("isEnabled", function ()
-				if #naut_Selector:getFullSelection(false) > 1 then
-					return true
-				end
-				return false
+				return true
 			end)
 		:set("active", function (self)
-				local nauts = naut_Selector:getFullSelection(false)
-				if #nauts > 1 then
-					sceneManager:changeScene(World(MAP, nauts))
-				end
+				sceneManager:changeScene(World(MAP, get()))
 			end)
 	,
 	Button(menu)
@@ -67,7 +70,7 @@ return {
 				end
 			end)
 		:set("update", function (self, dt)
-				local total = #naut_Selector:getFullSelection(false)
+				local total = 0
 				if total > 1 then
 					self.the_final_countdown = self.the_final_countdown - dt
 				else
