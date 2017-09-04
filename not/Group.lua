@@ -4,6 +4,35 @@ Group = require "not.Element":extends()
 function Group:new (parent)
 	Group.__super.new(self, parent)
 	self.children = {}
+	self.marign = 0
+end
+
+function Group:addChild (element)
+	table.insert(self.children, element)
+	return element
+end
+
+-- TODO: Missing semi-important docs on Group's setPosition.
+function Group:setPosition (x, y)
+	local dx = 0
+	for _,child in ipairs(self.children) do
+		child:setPosition(x + dx, y)
+		dx = dx + child:getSize() + self.marigin
+	end
+	return Group.__super.setPosition(self, x, y)
+end
+
+function Group:getSize ()
+	local twidth = -self.marigin
+	local theight = 0
+	for _,child in ipairs(self.children) do
+		local cwidth, cheight = child:getSize()
+		twidth = twidth + child:getSize() + self.marigin
+		if theight < cheight then
+			theight = cheight
+		end
+	end
+	return twidth, theight
 end
 
 --- Calls function with parameters for each child.
