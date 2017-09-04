@@ -8,8 +8,6 @@ function Element:new (parent)
 	self.y = 0
 end
 
-function Element:delete () end
-
 function Element:getSize ()
 	return 0, 0
 end
