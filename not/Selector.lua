@@ -67,9 +67,11 @@ end
 -- @return boolean answering question
 function Selector:isUnique ()
 	if self.group then
-		-- In this case next is used to determine if table returned by call is empty.
-		if next(group:callEachBut(self, "getLocked")) then
-			return false
+		local locked = self.group:callEachBut(self, "getLocked")
+		for _,value in pairs(locked) do
+			if value == self:getSelected() then
+				return false
+			end
 		end
 	end
 	return true
@@ -108,12 +110,16 @@ function Selector:draw (scale)
 	end
 
 	love.graphics.setColor(255, 255, 255, 255)
+	if not self:isUnique() then
+		love.graphics.setColor(120, 120, 120, 255)
+	end
 	love.graphics.draw(self.atlas, self.quads[self:getShapeString()][boxType], x*scale, y*scale, 0, scale, scale)
-
 	-- TODO: That is one way to draw icon for selected value. Find better one. See: `config/menus/host`.
 	if self.icons_atlas and self.icons_quads then
 		love.graphics.draw(self.icons_atlas, self.icons_quads[self.index], (x+2)*scale, (y+3)*scale, 0, scale, scale)
 	end
+
+	love.graphics.setColor(255, 255, 255, 255)
 
 	if self.focused then
 		local dy = (h-6)/2
