@@ -6,10 +6,11 @@ Selector.DEFAULT_DELAY = 2
 Selector.SHAPE_PORTRAIT = 1
 Selector.SHAPE_PANORAMA = 2
 
-function Selector:new (group, parent)
+function Selector:new (list, group, parent)
 	Selector.__super.new(self, parent)
 	self.atlas, self.quads = parent:getSheet()
 	self.group = group
+	self.list = list
 	self.delay = Selector.DEFAULT_DELAY
 	self.shape = Selector.SHAPE_PORTRAIT
 	self.focused = false
@@ -100,10 +101,21 @@ end
 function Selector:draw (scale)
 	local x, y = self:getPosition()
 	local w, h = self:getSize()
+	local boxType = "normal"
+	if self:getLocked() then
+		boxType = "active"
+	end
 	love.graphics.setColor(255, 255, 255, 255)
-	love.graphics.draw(self.atlas, self.quads[self:getShapeString()].normal, x*scale, y*scale, 0, scale, scale)
+	love.graphics.draw(self.atlas, self.quads[self:getShapeString()][boxType], x*scale, y*scale, 0, scale, scale)
 	love.graphics.setFont(Font)
 	love.graphics.printf(self:getText(), (x-w)*scale, (y+h+1)*scale, w*3, "center", 0, scale, scale)
+end
+
+function Selector:update (dt)
+	self.delay = self.delay + dt
+	if self.delay > Selector.DEFAULT_DELAY then
+		self.delay = self.delay - Selector.DEFAULT_DELAY
+	end
 end
 
 return Selector
