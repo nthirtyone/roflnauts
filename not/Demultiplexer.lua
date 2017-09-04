@@ -24,7 +24,7 @@ end
 -- @param set controller set
 -- @param func key of function to call
 -- @param ... parameters passed to function
-function Demultiplexer:callOne (set, func, ...)
+function Demultiplexer:callWithSet (set, func, ...)
 	for i,test in ipairs(Controller.getSets()) do
 		if test == set then
 			self.children[i][func](...)
@@ -54,13 +54,13 @@ end
 
 function Demultiplexer:controlpressed (set, action, key)
 	if self.focused then
-		self:callOne(set, "controlpressed", set, action, key)
+		self:callWithSet(set, "controlpressed", set, action, key)
 	end
 end
 
 function Demultiplexer:controlreleased (set, action, key)
 	if self.focused then
-		self:callOne(set, "controlreleased", set, action, key)
+		self:callWithSet(set, "controlreleased", set, action, key)
 	end
 end
 
