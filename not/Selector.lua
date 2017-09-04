@@ -49,22 +49,21 @@ function Selector:setIndex (index)
 end
 
 --- Returns selected item's value.
--- @return item selected from list
+-- @return item selected from the list
 function Selector:getSelected ()
 	return self.list[self.index]
 end
 
 --- Checks if selection is locked and returns item's value.
--- Nil returning part is there to clarify method's behaviour.
--- @return nil if not locked, value from list if locked
+-- @return item selected from the list if locked, nil otherwise
 function Selector:getLocked ()
 	if self.locked then
 		return self:getSelected()
 	end
-	return nil
 end
 
 --- Checks if Selected value is unique in group's scope.
+-- @return boolean answering question
 function Selector:isUnique ()
 	if self.group then
 		-- In this case next is used to determine if table returned by call is empty.
