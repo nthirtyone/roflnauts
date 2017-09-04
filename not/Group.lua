@@ -20,10 +20,28 @@ function Group:callEach (func, ...)
 	return results
 end
 
+--- Calls function with parameters for each but one child.
+-- @param avoid child to avoid calling
+-- @param func key of function to call
+-- @param ... parameters passed to function
+-- @return table with calls' results
+function Group:callEachBut (avoid, func, ...)
+	local results = {}
+	for _,child in ipairs(self.children) do
+		if child ~= avoid then
+			if type(child[func]) == "function" then
+				table.insert(results, child[func](child, ...))
+			end
+		end
+	end
+	return results
+end
+
 --- Calls function with parameters for one child based on controller set.
 -- @param set controller set
 -- @param func key of function to call
 -- @param ... parameters passed to function
+-- @return results of called function
 function Group:callWithSet (set, func, ...)
 	for i,test in ipairs(Controller.getSets()) do
 		if test == set then
