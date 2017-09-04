@@ -20,7 +20,7 @@ do
 			local map = love.filesystem.load(path)()
 			local i, name = map.portrait, map.name
 			if i then
-				icons[name] = love.graphics.newQuad((i-1)*76, 0, 76, 37, 532, 37)
+				table.insert(icons, love.graphics.newQuad((i-1)*76, 0, 76, 37, 532, 37))
 				table.insert(maps, map)
 			end
 		end
@@ -34,6 +34,8 @@ return {
 	mapSelector
 		:setPosition(width/2-40, 40)
 		:set("shape", Selector.SHAPE_PANORAMA)
+		:set("icons_quads", icons)
+		:set("icons_atlas", love.graphics.newImage("assets/maps.png"))
 	,
 	Button(menu)
 		:setText("Next")
