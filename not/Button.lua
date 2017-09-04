@@ -17,6 +17,7 @@ end
 
 function Button:getSize ()
 	return 58, 15
+end
 
 function Button:setText (text)
 	self.text = text or ""
