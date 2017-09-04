@@ -53,11 +53,15 @@ function Demultiplexer:update (dt)
 end
 
 function Demultiplexer:controlpressed (set, action, key)
-	self:callOne(set, "controlpressed", set, action, key)
+	if self.focused then
+		self:callOne(set, "controlpressed", set, action, key)
+	end
 end
 
 function Demultiplexer:controlreleased (set, action, key)
-	self:callOne(set, "controlreleased", set, action, key)
+	if self.focused then
+		self:callOne(set, "controlreleased", set, action, key)
+	end
 end
 
 return Demultiplexer
