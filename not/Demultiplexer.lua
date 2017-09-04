@@ -27,8 +27,10 @@ end
 function Demultiplexer:callWithSet (set, func, ...)
 	for i,test in ipairs(Controller.getSets()) do
 		if test == set then
-			self.children[i][func](...)
-			return nil
+			local child = self.children[i]
+			if child then
+				return child[func](child, ...)
+			end
 		end
 	end
 end
