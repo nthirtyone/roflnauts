@@ -32,7 +32,7 @@ local mapSelector = Selector(maps, nil, menu)
 return {
 	background,
 	mapSelector
-		:setPosition(width/2, 40)
+		:setPosition(width/2-40, 40)
 		:set("shape", Selector.SHAPE_PANORAMA)
 	,
 	Button(menu)
