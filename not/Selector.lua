@@ -98,7 +98,6 @@ function Selector:getShapeString ()
 	end
 end
 
--- TODO: Selector draw is missing box content drawing.
 function Selector:draw (scale)
 	local x, y = self:getPosition()
 	local w, h = self:getSize()
@@ -110,6 +109,11 @@ function Selector:draw (scale)
 
 	love.graphics.setColor(255, 255, 255, 255)
 	love.graphics.draw(self.atlas, self.quads[self:getShapeString()][boxType], x*scale, y*scale, 0, scale, scale)
+
+	-- TODO: That is one way to draw icon for selected value. Find better one. See: `config/menus/host`.
+	if self.icons_atlas and self.icons_quads then
+		love.graphics.draw(self.icons_atlas, self.icons_quads[self.index], (x+2)*scale, (y+3)*scale, 0, scale, scale)
+	end
 
 	if self.focused then
 		local dy = (h-6)/2
