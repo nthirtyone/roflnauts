@@ -55,22 +55,21 @@ function Selector:getSelected ()
 end
 
 --- Checks if selection is locked and returns item's value.
--- @return false if not locked, value from list if locked
+-- Nil returning part is there to clarify method's behaviour.
+-- @return nil if not locked, value from list if locked
 function Selector:getLocked ()
 	if self.locked then
 		return self:getSelected()
 	end
-	return false
+	return nil
 end
 
 --- Checks if Selected value is unique in group's scope.
 function Selector:isUnique ()
 	if self.group then
-		local locked = group:callEachBut(self, "getLocked")
-		for _,lock in pairs(locked) do
-			if lock then
-				return false
-			end
+		-- In this case next is used to determine if table returned by call is empty.
+		if next(group:callEachBut(self, "getLocked")) then
+			return false
 		end
 	end
 	return true
