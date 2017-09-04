@@ -98,15 +98,30 @@ function Selector:getShapeString ()
 	end
 end
 
+-- TODO: Selector draw is missing box content drawing.
 function Selector:draw (scale)
 	local x, y = self:getPosition()
 	local w, h = self:getSize()
+
 	local boxType = "normal"
 	if self:getLocked() then
 		boxType = "active"
 	end
+
 	love.graphics.setColor(255, 255, 255, 255)
 	love.graphics.draw(self.atlas, self.quads[self:getShapeString()][boxType], x*scale, y*scale, 0, scale, scale)
+
+	if self.focused then
+		local dy = (h-6)/2
+		local al, ar = self.quads.arrow_r, self.quads.arrow_l
+		if self.lock then
+			al, ar = ar, al
+		end
+
+		love.graphics.draw(self.atlas, ar, (x+0-2-math.floor(self.delay))*scale, (y+dy)*scale, 0, scale, scale)
+		love.graphics.draw(self.atlas, al, (x+w-4+math.floor(self.delay))*scale, (y+dy)*scale, 0, scale, scale)
+	end
+
 	love.graphics.setFont(Font)
 	love.graphics.printf(self:getText(), (x-w)*scale, (y+h+1)*scale, w*3, "center", 0, scale, scale)
 end
@@ -127,6 +142,7 @@ function Selector:controlpressed (set, action, key)
 			if action == "right" then
 				self:setIndex(self.index + 1)
 			end
+			-- TODO: Extend functionality on attack action in Selector.
 			if action == "attack" then
 				self.lock = true
 			end
