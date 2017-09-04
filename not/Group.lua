@@ -30,7 +30,7 @@ function Group:callEachBut (avoid, func, ...)
 	for _,child in ipairs(self.children) do
 		if child ~= avoid then
 			if type(child[func]) == "function" then
-				table.insert(results, child[func](child, ...))
+				table.insert(results, child[func](child, ...) or nil)
 			end
 		end
 	end
