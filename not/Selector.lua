@@ -74,6 +74,10 @@ function Selector:isUnique ()
 	return true
 end
 
+function Selector:getText ()
+	return tostring(self:getSelected())
+end
+
 function Selector:focus ()
 	self.focused = true
 	return true
@@ -81,6 +85,25 @@ end
 
 function Selector:blur ()
 	self.focused = false
+end
+
+-- TODO: Temporary function to determine quad to use. Will be obsolete when BoxElement will be done. See also `not/Element@getSize`.
+function Selector:getShapeString ()
+	if self.shape == Selector.SHAPE_PORTRAIT then
+		return "portrait"
+	end
+	if self.shape == Selector.SHAPE_PANORAMA then
+		return "panorama"
+	end
+end
+
+function Selector:draw (scale)
+	local x, y = self:getPosition()
+	local w, h = self:getSize()
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.draw(self.atlas, self.quads[self:getShapeString()].normal, x*scale, y*scale, 0, scale, scale)
+	love.graphics.setFont(Font)
+	love.graphics.printf(self:getText(), (x-w)*scale, (y+h+1)*scale, w*3, "center", 0, scale, scale)
 end
 
 return Selector
