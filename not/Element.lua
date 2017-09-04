@@ -10,9 +10,14 @@ end
 
 function Element:delete () end
 
+function Element:getSize ()
+	return 0, 0
+end
+
 function Element:getPosition ()
 	return self.x, self.y
 end
+
 function Element:setPosition (x, y)
 	self.x = x or 0
 	self.y = y or 0
@@ -26,12 +31,14 @@ function Element:set (name, func)
 	return self
 end
 
--- Called when menu tries to focus on this element.
+--- Called when menu tries to focus on this element.
 -- If it will return false then menu will skip element and go to next in list.
 function Element:focus ()
 	return false
-end 
-function Element:blur () end -- Called when Element loses focus.
+end
+
+--- Called when Element loses focus.
+function Element:blur () end
 
 -- LÖVE2D callbacks
 function Element:draw (scale) end
