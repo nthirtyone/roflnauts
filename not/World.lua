@@ -5,10 +5,10 @@ World = require "not.Scene":extends()
 
 require "not.Platform"
 require "not.Player"
-require "not.Cloud"
 require "not.Effect"
 require "not.Decoration"
 require "not.Ray"
+require "not.CloudGenerator"
 
 --- ZA WARUDO!
 -- TODO: Missing documentation on most of World's methods.
@@ -16,7 +16,7 @@ function World:new (map, nauts)
 	love.physics.setMeter(64)
 	self.world = love.physics.newWorld(0, 9.81*64, true)
 	self.world:setCallbacks(self.beginContact, self.endContact)
-	-- Tables for entities.
+
 	-- TODO: Move all entities into single table.
 	self.lastNaut = false
 	self.Nauts = {}
@@ -28,6 +28,7 @@ function World:new (map, nauts)
 
 	self.map = map
 	self:buildMap()
+	self:initClouds()
 	self:spawnNauts(nauts)
 
 	self.camera = Camera:new(self)
@@ -65,11 +66,12 @@ function World:buildMap ()
 			self:createDecoration(x, y, op.background) -- TODO: Decoration does not allow Image instead of filePath!
 		end
 	end
-	
+end
+
+-- TODO: Spawn some clouds after cloudGenerator has been initialized.
+function World:initClouds ()
 	if self.map.clouds then
-		for i=1,6 do
-			self:randomizeCloud(false)
-		end
+		self.cloudGenerator = CloudGenerator(self)
 	end
 end
 
@@ -103,11 +105,6 @@ function World:createDecoration (x, y, sprite)
 	table.insert(self.Decorations, Decoration(x, y, self, sprite))
 end
 
--- TODO: Extend names of variables related to Clouds to provide better readability. See also: `not/Cloud`.
-function World:createCloud (x, y, t, v)
-	table.insert(self.Clouds, Cloud(x, y, t, v, self))
-end
-
 function World:createEffect (name, x, y)
 	table.insert(self.Effects, Effect(name, x, y, self))
 end
@@ -116,24 +113,15 @@ function World:createRay (naut)
 	table.insert(self.Rays, Ray(naut, self))
 end
 
--- Randomize Cloud creation
-function World:randomizeCloud (outside)
-	if outside == nil then
-		outside = true
-	else
-		outside = outside
-	end
-	local x,y,t,v
-	local m = self.map
-	if outside then
-		x = m.center.x-m.width*1.2+love.math.random(-50,20)
-	else
-		x = love.math.random(m.center.x-m.width/2,m.center.x+m.width/2)
-	end
-	y = love.math.random(m.center.y-m.height/2, m.center.y+m.height/2)
-	t = love.math.random(1,3)
-	v = love.math.random(8,18)
-	self:createCloud(x, y, t, v)
+-- TODO: Sprites' in general don't take actual Image in constructor. That is not only case of Decoration.
+-- TODO: Once entities are stored inside single table create single `insertEntity` method for World.
+function World:insertCloud (cloud)
+	table.insert(self.Clouds, cloud)
+	return cloud
+end
+
+function World:getCloudsCount ()
+	return #self.Clouds
 end
 
 -- get Nauts functions
@@ -187,7 +175,11 @@ end
 function World:update (dt)
 	self.world:update(dt)
 	self.camera:update(dt)
-	-- Engine world: Nauts, Grounds (kek) and Decorations - all Animateds (top kek)
+	
+	if self.cloudGenerator then
+		self.cloudGenerator:update(dt)
+	end
+
 	for _,naut in pairs(self.Nauts) do
 		naut:update(dt)
 	end
@@ -197,38 +189,23 @@ function World:update (dt)
 	for _,decoration in pairs(self.Decorations) do
 		decoration:update(dt)
 	end
-	-- Clouds
-	-- TODO: possibly create new class for Clouds generation. Do it along with Cloud cleaning.
-	if self.map.clouds then
-		-- generator
-		local n = table.getn(self.Clouds)
-		self.clouds_delay = self.clouds_delay - dt
-		if self.clouds_delay < 0 and
-		   n < 18
-		then
-			self:randomizeCloud()
-			self.clouds_delay = self.clouds_delay + World.clouds_delay -- World.clouds_delay is initial
-		end
-		-- movement
-		for _,cloud in pairs(self.Clouds) do
-			if cloud:update(dt) > 340 then
-				table.remove(self.Clouds, _)
-			end
-		end
-	end
-	-- Effects
-	for _,effect in pairs(self.Effects) do
+	for key,effect in pairs(self.Effects) do
 		if effect:update(dt) then
-			table.remove(self.Effects, _)
+			table.remove(self.Effects, key)
 		end
 	end
-	-- Rays
-	for _,ray in pairs(self.Rays) do
+	for key,cloud in pairs(self.Clouds) do
+		if cloud:update(dt) then
+			table.remove(self.Clouds, key)
+		end
+	end
+	for key,ray in pairs(self.Rays) do
 		if ray:update(dt) then
-			table.remove(self.Rays, _)
+			table.remove(self.Rays, key)
 		end
 	end
 end
+
 -- Draw
 function World:draw ()
 	-- Camera stuff
