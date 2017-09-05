@@ -63,7 +63,7 @@ end
 
 function CloudGenerator:run (count, inside)
 	local count = count or 1
-	for i=1,count then
+	for i=1,count do
 		local x, y = self:getRandomPosition(inside)
 		local style = self:getRandomStyle()
 		self.world:insertCloud(self:createCloud(x, y, style))
