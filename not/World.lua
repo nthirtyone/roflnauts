@@ -213,19 +213,16 @@ function World:draw ()
 	local offset_x, offset_y = self.camera:getOffsets()
 	local scale = getScale()
 	local scaler = getRealScale()
-	
-	-- Background
-	-- love.graphics.draw(self.background, 0, 0, 0, scaler, scaler)
-	
-	-- TODO: this needs to be reworked!
-	-- Draw clouds
-	for _,cloud in pairs(self.Clouds) do
-		cloud:draw(offset_x, offset_y, scale)
-	end
 
 	-- Draw decorations
 	for _,decoration in pairs(self.Decorations) do
 		decoration:draw(offset_x, offset_y, scale)
+	end
+
+	-- Draw clouds
+	-- TODO: hotfix Clouds are drawn in front of decoration to make them in front of background.
+	for _,cloud in pairs(self.Clouds) do
+		cloud:draw(offset_x, offset_y, scale)
 	end
 
 	-- Draw effects
