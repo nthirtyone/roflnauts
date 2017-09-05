@@ -145,23 +145,32 @@ end
 
 function Selector:controlpressed (set, action, key)
 	if set and self.focused then
-		if not self.lock then
-			if action == "left" then
-				self:setIndex(self.index - 1)
-			end
-			if action == "right" then
-				self:setIndex(self.index + 1)
-			end
-			-- TODO: Extend functionality on attack action in Selector.
-			if action == "attack" then
-				self.lock = true
-			end
-		end
-
-		if action == "jump" then
-			self.lock = false
+		local handler = self[action]
+		if handler then
+			handler(self)
 		end
 	end
+end
+
+function Selector:left ()
+	if not self.lock then
+		self:setIndex(self.index - 1)
+	end
+end
+
+function Selector:right ()
+	if not self.lock then
+		self:setIndex(self.index + 1)
+	end
+end
+
+function Selector:attack ()
+	self.lock = true
+end
+
+-- Selector doesn't actually jump, haha, I tricked you!
+function Selector:jump ()
+	self.lock = false
 end
 
 return Selector
