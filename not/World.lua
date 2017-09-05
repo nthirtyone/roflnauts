@@ -61,9 +61,8 @@ function World:buildMap ()
 		end
 		if op.background then
 			local image = love.graphics.newImage(op.background)
-			local x = self.map.center.x - (image:getWidth() / 2)
-			local y = self.map.center.y - (image:getHeight() / 2)
-			self:createDecoration(x, y, op.background) -- TODO: Decoration does not allow Image instead of filePath!
+			local bg = self:createDecoration(0, 0, op.background) -- TODO: Decoration does not allow Image instead of filePath!
+			bg.ratio = op.ratio
 		end
 	end
 end
@@ -102,7 +101,9 @@ function World:createNaut (x, y, name)
 end
 
 function World:createDecoration (x, y, sprite)
-	table.insert(self.Decorations, Decoration(x, y, self, sprite))
+	local deco = Decoration(x, y, self, sprite)
+	table.insert(self.Decorations, deco)
+	return deco
 end
 
 function World:createEffect (name, x, y)
@@ -175,7 +176,7 @@ end
 function World:update (dt)
 	self.world:update(dt)
 	self.camera:update(dt)
-	
+
 	if self.cloudGenerator then
 		self.cloudGenerator:update(dt)
 	end
