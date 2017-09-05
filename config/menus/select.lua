@@ -28,18 +28,16 @@ do
 	end
 
 	group = Group(menu)
-	local
-	function add (element)
-		table.insert(group.children, element)
-		return element
-	end
 
 	for i,_ in pairs(Controller.getSets()) do
-		add(Selector(nauts, group, menu))
-			:setPosition(10+48*(i-1), 10)
+		group:addChild(Selector(nauts, group, menu))
 			:set("icons_atlas", atlas)
 			:set("icons_quads", icons)
 	end
+
+	group:set("margin", 16)
+	local gw, gh = group:getSize()
+	group:setPosition((width - gw)/2, 10)
 
 	function get ()
 		local selection = group:callEach("getSelected")
