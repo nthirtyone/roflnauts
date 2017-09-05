@@ -37,10 +37,10 @@ do
 
 	group:set("margin", 16)
 	local gw, gh = group:getSize()
-	group:setPosition((width - gw)/2, 10)
+	group:setPosition((width - gw)/2, 55)
 
 	function get ()
-		local selection = group:callEach("getSelected")
+		local selection = group:callEach("getLocked")
 		for i,naut in ipairs(selection) do
 			selection[i] = {naut, Controller.getSets()[i]}
 		end
@@ -55,7 +55,7 @@ return {
 		:setText("Force start")
 		:setPosition(bx,134)
 		:set("isEnabled", function ()
-				return true
+				return #get() > 1
 			end)
 		:set("active", function (self)
 				sceneManager:changeScene(World(MAP, get()))
@@ -83,8 +83,7 @@ return {
 				end
 			end)
 		:set("update", function (self, dt)
-				local total = 0
-				if total > 1 then
+				if #get() > 1 then
 					self.the_final_countdown = self.the_final_countdown - dt
 				else
 					self.the_final_countdown = 9
