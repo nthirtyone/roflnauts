@@ -16,8 +16,6 @@ end
 
 -- TODO: Temporary group for naut selectors. This isn't production code at any means!
 -- TODO: New nauts selector is missing random rolling!
--- TODO: New nauts selector allows empty naut as selection!
--- TODO: New nauts selector allows non-unique selections within groups!
 local group, get
 do
 	local atlas = love.graphics.newImage("assets/portraits.png")
@@ -29,10 +27,26 @@ do
 
 	group = Group(menu)
 
+	local
+	function attack (self)
+		if not self.lock then
+			if self.index == 1 then
+				return
+			end
+			if self.index == 2 then
+				return -- roll random, soon.
+			end
+			if self:isUnique() then
+				self.lock = true
+			end
+		end
+	end
+
 	for i,_ in pairs(Controller.getSets()) do
 		group:addChild(Selector(nauts, group, menu))
 			:set("icons_atlas", atlas)
 			:set("icons_quads", icons)
+			:set("attack", attack)
 	end
 
 	group:set("margin", 16)
