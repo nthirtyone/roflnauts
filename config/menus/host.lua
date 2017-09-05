@@ -37,6 +37,9 @@ return {
 		:set("shape", Selector.SHAPE_PANORAMA)
 		:set("icons_quads", icons)
 		:set("icons_atlas", love.graphics.newImage("assets/maps.png"))
+		:set("getText", function (self)
+				return self:getSelected().name
+			end)
 	,
 	Button(menu)
 		:setText("Next")
