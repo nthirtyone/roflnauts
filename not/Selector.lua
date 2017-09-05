@@ -49,6 +49,23 @@ function Selector:setIndex (index)
 	return old
 end
 
+function Selector:rollRandom (exclude)
+	local exclude = exclude or {}
+	local index = love.math.random(1, #self.list)
+	local elgible = true
+	for _,i in ipairs(exclude) do
+		if index == i then
+			elgible = false
+			break
+		end
+	end
+	if not elgible or not self:isUnique(self.list[index]) then
+		table.insert(exclude, index)
+		return self:rollRandom(exclude)
+	end
+	return index
+end
+
 --- Returns selected item's value.
 -- @return item selected from the list
 function Selector:getSelected ()
@@ -64,12 +81,14 @@ function Selector:getLocked ()
 end
 
 --- Checks if Selected value is unique in group's scope.
+-- @param index optional parameter to fill in place of currently selected item
 -- @return boolean answering question
-function Selector:isUnique ()
+function Selector:isUnique (item)
+	local item = item or self:getSelected()
 	if self.group then
 		local locked = self.group:callEachBut(self, "getLocked")
 		for _,value in pairs(locked) do
-			if value == self:getSelected() then
+			if value == item then
 				return false
 			end
 		end

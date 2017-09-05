@@ -34,7 +34,7 @@ do
 				return
 			end
 			if self.index == 2 then
-				return -- roll random, soon.
+				self.index = self:rollRandom({1, 2})
 			end
 			if self:isUnique() then
 				self.lock = true
