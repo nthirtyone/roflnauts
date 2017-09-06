@@ -1,6 +1,6 @@
 return
 {
-	name = "starstorm",
+	name = "Starstorm",
 	theme = "starstorm.ogg",
 	portrait = 4, -- TODO: See `maps/ribbit`.
 	center = {x = 0, y = -20},

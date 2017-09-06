@@ -1,6 +1,6 @@
 return
 {
-	name = "ribbit",
+	name = "Ribbit IV",
 	theme = "ribbit.ogg",
 	portrait = 3, -- TODO: Either separate portraits now or change `iconsList` and `menu/host`. See also both mentioned files.
 	center = {x = 0, y = 50},
