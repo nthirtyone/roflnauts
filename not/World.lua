@@ -67,10 +67,10 @@ function World:buildMap ()
 	end
 end
 
--- TODO: Spawn some clouds after cloudGenerator has been initialized.
 function World:initClouds ()
 	if self.map.clouds then
 		self.cloudGenerator = CloudGenerator(self)
+		self.cloudGenerator:run(6, true)
 	end
 end
 
