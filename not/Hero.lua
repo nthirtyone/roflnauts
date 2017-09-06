@@ -174,6 +174,7 @@ end
 function Hero:drawTag (offset_x, offset_y, scale)
 	local x,y = self:getPosition()
 	love.graphics.setFont(Font)
+	love.graphics.setColor(255, 255, 255)
 	love.graphics.printf(string.format("Player %d", math.abs(self.group)), (math.floor(x)+offset_x)*scale, (math.floor(y)+offset_y-26)*scale,100,'center',0,scale,scale,50,0)
 end
 
