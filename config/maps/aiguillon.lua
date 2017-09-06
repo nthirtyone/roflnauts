@@ -1,58 +1,52 @@
-return {
-	-- CENTER AND SIZE
-	name = "aiguillon",
+return
+{
+	name = "Aiguillon",
 	theme = "aiguillon.ogg",
-	center_x = 0,
-	center_y = 10,
+	portrait = 5, -- TODO: See `maps/ribbit`.
+	center = {x = 0, y = 10},
 	width  = 370,
 	height = 290,
-	-- RESPAWN POINTS
 	respawns = {
-		{x = 0, y = -80},
-		{x = 0, y = -80},
-		{x = 0, y = -80},
-		{x = 0, y = -80},
+		{x = -15, y = -80},
+		{x = -5, y = -80},
+		{x = 5, y = -80},
+		{x = 15, y = -80},
 	},
-	-- GRAPHICS
 	clouds = false,
-	background = "assets/backgrounds/aiguillon.png",
-	platforms = {
+	create = {
+		{
+			ratio = 0,
+			background = "assets/backgrounds/aiguillon.png"
+		},
 		{
 			x = -108,
 			y = 22,
-			shape = {1,0, 212,0, 212,12, 206,18, 14,18, 1,12},
-			sprite = "assets/platforms/aiguillon-wide.png"
+			platform = "aiguillon-wide"
 		},
 		{
 			x = -46,
 			y = -19,
-			shape = {1,0, 87,0, 87,18, 14,18, 1,12},
-			sprite = "assets/platforms/aiguillon-middle.png"
+			platform = "aiguillon-middle"
 		},
 		{
 			x = -141,
 			y = -57,
-			shape = {1,0, 50,0, 50,18, 5,18, 1,13},
-			sprite = "assets/platforms/aiguillon-left-big.png"
+			platform = "aiguillon-left-big"
 		},
 		{
 			x = -132,
 			y = 84,
-			shape = {1,0, 25,0, 25,18, 1,18},
-			sprite = "assets/platforms/aiguillon-left-small.png"
+			platform = "aiguillon-left-small"
 		},
 		{
 			x = 77,
 			y = -57,
-			shape = {1,0, 50,0, 50,12, 37,18, 1,18},
-			sprite = "assets/platforms/aiguillon-right-big.png"
+			platform = "aiguillon-right-big"
 		},
 		{
 			x = 103,
 			y = 84,
-			shape = {1,0, 25,0, 25,18, 1,18},
-			sprite = "assets/platforms/aiguillon-right-small.png"
+			platform = "aiguillon-right-small"
 		}
 	},
-	decorations = {}
 }
