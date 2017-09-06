@@ -205,6 +205,9 @@ function World:update (dt)
 			table.remove(self.Rays, key)
 		end
 	end
+
+	-- Some additional debug info.
+	dbg_msg = string.format("%sMap: %s\nClouds: %d\n", dbg_msg, self.map.filepath, self:getCloudsCount())
 end
 
 -- Draw
