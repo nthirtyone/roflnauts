@@ -336,8 +336,9 @@ end
 -- Controller callbacks
 function World:controlpressed (set, action, key)
 	if key == "f6" and debug then
-		local map = love.filesystem.load(self.map.filepath)()
-		map.filepath = self.map.filepath
+		local filename = self.map.filename
+		local map = love.filesystem.load(filename)()
+		map.filename = filename
 		local nauts = {}
 		for _,naut in pairs(self:getNautsAll()) do
 			table.insert(nauts, {naut.name, naut:getControllerSet()})
