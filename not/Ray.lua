@@ -26,7 +26,9 @@ function Ray:update (dt)
 	return false
 end
 
+-- TODO: Whole Ray is dated but `draw` require a lot attention due to layering in World. See `World@new`.
 function Ray:draw (offset_x, offset_y, scale)
+	local canvas = love.graphics.getCanvas()
 	love.graphics.setCanvas(self.canvas)
 	love.graphics.clear()
 	love.graphics.setColor(255, 247, 228, 247)
@@ -40,7 +42,7 @@ function Ray:draw (offset_x, offset_y, scale)
 	end
 	love.graphics.line(-x+offset_x,-y+offset_y-dy*0.7,x+offset_x,y+dy*0.7+offset_y)
 	-- reset
-	love.graphics.setCanvas()
+	love.graphics.setCanvas(canvas)
 	love.graphics.setLineWidth(1)
 	love.graphics.setColor(255,255,255,255)
 	-- draw on screen

@@ -8,6 +8,7 @@ require "not.Player"
 require "not.Effect"
 require "not.Decoration"
 require "not.Ray"
+require "not.Cloud"
 require "not.CloudGenerator"
 
 --- ZA WARUDO!
@@ -25,6 +26,18 @@ function World:new (map, nauts)
 	self.Effects = {}
 	self.Decorations = {}
 	self.Rays = {}
+
+	-- TODO: Clean layering. This is prototype. Seriously don't use it in production.
+	self.entities = {}
+	local width, height = love.graphics.getDimensions()
+	self.layers = {
+		love.graphics.newCanvas(width, height), -- back
+		love.graphics.newCanvas(width, height), -- cloud
+		love.graphics.newCanvas(width, height), -- deco
+		love.graphics.newCanvas(width, height), -- nauts
+		love.graphics.newCanvas(width, height), -- plats
+		love.graphics.newCanvas(width, height), -- front
+	}
 
 	self.map = map
 	self:buildMap()
@@ -63,6 +76,7 @@ function World:buildMap ()
 			local image = love.graphics.newImage(op.background)
 			local bg = self:createDecoration(0, 0, op.background) -- TODO: Decoration does not allow Image instead of filePath!
 			bg.ratio = op.ratio
+			bg.layer = 1
 		end
 	end
 end
@@ -91,33 +105,45 @@ end
 
 -- TODO: Standardize `create*` methods with corresponding constructors. Pay attention to both params' order and names.
 function World:createPlatform (x, y, polygon, sprite, animations)
-	table.insert(self.Platforms, Platform(animations, polygon, x, y, self, sprite))
+	local p = Platform(animations, polygon, x, y, self, sprite)
+	table.insert(self.Platforms, p)
+	table.insert(self.entities, p)
+	return p
 end
 
 function World:createNaut (x, y, name)
 	local naut = Player(name, x, y, self)
 	table.insert(self.Nauts, naut)
+	table.insert(self.entities, naut)
 	return naut
 end
 
 function World:createDecoration (x, y, sprite)
 	local deco = Decoration(x, y, self, sprite)
 	table.insert(self.Decorations, deco)
+	table.insert(self.entities, deco)
 	return deco
 end
 
 function World:createEffect (name, x, y)
-	table.insert(self.Effects, Effect(name, x, y, self))
+	local e = Effect(name, x, y, self)
+	table.insert(self.Effects, e)
+	table.insert(self.entities, e)
+	return e
 end
 
 function World:createRay (naut)
-	table.insert(self.Rays, Ray(naut, self))
+	local r = Ray(naut, self)
+	table.insert(self.Rays, r)
+	table.insert(self.entities, r)
+	return r
 end
 
 -- TODO: Sprites' in general don't take actual Image in constructor. That is not only case of Decoration.
 -- TODO: Once entities are stored inside single table create single `insertEntity` method for World.
 function World:insertCloud (cloud)
 	table.insert(self.Clouds, cloud)
+	table.insert(self.entities, cloud)
 	return cloud
 end
 
@@ -181,28 +207,9 @@ function World:update (dt)
 		self.cloudGenerator:update(dt)
 	end
 
-	for _,naut in pairs(self.Nauts) do
-		naut:update(dt)
-	end
-	for _,platform in pairs(self.Platforms) do
-		platform:update(dt)
-	end
-	for _,decoration in pairs(self.Decorations) do
-		decoration:update(dt)
-	end
-	for key,effect in pairs(self.Effects) do
-		if effect:update(dt) then
-			table.remove(self.Effects, key)
-		end
-	end
-	for key,cloud in pairs(self.Clouds) do
-		if cloud:update(dt) then
-			table.remove(self.Clouds, key)
-		end
-	end
-	for key,ray in pairs(self.Rays) do
-		if ray:update(dt) then
-			table.remove(self.Rays, key)
+	for key,entity in pairs(self.entities) do
+		if entity:update(dt) then
+			table.remove(self.entities, key)
 		end
 	end
 
@@ -210,45 +217,43 @@ function World:update (dt)
 	dbg_msg = string.format("%sMap: %s\nClouds: %d\n", dbg_msg, self.map.filename, self:getCloudsCount())
 end
 
--- Draw
 function World:draw ()
-	-- Camera stuff
 	local offset_x, offset_y = self.camera:getOffsets()
 	local scale = getScale()
 	local scaler = getRealScale()
 
-	-- Draw decorations
-	for _,decoration in pairs(self.Decorations) do
-		decoration:draw(offset_x, offset_y, scale)
+	-- TODO: Prototype of layering. See `World@new`.
+	for _,entity in pairs(self.entities) do
+		if entity:is(Decoration) then
+			if entity.layer == 1 then
+				love.graphics.setCanvas(self.layers[1])
+			else
+				love.graphics.setCanvas(self.layers[3])
+			end
+		end
+		if entity:is(Cloud) then
+			love.graphics.setCanvas(self.layers[2])
+		end
+		if entity:is(Player) then
+			love.graphics.setCanvas(self.layers[4])
+		end
+		if entity:is(Platform) or entity:is(Effect) then
+			love.graphics.setCanvas(self.layers[5])
+		end
+		if entity:is(Ray) then
+			love.graphics.setCanvas(self.layers[6])
+		end
+		entity:draw(offset_x, offset_y, scale, debug)
 	end
 
-	-- Draw clouds
-	-- TODO: hotfix Clouds are drawn in front of decoration to make them in front of background.
-	for _,cloud in pairs(self.Clouds) do
-		cloud:draw(offset_x, offset_y, scale)
+	love.graphics.setCanvas()
+	for _,layer in ipairs(self.layers) do
+		love.graphics.draw(layer)
+		love.graphics.setCanvas(layer)
+		love.graphics.clear()
+		love.graphics.setCanvas()
 	end
 
-	-- Draw effects
-	for _,effect in pairs(self.Effects) do
-		effect:draw(offset_x,offset_y, scale)
-	end
-
-	-- Draw player
-	for _,naut in pairs(self.Nauts) do
-		naut:draw(offset_x, offset_y, scale, debug)
-	end
-
-	-- Draw ground
-	for _,platform in pairs(self.Platforms) do
-		platform:draw(offset_x, offset_y, scale, debug)
-	end
-
-	-- Draw rays
-	for _,ray in pairs(self.Rays) do
-		ray:draw(offset_x, offset_y, scale)
-	end
-
-	-- draw center
 	if debug then
 		local c = self.camera
 		local w, h = love.graphics.getWidth(), love.graphics.getHeight()
@@ -279,7 +284,6 @@ function World:draw ()
 		naut:drawTag(offset_x, offset_y, scale)
 	end
 
-	-- Draw HUDs
 	for _,naut in pairs(self.Nauts) do
 		-- I have no idea where to place them T_T
 		-- let's do: bottom-left, bottom-right, top-left, top-right
