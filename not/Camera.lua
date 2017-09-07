@@ -109,7 +109,7 @@ end
 function Camera:follow ()
 	local map = self.world.map
 	local sum_x,sum_y,i = map.center.x, map.center.y, 1
-	for k,naut in pairs(self.world.Nauts) do
+	for k,naut in pairs(self.world:getNautsAll()) do
 		local naut_x,naut_y = naut:getPosition()
 		if math.abs(naut_x - map.center.x) < map.width/2 and
 		   math.abs(naut_y - map.center.y) < map.height/2 then

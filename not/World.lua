@@ -18,14 +18,7 @@ function World:new (map, nauts)
 	self.world = love.physics.newWorld(0, 9.81*64, true)
 	self.world:setCallbacks(self.beginContact, self.endContact)
 
-	-- TODO: Move all entities into single table.
 	self.lastNaut = false
-	self.Nauts = {}
-	self.Platforms = {}
-	self.Clouds = {}
-	self.Effects = {}
-	self.Decorations = {}
-	self.Rays = {}
 
 	-- TODO: Clean layering. This is prototype. Seriously don't use it in production.
 	self.entities = {}
@@ -52,11 +45,8 @@ end
 
 -- The end of the world
 function World:delete ()
-	for _,platform in pairs(self.Platforms) do
-	 	platform:delete()
-	end
-	for _,naut in pairs(self.Nauts) do
-		naut:delete()
+	for _,entity in pairs(self.entities) do
+	 	entity:delete()
 	end
 	self.world:destroy()
 end
@@ -106,35 +96,30 @@ end
 -- TODO: Standardize `create*` methods with corresponding constructors. Pay attention to both params' order and names.
 function World:createPlatform (x, y, polygon, sprite, animations)
 	local p = Platform(animations, polygon, x, y, self, sprite)
-	table.insert(self.Platforms, p)
 	table.insert(self.entities, p)
 	return p
 end
 
 function World:createNaut (x, y, name)
 	local naut = Player(name, x, y, self)
-	table.insert(self.Nauts, naut)
 	table.insert(self.entities, naut)
 	return naut
 end
 
 function World:createDecoration (x, y, sprite)
 	local deco = Decoration(x, y, self, sprite)
-	table.insert(self.Decorations, deco)
 	table.insert(self.entities, deco)
 	return deco
 end
 
 function World:createEffect (name, x, y)
 	local e = Effect(name, x, y, self)
-	table.insert(self.Effects, e)
 	table.insert(self.entities, e)
 	return e
 end
 
 function World:createRay (naut)
 	local r = Ray(naut, self)
-	table.insert(self.Rays, r)
 	table.insert(self.entities, r)
 	return r
 end
@@ -142,39 +127,52 @@ end
 -- TODO: Sprites' in general don't take actual Image in constructor. That is not only case of Decoration.
 -- TODO: Once entities are stored inside single table create single `insertEntity` method for World.
 function World:insertCloud (cloud)
-	table.insert(self.Clouds, cloud)
 	table.insert(self.entities, cloud)
 	return cloud
 end
 
 function World:getCloudsCount ()
-	return #self.Clouds
+	local count = 0
+	for i,entity in ipairs(self.entities) do
+		if entity:is(Cloud) then
+			count = count + 1
+		end
+	end
+	return count
 end
 
--- get Nauts functions
--- more than -1 lives
+function World:getNautsAll ()
+	local nauts = {}
+	for i,entity in ipairs(self.entities) do
+		if entity:is(require("not.Hero")) then
+			table.insert(nauts, entity)
+		end
+	end
+	return nauts
+end
+
 function World:getNautsPlayable ()
 	local nauts = {}
-	for _,naut in pairs(self.Nauts) do
-		if naut.lives > -1 then
-			table.insert(nauts, naut)
+	for i,entity in ipairs(self.entities) do
+		if entity:is(require("not.Hero")) then
+			if entity.lives > -1 then
+				table.insert(nauts, entity)
+			end
 		end
 	end
 	return nauts
 end
--- are alive
+
 function World:getNautsAlive ()
 	local nauts = {}
-	for _,naut in self.Nauts do
-		if naut.isAlive then
-			table.insert(nauts, naut)
+	for i,entity in ipairs(self.entities) do
+		if entity:is(require("not.Hero")) then
+			if entity.isAlive then
+				table.insert(nauts, entity)
+			end
 		end
 	end
 	return nauts
-end
--- all of them
-function World:getNautsAll ()
-	return self.Nauts
 end
 
 -- get Map name
@@ -280,11 +278,11 @@ function World:draw ()
 		love.graphics.line(x1,y1,x2,y2)
 	end
 
-	for _,naut in pairs(self.Nauts) do
+	for _,naut in pairs(self:getNautsAlive()) do
 		naut:drawTag(offset_x, offset_y, scale)
 	end
 
-	for _,naut in pairs(self.Nauts) do
+	for _,naut in pairs(self:getNautsAll()) do
 		-- I have no idea where to place them T_T
 		-- let's do: bottom-left, bottom-right, top-left, top-right
 		local w, h = love.graphics.getWidth()/scale, love.graphics.getHeight()/scale

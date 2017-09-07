@@ -27,7 +27,7 @@ function Hero:new (name, x, y, world)
 	Hero.load()
 	Hero.__super.new(self, x, y, world, imagePath)
 	-- Physics
-	self.group = -1-#world.Nauts
+	self.group = -1-#world:getNautsAll()
 	self:setBodyType("dynamic")
 	self:setBodyFixedRotation(true)
 	self:newFixture()
