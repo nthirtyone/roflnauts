@@ -212,7 +212,8 @@ function World:update (dt)
 	end
 
 	-- Some additional debug info.
-	dbg_msg = string.format("%sMap: %s\nClouds: %d\n", dbg_msg, self.map.filename, self:getCloudsCount())
+	local stats = love.graphics.getStats()
+	dbg_msg = string.format("%sMap: %s\nClouds: %d\nLoaded: %d\nMB: %.2f", dbg_msg, self.map.filename, self:getCloudsCount(), stats.images, stats.texturememory / 1024 / 1024)
 end
 
 function World:draw ()
@@ -246,6 +247,7 @@ function World:draw ()
 
 	love.graphics.setCanvas()
 	for _,layer in ipairs(self.layers) do
+		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.draw(layer)
 		love.graphics.setCanvas(layer)
 		love.graphics.clear()
