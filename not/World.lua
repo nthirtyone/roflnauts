@@ -207,7 +207,7 @@ function World:update (dt)
 	end
 
 	-- Some additional debug info.
-	dbg_msg = string.format("%sMap: %s\nClouds: %d\n", dbg_msg, self.map.filepath, self:getCloudsCount())
+	dbg_msg = string.format("%sMap: %s\nClouds: %d\n", dbg_msg, self.map.filename, self:getCloudsCount())
 end
 
 -- Draw
