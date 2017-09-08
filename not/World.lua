@@ -49,7 +49,11 @@ function World:delete ()
 	for _,entity in pairs(self.entities) do
 	 	entity:delete()
 	end
+	for _,layer in pairs(self.layers) do
+		layer:delete()
+	end
 	self.world:destroy()
+	collectgarbage()
 end
 
 --- Builds map using one of tables frin config files located in `config/maps/` directory.

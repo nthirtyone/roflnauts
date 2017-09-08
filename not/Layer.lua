@@ -5,6 +5,10 @@ function Layer:new (width, height)
 	self.canvas = love.graphics.newCanvas(width, height)
 end
 
+function Layer:delete ()
+	self.canvas = nil
+end
+
 --- Sets this layer as current canvas for drawing with love.graphics functions.
 -- @return old canvas used by love
 function Layer:setAsCanvas ()

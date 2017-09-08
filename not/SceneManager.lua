@@ -9,7 +9,10 @@ end
 
 -- This function should be removed when multiple scenes will be handled properly by SceneManager and other things.
 function SceneManager:changeScene (scene)
-	table.remove(self.scenes, #self.scenes)
+	local removed = table.remove(self.scenes, #self.scenes)
+	if removed then
+		removed:delete()
+	end
 	return self:addScene(scene)
 end
 
@@ -20,7 +23,8 @@ end
 
 -- Not nice, not nice.
 function SceneManager:removeTopScene ()
-	table.remove(self.scenes, #self.scenes)
+	local scene = table.remove(self.scenes, #self.scenes)
+	scene:delete()
 end
 
 function SceneManager:getAllScenes ()
