@@ -17,10 +17,14 @@ function Layer:setAsCanvas ()
 	return c
 end
 
-function Layer:clear ()
+function Layer:renderTo (func, ...)
 	local c = self:setAsCanvas()
-	love.graphics.clear()
+	func(...)
 	love.graphics.setCanvas(c)
+end
+
+function Layer:clear ()
+	self:renderTo(love.graphics.clear)
 end
 
 function Layer:draw ()
