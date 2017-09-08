@@ -17,7 +17,7 @@ require "not.Layer"
 function World:new (map, nauts)
 	love.physics.setMeter(64)
 	self.world = love.physics.newWorld(0, 9.81*64, true)
-	self.world:setCallbacks(self.beginContact, self.endContact)
+	self.world:setCallbacks(self:getContactCallbacks())
 
 	self.lastNaut = false
 
@@ -296,13 +296,26 @@ function World:draw ()
 	end
 end
 
--- Box2D callbacks
--- TODO: Review current state of Box2D callbacks.
+--- Wraps World's beginContact and endContact to functions usable as callbacks for Box2D's world.
+-- Only difference in new functions is absence of self as first argument.
+-- @return wrapper for beginContact
+-- @return wrapper for endContact
+function World:getContactCallbacks ()
+	local b = function (a, b, coll)
+		self:beginContact(a, b, coll)
+	end
+	local e = function (a, b, coll)
+		self:endContact(a, b, coll)
+	end
+	return b, e
+end
+
+-- TODO: Review current state of Box2D callbacks (again).
 -- TODO: Stop using magical numbers in Box2D callbacks.
 --	[1] -> Platform
 --	[2] -> Hero
 --	[3] -> Punch sensor
-function World.beginContact (a, b, coll)
+function World:beginContact (a, b, coll)
 	if a:getCategory() == 1 then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
@@ -324,7 +337,7 @@ function World.beginContact (a, b, coll)
 			local x2,y2 = a:getBody():getUserData():getPosition()
 			local x = (x2 - x1) / 2 + x1 - 12
 			local y = (y2 - y1) / 2 + y1 - 15
-			a:getBody():getUserData().world:createEffect("clash", x, y)
+			self:createEffect("clash", x, y)
 		end
 	end
 	if b:getCategory() == 3 then
@@ -333,7 +346,7 @@ function World.beginContact (a, b, coll)
 		end
 	end
 end
-function World.endContact (a, b, coll)
+function World:endContact (a, b, coll)
 	if a:getCategory() == 1 then
 		b:getUserData().inAir = true
 	end
