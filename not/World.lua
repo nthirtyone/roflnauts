@@ -10,6 +10,7 @@ require "not.Decoration"
 require "not.Ray"
 require "not.Cloud"
 require "not.CloudGenerator"
+require "not.Layer"
 
 --- ZA WARUDO!
 -- TODO: Missing documentation on most of World's methods.
@@ -24,12 +25,12 @@ function World:new (map, nauts)
 	self.entities = {}
 	local width, height = love.graphics.getDimensions()
 	self.layers = {
-		love.graphics.newCanvas(width, height), -- back
-		love.graphics.newCanvas(width, height), -- cloud
-		love.graphics.newCanvas(width, height), -- deco
-		love.graphics.newCanvas(width, height), -- nauts
-		love.graphics.newCanvas(width, height), -- plats
-		love.graphics.newCanvas(width, height), -- front
+		Layer(width, height), -- back
+		Layer(width, height), -- cloud
+		Layer(width, height), -- deco
+		Layer(width, height), -- nauts
+		Layer(width, height), -- plats
+		Layer(width, height), -- front
 	}
 
 	self.map = map
@@ -225,33 +226,30 @@ function World:draw ()
 	for _,entity in pairs(self.entities) do
 		if entity:is(Decoration) then
 			if entity.layer == 1 then
-				love.graphics.setCanvas(self.layers[1])
+				self.layers[1]:setAsCanvas()
 			else
-				love.graphics.setCanvas(self.layers[3])
+				self.layers[3]:setAsCanvas()
 			end
 		end
 		if entity:is(Cloud) then
-			love.graphics.setCanvas(self.layers[2])
+			self.layers[2]:setAsCanvas()
 		end
 		if entity:is(Player) then
-			love.graphics.setCanvas(self.layers[4])
+			self.layers[4]:setAsCanvas()
 		end
 		if entity:is(Platform) or entity:is(Effect) then
-			love.graphics.setCanvas(self.layers[5])
+			self.layers[5]:setAsCanvas()
 		end
 		if entity:is(Ray) then
-			love.graphics.setCanvas(self.layers[6])
+			self.layers[6]:setAsCanvas()
 		end
 		entity:draw(offset_x, offset_y, scale, debug)
 	end
 
 	love.graphics.setCanvas()
 	for _,layer in ipairs(self.layers) do
-		love.graphics.setColor(255, 255, 255, 255)
-		love.graphics.draw(layer)
-		love.graphics.setCanvas(layer)
-		love.graphics.clear()
-		love.graphics.setCanvas()
+		layer:draw()
+		layer:clear()
 	end
 
 	if debug then
