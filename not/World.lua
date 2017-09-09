@@ -1,5 +1,4 @@
---- `World`
--- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
+--- Used to manage physical world and everything inside it: clouds, platforms, nauts, background etc.
 -- TODO: Possibly move common parts of `World` and `Menu` to abstract class `Scene`.
 World = require "not.Scene":extends()
 
@@ -40,8 +39,7 @@ function World:new (map, nauts)
 
 	self.camera = Camera(self)
 
-	musicPlayer:setTrack(self.map.theme)
-	musicPlayer:play()
+	musicPlayer:play(self.map.theme)
 end
 
 -- The end of the world
