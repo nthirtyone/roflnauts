@@ -38,7 +38,7 @@ function World:new (map, nauts)
 	self:initClouds()
 	self:spawnNauts(nauts)
 
-	self.camera = Camera:new(self)
+	self.camera = Camera(self)
 
 	musicPlayer:setTrack(self.map.theme)
 	musicPlayer:play()
@@ -212,7 +212,7 @@ function World:update (dt)
 
 	for key,entity in pairs(self.entities) do
 		if entity:update(dt) then
-			table.remove(self.entities, key)
+			table.remove(self.entities, key):delete()
 		end
 	end
 

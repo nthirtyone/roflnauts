@@ -1,29 +1,20 @@
---- `Camera`
--- Used in drawing.
-Camera = {
-	x = 0,
-	y = 0,
-	dest_x = 0,
-	dest_y = 0,
-	shake = 0,
-	timer = 0,
-	delay = 0,
-	origin_x = 0,
-	origin_y = 0,
-	shake_x = 0,
-	shake_y = 0,
-	world = --[[not.World]]nil,
-}
+--- Used in drawing other stuff in places.
+Camera = require "not.Object":extends()
 
--- Constructor of `Camera`
 function Camera:new (world)
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
-	o.world = world
-	o:setPosition(o:follow())
-	o:setDestination(o:follow())
-	return o
+	self.world = world
+	self.x = 0
+	self.y = 0
+	self.dest_y = 0
+	self.dest_x = 0
+	self.timer = 0
+	self.delay = 0
+	self.origin_x = 0
+	self.origin_y = 0
+	self.shake_x = 0
+	self.shake_y = 0
+	self:setPosition(self:follow())
+	self:setDestination(self:follow())
 end
 
 -- Drawing offsets
