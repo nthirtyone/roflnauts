@@ -1,26 +1,36 @@
 --- Used in drawing other stuff in places.
 Camera = require "not.Object":extends()
 
+Camera.SHAKE_LENGTH = 0.8
+Camera.SHAKE_INTERVAL = 0.04
+
 -- TODO: Camera would really make use of vec2s (other classes would use them too).
 function Camera:new (world)
 	self.world = world
+
 	self.x = 0
 	self.y = 0
 	self.dest_y = 0
 	self.dest_x = 0
-	self.timer = 0
-	self.delay = 0
 	self.origin_x = 0
 	self.origin_y = 0
-	self.shake_x = 0
-	self.shake_y = 0
+
 	self:setPosition(self:follow())
 	self:setDestination(self:follow())
+
+	self.shakeTime = 0
+	self.shakeInterval = 0
+	self.shakeShift = {
+		theta = love.math.random() * 2,
+		radius = 0
+	}
 end
 
 function Camera:translate ()
+	local x, y = self:getPositionScaled()
+	local dx, dy = self:getShakeShift()
 	love.graphics.push()
-	love.graphics.translate(-self.x*getScale(), -self.y*getScale())
+	love.graphics.translate(-x - dx, -y - dy)
 end
 
 function Camera:pop ()
@@ -38,7 +48,8 @@ function Camera:getPosition ()
 end
 
 function Camera:getPositionScaled ()
-	return self.x*getScale(), self.y*getScale()
+	local scale = getScale()
+	return self.x * scale, self.y * scale
 end
 
 function Camera:setDestination (x, y)
@@ -71,31 +82,43 @@ function Camera:translatePoints (...)
 	return r
 end
 
--- Shake it
--- Really bad script, but for now it works
-function Camera:shake ()
-	if self.shake_x == 0 then
-		self.shake_x = math.random(-10, 10) * 2
-	elseif self.shake_x > 0 then
-		self.shake_x = math.random(-10, -1) * 2
-	elseif self.shake_x < 0 then
-		self.shake_x = math.random(10, 1) * 2
-	end
-	if self.shake_y == 0 then
-		self.shake_y = math.random(-10, 10) * 2
-	elseif self.shake_y > 0 then
-		self.shake_y = math.random(-10, -1) * 2
-	elseif self.shake_y < 0 then
-		self.shake_y = math.random(10, 1) * 2
-	end
-	local x = self.origin_x + self.shake_x
-	local y = self.origin_y + self.shake_y
-	self:setDestination(x, y)
+function Camera:startShake ()
+	self.shakeTime = Camera.SHAKE_LENGTH
 end
 
-function Camera:startShake ()
-	self.timer = 0.3
-	self.origin_x, self.origin_y = self:getPosition()
+local
+function limit (theta)
+	if theta > 2 then
+		return limitAngle(theta - 2)
+	end
+	if theta < 0 then
+		return limitAngle(theta + 2)
+	end
+	return theta
+end
+
+-- TODO: Magic numbers present in Camera's shake.
+function Camera:shake (dt)
+	if self.shakeTime > 0 then
+		self.shakeTime = self.shakeTime - dt
+		if self.shakeInterval < 0 then
+			self.shakeShift.theta = self.shakeShift.theta - 1.3 + love.math.random() * 0.6
+			self.shakeShift.radius = 80 * self.shakeTime
+			self.shakeInterval = Camera.SHAKE_INTERVAL
+		else
+			self.shakeShift.radius = self.shakeShift.radius * 0.66
+			self.shakeInterval = self.shakeInterval - dt
+		end
+		if self.shakeTime < 0 then
+			self.shakeShift.radius = 0
+		end
+	end
+end
+
+function Camera:getShakeShift ()
+	local radius = self.shakeShift.radius
+	local theta = self.shakeShift.theta * math.pi
+	return radius * math.cos(theta), radius * math.sin(theta)
 end
 
 function Camera:follow ()
@@ -116,17 +139,8 @@ function Camera:follow ()
 end
 
 function Camera:update (dt)
-	if self.timer > 0 then
-		self.timer = self.timer - dt
-		if self.delay <= 0 then
-			self:shake()
-			self.delay = 0.02
-		else
-			self.delay = self.delay - dt
-		end
-	else
-		self:setDestination(self:follow())
-	end
+	self:shake(dt)
+	self:setDestination(self:follow())
 	local dx, dy = self:getDestination()
 	dx = (dx - self.x) * 6 * dt
 	dy = (dy - self.y) * 6 * dt
