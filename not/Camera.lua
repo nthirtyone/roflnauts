@@ -1,6 +1,7 @@
 --- Used in drawing other stuff in places.
 Camera = require "not.Object":extends()
 
+-- TODO: Camera would really make use of vec2s (other classes would use them too).
 function Camera:new (world)
 	self.world = world
 	self.x = 0
@@ -17,12 +18,15 @@ function Camera:new (world)
 	self:setDestination(self:follow())
 end
 
--- Drawing offsets
-function Camera:getOffsets ()
-	return -self.x,-self.y
+function Camera:translate ()
+	love.graphics.push()
+	love.graphics.translate(-self.x*getScale(), -self.y*getScale())
 end
 
--- Position
+function Camera:pop ()
+	love.graphics.pop()
+end
+
 function Camera:setPosition (x, y)
 	local x = x or 0
 	local y = y or 0
@@ -37,7 +41,6 @@ function Camera:getPositionScaled ()
 	return self.x*getScale(), self.y*getScale()
 end
 
--- Destination
 function Camera:setDestination (x, y)
 	local x = x or 0
 	local y = y or 0
@@ -48,14 +51,13 @@ function Camera:getDestination ()
 	return self.dest_x, self.dest_y
 end
 
--- Translate points
 function Camera:translatePosition (x, y)
 	local x = x or 0
 	local y = y or 0
 	return (x-self.x)*getScale(), (y-self.y)*getScale()
 end
 
-function Camera:translatePoints(...)
+function Camera:translatePoints (...)
 	local a = {...}
 	local r = {}
 	local x,y = self:getOffsets()
@@ -96,7 +98,6 @@ function Camera:startShake ()
 	self.origin_x, self.origin_y = self:getPosition()
 end
 
--- Move follow
 function Camera:follow ()
 	local map = self.world.map
 	local sum_x,sum_y,i = map.center.x, map.center.y, 1
@@ -114,7 +115,6 @@ function Camera:follow ()
 	return x,y
 end
 
--- Update
 function Camera:update (dt)
 	if self.timer > 0 then
 		self.timer = self.timer - dt

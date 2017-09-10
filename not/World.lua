@@ -220,11 +220,15 @@ function World:update (dt)
 end
 
 function World:draw ()
-	local offset_x, offset_y = self.camera:getOffsets()
+	-- TODO: Offests are here to keep compatibility.
+	local offset_x, offset_y = 0, 0
 	local scale = getScale()
 	local scaler = getRealScale()
 
 	-- TODO: Prototype of layering. See `World@new`.
+	-- TODO: Camera rewrite in progress.
+	self.camera:translate()
+
 	for _,entity in pairs(self.entities) do
 		if entity:is(Decoration) then
 			if entity.layer == 1 then
@@ -248,11 +252,20 @@ function World:draw ()
 		entity:draw(offset_x, offset_y, scale, debug)
 	end
 
+	self.camera:pop()
 	love.graphics.setCanvas()
+
 	for _,layer in ipairs(self.layers) do
 		layer:draw()
 		layer:clear()
 	end
+
+	-- TODO: Just move heroes' tags to front layer.
+	self.camera:translate()
+	for _,naut in pairs(self:getNautsAlive()) do
+		naut:drawTag(offset_x, offset_y, scale)
+	end	
+	self.camera:pop()
 
 	if debug then
 		local c = self.camera
@@ -278,10 +291,6 @@ function World:draw ()
 		local x1, y1 = c:translatePosition(cx, 0)
 		local x2, y2 = c:translatePosition(cx+w, 0)
 		love.graphics.line(x1,y1,x2,y2)
-	end
-
-	for _,naut in pairs(self:getNautsAlive()) do
-		naut:drawTag(offset_x, offset_y, scale)
 	end
 
 	for _,naut in pairs(self:getNautsAll()) do
