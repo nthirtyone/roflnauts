@@ -23,14 +23,10 @@ function World:new (map, nauts)
 	-- TODO: Clean layering. This is prototype. Seriously don't use it in production.
 	self.entities = {}
 	local width, height = love.graphics.getDimensions()
-	self.layers = {
-		Layer(width, height), -- back
-		Layer(width, height), -- cloud
-		Layer(width, height), -- deco
-		Layer(width, height), -- nauts
-		Layer(width, height), -- plats
-		Layer(width, height), -- front
-	}
+	self.layers = {}
+	for i=1,7 do
+		table.insert(self.layers, Layer(width, height))
+	end
 	self.layers[1].ratio = 0
 
 	self.map = map
@@ -130,7 +126,7 @@ end
 function World:createRay (naut)
 	local r = Ray(naut, self)
 	table.insert(self.entities, r)
-	r.layer = self.layers[6]
+	r.layer = self.layers[7]
 	return r
 end
 
@@ -259,25 +255,23 @@ function World:draw ()
 			entity.layer:renderTo(entity.draw, entity, 0, 0, scale, debug) -- TODO: Offsets are passed as zeroes in World@draw for compatibility reasons. Remove them.
 			self.camera:pop()
 		end
+		if entity.drawTag then
+			self.camera:translate()
+			self.layers[6]:renderTo(entity.drawTag, entity, 0, 0, scale) -- TODO: Offsets passed. See `World@draw`.
+			self.camera:pop()
+		end
 	end
-
-	love.graphics.setCanvas()
 
 	for _,layer in ipairs(self.layers) do
 		layer:draw()
 		layer:clear()
 	end
-
-	-- TODO: Just move heroes' tags to front layer.
-	self.camera:translate()
-	for _,naut in pairs(self:getNautsAlive()) do
-		naut:drawTag(0, 0, scale) -- TODO: Offsets passed. See `World@draw`.
-	end	
 	
 	if debug then
 		local center = self.map.center
 		local ax, ay, bx, by = self.camera:getBoundariesScaled()
-
+		
+		self.camera:translate()
 		love.graphics.setLineWidth(1)
 		love.graphics.setLineStyle("rough")
 
@@ -288,9 +282,10 @@ function World:draw ()
 		love.graphics.setColor(200,200,200)
 		love.graphics.line(ax,0,bx,0)
 		love.graphics.line(0,ay,0,by)
-	end
-	self.camera:pop()
 
+		self.camera:pop()
+	end
+	
 	for _,naut in pairs(self:getNautsAll()) do
 		-- I have no idea where to place them T_T
 		-- let's do: bottom-left, bottom-right, top-left, top-right
