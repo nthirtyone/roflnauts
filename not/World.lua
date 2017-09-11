@@ -285,12 +285,14 @@ function World:draw ()
 	
 	if debug then
 		local center = self.map.center
-		local ax, ay, bx, by = self.camera:getBoundariesScaled()
+		local ax, ay, bx, by = self.camera:getBoundaries()
+
+		love.graphics.setLineWidth(1 / getScale())
+		love.graphics.setLineStyle("rough")
 
 		self.camera:push()
+		self.camera:scale()
 		self.camera:translate()
-		love.graphics.setLineWidth(1)
-		love.graphics.setLineStyle("rough")
 
 		love.graphics.setColor(130,130,130)
 		love.graphics.line(ax,center.y,bx,center.y)
