@@ -249,17 +249,14 @@ function World:update (dt)
 end
 
 function World:draw ()
-	-- TODO: Offests are here to keep compatibility.
-	local offset_x, offset_y = 0, 0
 	local scale = getScale()
-	local scaler = getRealScale()
 
 	-- TODO: Prototype of layering. See `World@new`.
 	-- TODO: Camera rewrite in progress.
 	for _,entity in pairs(self.entities) do
 		if entity.draw and entity.layer then
 			self.camera:translate(entity.layer.ratio)
-			entity.layer:renderTo(entity.draw, entity, 0, 0, scale, debug)
+			entity.layer:renderTo(entity.draw, entity, 0, 0, scale, debug) -- TODO: Offsets are passed as zeroes in World@draw for compatibility reasons. Remove them.
 			self.camera:pop()
 		end
 	end
@@ -274,7 +271,7 @@ function World:draw ()
 	-- TODO: Just move heroes' tags to front layer.
 	self.camera:translate()
 	for _,naut in pairs(self:getNautsAlive()) do
-		naut:drawTag(offset_x, offset_y, scale)
+		naut:drawTag(0, 0, scale) -- TODO: Offsets passed. See `World@draw`.
 	end	
 	
 	if debug then
