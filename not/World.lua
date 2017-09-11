@@ -31,6 +31,7 @@ function World:new (map, nauts)
 		Layer(width, height), -- plats
 		Layer(width, height), -- front
 	}
+	self.layers[1].ratio = 0
 
 	self.map = map
 	self:buildMap()
@@ -67,7 +68,9 @@ function World:buildMap ()
 		end
 		if op.background then
 			local image = love.graphics.newImage(op.background)
-			local bg = self:createDecoration(0, 0, op.background) -- TODO: Decoration does not allow Image instead of filePath!
+			local x = image:getWidth() / -2
+			local y = image:getHeight() / -2
+			local bg = self:createDecoration(x, y, op.background) -- TODO: Decoration does not allow Image instead of filePath!
 			bg.ratio = op.ratio
 			bg.layer = 1
 		end
@@ -233,32 +236,35 @@ function World:draw ()
 
 	-- TODO: Prototype of layering. See `World@new`.
 	-- TODO: Camera rewrite in progress.
-	self.camera:translate()
-
 	for _,entity in pairs(self.entities) do
+		local layer
 		if entity:is(Decoration) then
 			if entity.layer == 1 then
-				self.layers[1]:setAsCanvas()
+				layer = self.layers[1]
 			else
-				self.layers[3]:setAsCanvas()
+				layer = self.layers[3]
 			end
 		end
 		if entity:is(Cloud) then
-			self.layers[2]:setAsCanvas()
+			layer = self.layers[2]
 		end
 		if entity:is(Player) then
-			self.layers[4]:setAsCanvas()
+			layer = self.layers[4]
 		end
 		if entity:is(Platform) or entity:is(Effect) then
-			self.layers[5]:setAsCanvas()
+			layer = self.layers[5]
 		end
 		if entity:is(Ray) then
-			self.layers[6]:setAsCanvas()
+			layer = self.layers[6]
 		end
-		entity:draw(offset_x, offset_y, scale, debug)
+
+		if layer then
+			self.camera:translate(layer.ratio)
+			layer:renderTo(entity.draw, entity, 0, 0, scale, debug)
+			self.camera:pop()
+		end
 	end
 
-	self.camera:pop()
 	love.graphics.setCanvas()
 
 	for _,layer in ipairs(self.layers) do

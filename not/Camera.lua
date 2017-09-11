@@ -22,9 +22,15 @@ function Camera:initShake ()
 end
 
 -- TODO: Even more magic numbers present in Camera. Translate method.
-function Camera:translate ()
+function Camera:translate (ratio)
 	local x, y = self:getPositionScaled()
 	local dx, dy = self:getShakeScaled()
+	if ratio then
+		dx = dx * ratio
+		dy = dy * ratio
+		x = x * ratio
+		y = y * ratio
+	end
 	love.graphics.push()
 	love.graphics.translate(160*getScale() - x - dx, 100*getScale() - y - dy)
 end
