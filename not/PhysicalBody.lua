@@ -77,7 +77,8 @@ function PhysicalBody:draw (offset_x, offset_y, scale, debug)
 			if category == 3 then
 				love.graphics.setColor(137, 0, 255, 40)
 			end
-			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
+			local camera = self.world.camera
+			love.graphics.polygon("fill", camera:scalePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
 		end
 	end
 end

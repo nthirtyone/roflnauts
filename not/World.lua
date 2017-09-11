@@ -147,7 +147,7 @@ end
 function World:getNautsAll ()
 	local nauts = {}
 	for i,entity in ipairs(self.entities) do
-		if entity:is(require("not.Hero")) then
+		if entity:is(require("not.Hero")) and not entity.body:isDestroyed() then
 			table.insert(nauts, entity)
 		end
 	end
@@ -271,33 +271,23 @@ function World:draw ()
 	for _,naut in pairs(self:getNautsAlive()) do
 		naut:drawTag(offset_x, offset_y, scale)
 	end	
-	self.camera:pop()
-
+	
 	if debug then
-		local c = self.camera
-		local w, h = love.graphics.getWidth(), love.graphics.getHeight()
-		-- draw map center
-		love.graphics.setColor(130,130,130)
+		local center = self.map.center
+		local ax, ay, bx, by = self.camera:getBoundariesScaled()
+
 		love.graphics.setLineWidth(1)
 		love.graphics.setLineStyle("rough")
-		local cx, cy = c:getPositionScaled()
-		local x1, y1 = c:translatePosition(self.map.center.x, cy)
-		local x2, y2 = c:translatePosition(self.map.center.x, cy+h)
-		love.graphics.line(x1,y1,x2,y2)
-		local x1, y1 = c:translatePosition(cx, self.map.center.y)
-		local x2, y2 = c:translatePosition(cx+w, self.map.center.y)
-		love.graphics.line(x1,y1,x2,y2)
-		-- draw ox, oy
+
+		love.graphics.setColor(130,130,130)
+		love.graphics.line(ax,center.y,bx,center.y)
+		love.graphics.line(center.x,ay,center.x,by)
+
 		love.graphics.setColor(200,200,200)
-		love.graphics.setLineStyle("rough")
-		local cx, cy = c:getPositionScaled()
-		local x1, y1 = c:translatePosition(0, cy)
-		local x2, y2 = c:translatePosition(0, cy+h)
-		love.graphics.line(x1,y1,x2,y2)
-		local x1, y1 = c:translatePosition(cx, 0)
-		local x2, y2 = c:translatePosition(cx+w, 0)
-		love.graphics.line(x1,y1,x2,y2)
+		love.graphics.line(ax,0,bx,0)
+		love.graphics.line(0,ay,0,by)
 	end
+	self.camera:pop()
 
 	for _,naut in pairs(self:getNautsAll()) do
 		-- I have no idea where to place them T_T

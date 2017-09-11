@@ -21,6 +21,7 @@ function Camera:initShake ()
 	}
 end
 
+-- TODO: Even more magic numbers present in Camera. Translate method.
 function Camera:translate ()
 	local x, y = self:getPositionScaled()
 	local dx, dy = self:getShakeScaled()
@@ -47,22 +48,25 @@ function Camera:getPositionScaled ()
 	return self.x * scale, self.y * scale
 end
 
-function Camera:translatePosition (x, y)
-	local x = x or 0
-	local y = y or 0
-	return (x-self.x)*getScale(), (y-self.y)*getScale()
+-- TODO: Magic numbers present in camera's boundaries.
+function Camera:getBoundaries ()
+	local x, y = self:getPosition()
+	return x - 160, y - 100, x + 160, y + 100
 end
 
-function Camera:translatePoints (...)
-	local a = {...}
-	local r = {}
-	local x,y = 0,0
-	for k,v in pairs(a) do
-		if k%2 == 1 then
-			table.insert(r, (v + x) * getScale())
-		else
-			table.insert(r, (v + y) * getScale())
-		end
+function Camera:getBoundariesScaled ()
+	local x, y = self:getPositionScaled()
+	local width, height = love.graphics.getDimensions()
+	width = width / 2
+	height = height / 2
+	return x - width, y - height, x + width, y + height
+end
+
+-- TODO: Camera@scalePoints is left because PhysicalBody still uses it as love.graphics.scale is not used yet.
+function Camera:scalePoints (...)
+	local a, r, scale = {...}, {}, getScale()
+	for _,v in pairs(a) do
+		table.insert(r, v * scale)
 	end
 	return r
 end
