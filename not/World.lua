@@ -32,6 +32,7 @@ function World:new (map, nauts)
 	do
 		local layer = Layer(320, 180)
 		layer.ratio = 0
+		layer.scale = 1
 		layer.draw = function (self)
 			love.graphics.setColor(255, 255, 255, 255)
 			love.graphics.draw(self.canvas, 0, 0, 0, getScale(), getScale())
@@ -255,25 +256,21 @@ function World:update (dt)
 end
 
 function World:draw ()
-	local scale = 1
-
 	-- TODO: Prototype of layering. See `World@new`.
 	-- TODO: Camera rewrite in progress.
 	for _,entity in pairs(self.entities) do
-		if entity:is(Ray) then
-			entity.layer:renderTo(entity.draw, entity)
-		elseif entity.draw and entity.layer then
+		if entity.draw and entity.layer then
 			self.camera:push()
-			self.camera:scale()
+			self.camera:scale(entity.layer.scale)
 			self.camera:translate(entity.layer.ratio)
-			entity.layer:renderTo(entity.draw, entity, 0, 0, scale, debug) -- TODO: Offsets are passed as zeroes in World@draw for compatibility reasons. Remove them.
+			entity.layer:renderTo(entity.draw, entity, 0, 0, 1, debug) -- TODO: Offsets and Scale are passed as 0,0,1 in World@draw for compatibility reasons. Remove them.
 			self.camera:pop()
 		end
 		if entity.drawTag then
 			self.camera:push()
 			self.camera:scale()
 			self.camera:translate()
-			self.layers[6]:renderTo(entity.drawTag, entity, 0, 0, scale) -- TODO: Offsets passed. See `World@draw`.
+			self.layers[6]:renderTo(entity.drawTag, entity, 0, 0, 1) -- TODO: Offsets and Scale passed. See `World@draw`.
 			self.camera:pop()
 		end
 	end
@@ -304,6 +301,8 @@ function World:draw ()
 		self.camera:pop()
 	end
 	
+	-- TODO: Draw method beyond this point is a very, very dark place.
+	local scale = getScale()
 	for _,naut in pairs(self:getNautsAll()) do
 		-- I have no idea where to place them T_T
 		-- let's do: bottom-left, bottom-right, top-left, top-right
