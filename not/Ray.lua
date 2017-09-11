@@ -1,21 +1,10 @@
-require "not.Object"
+--- That awesome effect that blinks when player dies!
+Ray = require "not.Object":extends()
 
---- `Ray`
--- That awesome effect that blinks when player dies!
-Ray = Object:extends()
-
-Ray.naut =--[[not.Hero]]nil
-Ray.world =--[[not.World]]nil
-Ray.canvas =--[[love.graphics.newCanvas]]nil
-Ray.delay = 0.3
-
-function Ray:new (naut, world)
-	self.naut = naut
+function Ray:new (source, world)
+	self.source = source
 	self.world = world
-	-- Cavas, this is temporary, I believe.
-	local scale = getScale()
-	local w, h = love.graphics.getWidth(), love.graphics.getHeight()
-	self.canvas = love.graphics.newCanvas(w/scale, h/scale)
+	self.delay = 1.2
 end
 
 function Ray:update (dt)
@@ -26,27 +15,26 @@ function Ray:update (dt)
 	return false
 end
 
+-- TODO: Ray is work-in-progress.
 -- TODO: Whole Ray is dated but `draw` require a lot attention due to layering in World. See `World@new`.
-function Ray:draw (offset_x, offset_y, scale)
-	local canvas = love.graphics.getCanvas()
-	love.graphics.setCanvas(self.canvas)
-	love.graphics.clear()
+function Ray:draw ()
 	love.graphics.setColor(255, 247, 228, 247)
 	love.graphics.setLineStyle("rough")
 	love.graphics.setLineWidth(self.delay*160)
-	local x, y = self.naut:getPosition()
+
+	local x, y = self.source:getPosition()
 	local m = self.world.map
 	local dy = m.height
+
 	if y > m.center.y then
 		dy = -dy
 	end
+
+	local offset_x, offset_y = 0, 0
+
+	-- love.graphics.rectangle("fill", 0, 0, 200, 200)
+
 	love.graphics.line(-x+offset_x,-y+offset_y-dy*0.7,x+offset_x,y+dy*0.7+offset_y)
-	-- reset
-	love.graphics.setCanvas(canvas)
-	love.graphics.setLineWidth(1)
-	love.graphics.setColor(255,255,255,255)
-	-- draw on screen
-	love.graphics.draw(self.canvas, 0, 0, 0, scale, scale)
 end
 
 return Ray
