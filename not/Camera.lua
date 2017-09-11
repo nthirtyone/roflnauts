@@ -1,8 +1,8 @@
 --- Used in drawing other stuff in places.
 Camera = require "not.Object":extends()
 
-Camera.SHAKE_LENGTH = 0.8
-Camera.SHAKE_INTERVAL = 0.04
+Camera.SHAKE_LENGTH = 0.6
+Camera.SHAKE_INTERVAL = 0.03
 
 -- TODO: Camera would really make use of vec2s (other classes would use them too).
 function Camera:new (world)
@@ -28,7 +28,7 @@ end
 
 function Camera:translate ()
 	local x, y = self:getPositionScaled()
-	local dx, dy = self:getShakeShift()
+	local dx, dy = self:getShakeScaled()
 	love.graphics.push()
 	love.graphics.translate(-x - dx, -y - dy)
 end
@@ -103,7 +103,7 @@ function Camera:shake (dt)
 		self.shakeTime = self.shakeTime - dt
 		if self.shakeInterval < 0 then
 			self.shakeShift.theta = self.shakeShift.theta - 1.3 + love.math.random() * 0.6
-			self.shakeShift.radius = 80 * self.shakeTime
+			self.shakeShift.radius = 70 * self.shakeTime
 			self.shakeInterval = Camera.SHAKE_INTERVAL
 		else
 			self.shakeShift.radius = self.shakeShift.radius * 0.66
@@ -115,10 +115,16 @@ function Camera:shake (dt)
 	end
 end
 
-function Camera:getShakeShift ()
+function Camera:getShake ()
 	local radius = self.shakeShift.radius
 	local theta = self.shakeShift.theta * math.pi
 	return radius * math.cos(theta), radius * math.sin(theta)
+end
+
+function Camera:getShakeScaled ()
+	local x, y = self:getShake()
+	local scale = getScale()
+	return x * scale, y * scale
 end
 
 function Camera:follow ()
