@@ -32,7 +32,7 @@ function Camera:translate (ratio)
 		y = y * ratio
 	end
 	love.graphics.push()
-	love.graphics.translate(160*getScale() - x - dx, 100*getScale() - y - dy)
+	love.graphics.translate(160*getScale() - x - dx, 90*getScale() - y - dy)
 end
 
 function Camera:pop ()
@@ -57,7 +57,7 @@ end
 -- TODO: Magic numbers present in camera's boundaries.
 function Camera:getBoundaries ()
 	local x, y = self:getPosition()
-	return x - 160, y - 100, x + 160, y + 100
+	return x - 160, y - 90, x + 160, y + 90
 end
 
 function Camera:getBoundariesScaled ()
