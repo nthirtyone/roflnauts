@@ -5,19 +5,14 @@ Camera.SHAKE_LENGTH = 0.6
 Camera.SHAKE_INTERVAL = 0.03
 
 -- TODO: Camera would really make use of vec2s (other classes would use them too).
-function Camera:new (world)
+function Camera:new (x, y, world)
 	self.world = world
+	self:setPosition(x, y)
+	self:resetSum()
+	self:initShake()
+end
 
-	self.x = 0
-	self.y = 0
-	self.dest_y = 0
-	self.dest_x = 0
-	self.origin_x = 0
-	self.origin_y = 0
-
-	self:setPosition(self:follow())
-	self:setDestination(self:follow())
-
+function Camera:initShake ()
 	self.shakeTime = 0
 	self.shakeInterval = 0
 	self.shakeShift = {
@@ -30,7 +25,7 @@ function Camera:translate ()
 	local x, y = self:getPositionScaled()
 	local dx, dy = self:getShakeScaled()
 	love.graphics.push()
-	love.graphics.translate(-x - dx, -y - dy)
+	love.graphics.translate(160*getScale() - x - dx, 100*getScale() - y - dy)
 end
 
 function Camera:pop ()
@@ -50,16 +45,6 @@ end
 function Camera:getPositionScaled ()
 	local scale = getScale()
 	return self.x * scale, self.y * scale
-end
-
-function Camera:setDestination (x, y)
-	local x = x or 0
-	local y = y or 0
-	self.dest_x, self.dest_y = x, y
-end
-
-function Camera:getDestination ()
-	return self.dest_x, self.dest_y
 end
 
 function Camera:translatePosition (x, y)
@@ -103,7 +88,7 @@ function Camera:shake (dt)
 		self.shakeTime = self.shakeTime - dt
 		if self.shakeInterval < 0 then
 			self.shakeShift.theta = self.shakeShift.theta - 1.3 + love.math.random() * 0.6
-			self.shakeShift.radius = 70 * self.shakeTime
+			self.shakeShift.radius = 50 * self.shakeTime
 			self.shakeInterval = Camera.SHAKE_INTERVAL
 		else
 			self.shakeShift.radius = self.shakeShift.radius * 0.66
@@ -127,28 +112,41 @@ function Camera:getShakeScaled ()
 	return x * scale, y * scale
 end
 
-function Camera:follow ()
+function Camera:resetSum ()
+	self.sumX = 0
+	self.sumY = 0
+	self.sumI = 0
+end
+
+function Camera:sum (x, y)
 	local map = self.world.map
-	local sum_x,sum_y,i = map.center.x, map.center.y, 1
-	for k,naut in pairs(self.world:getNautsAll()) do
-		local naut_x,naut_y = naut:getPosition()
-		if math.abs(naut_x - map.center.x) < map.width/2 and
-		   math.abs(naut_y - map.center.y) < map.height/2 then
-			i = i + 1
-			sum_x = naut_x + sum_x
-			sum_y = naut_y + sum_y
-		end
+	if math.abs(x - map.center.x) < map.width/2 and
+	   math.abs(y - map.center.y) < map.height/2 then
+		self.sumX = self.sumX + x
+		self.sumY = self.sumY + y
+		self.sumI = self.sumI + 1
 	end
-	local x = sum_x / i - love.graphics.getWidth()/getScale()/2
-	local y = sum_y / i - love.graphics.getHeight()/getScale()/2 + 4*getScale() -- hotfix
-	return x,y
+end
+
+function Camera:getSumPostion ()
+	if self.sumI > 0 then
+		return self.sumX / self.sumI, self.sumY / self.sumI
+	end
+	return 0, 0
+end
+
+function Camera:step (dt)
+	local x, y = self:getSumPostion()
+	local dx, dy = (x - self.x), (y - self.y)
+	if math.abs(dx) > 0.4 or math.abs(dy) > 0.4 then
+		x = self.x + (x - self.x) * dt * 6
+		y = self.y + (y - self.y) * dt * 6
+	end
+	self:setPosition(x, y)
 end
 
 function Camera:update (dt)
+	self:step(dt)
 	self:shake(dt)
-	self:setDestination(self:follow())
-	local dx, dy = self:getDestination()
-	dx = (dx - self.x) * 6 * dt
-	dy = (dy - self.y) * 6 * dt
-	self:setPosition(self.x + dx, self.y + dy)
+	self:resetSum()
 end

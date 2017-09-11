@@ -37,7 +37,7 @@ function World:new (map, nauts)
 	self:initClouds()
 	self:spawnNauts(nauts)
 
-	self.camera = Camera(self)
+	self.camera = Camera(self.map.center.x, self.map.center.y, self)
 
 	musicPlayer:play(self.map.theme)
 end
@@ -203,6 +203,7 @@ end
 function World:update (dt)
 	self.world:update(dt)
 	self.camera:update(dt)
+	self.camera:sum(self.map.center.x, self.map.center.y)
 
 	if self.cloudGenerator then
 		self.cloudGenerator:update(dt)
@@ -212,6 +213,11 @@ function World:update (dt)
 		if entity:update(dt) then
 			table.remove(self.entities, key):delete()
 		end
+	end
+
+	-- TODO: Weird Camera following Heroes.
+	for _,hero in pairs(self:getNautsAll()) do
+		self.camera:sum(hero:getPosition())
 	end
 
 	-- Some additional debug info.
