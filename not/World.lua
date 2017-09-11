@@ -24,10 +24,20 @@ function World:new (map, nauts)
 	self.entities = {}
 	local width, height = love.graphics.getDimensions()
 	self.layers = {}
-	for i=1,7 do
+	for i=1,6 do
 		table.insert(self.layers, Layer(width, height))
 	end
 	self.layers[1].ratio = 0
+	-- TODO: Scaled layers for Rays and future extensions.
+	do
+		local layer = Layer(320, 180)
+		layer.ratio = 0
+		layer.draw = function (self)
+			love.graphics.setColor(255, 255, 255, 255)
+			love.graphics.draw(self.canvas, 0, 0, 0, getScale(), getScale())
+		end
+		table.insert(self.layers, layer) -- 7
+	end
 
 	self.map = map
 	self:buildMap()
