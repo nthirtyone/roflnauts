@@ -137,48 +137,63 @@ function World:insertCloud (cloud)
 	return cloud
 end
 
-function World:getCloudsCount ()
+--- Verbose wrapper for inserting entities into entities table.
+-- @param entity entity to insert
+function World:insertEntity (entity)
+	if entity then
+		table.insert(self.entities, entity)
+		return entity
+	end
+end
+
+--- Searches entities for those which return true with filtering function.
+-- @param filter function with entity as parameter
+-- @return table containing results of search
+function World:getEntities (filter)
+	local result = {}
+	for _,entity in pairs(self.entities) do
+		if filter(entity) then
+			table.insert(result, entity)
+		end
+	end
+	return result
+end
+
+--- Counts entities returning true with filtering function.
+-- @param filter function with entity as parameter
+-- @return entity count
+function World:countEntities (filter)
 	local count = 0
-	for i,entity in ipairs(self.entities) do
-		if entity:is(Cloud) then
+	for _,entity in pairs(self.entities) do
+		if filter(entity) then
 			count = count + 1
 		end
 	end
 	return count
 end
 
+function World:getCloudsCount ()
+	return self:countEntities(function (entity)
+		return entity:is(Cloud)
+	end)
+end
+
 function World:getNautsAll ()
-	local nauts = {}
-	for i,entity in ipairs(self.entities) do
-		if entity:is(require("not.Hero")) and not entity.body:isDestroyed() then
-			table.insert(nauts, entity)
-		end
-	end
-	return nauts
+	return self:getEntities(function (entity)
+		return entity:is(require("not.Hero")) and not entity.body:isDestroyed()
+	end)
 end
 
 function World:getNautsPlayable ()
-	local nauts = {}
-	for i,entity in ipairs(self.entities) do
-		if entity:is(require("not.Hero")) then
-			if entity.lives > -1 then
-				table.insert(nauts, entity)
-			end
-		end
-	end
-	return nauts
+	return self:getEntities(function (entity)
+		return entity:is(require("not.Hero")) and entity.lives > -1
+	end)
 end
 
 function World:getNautsAlive ()
-	local nauts = {}
-	for i,entity in ipairs(self.entities) do
-		if entity:is(require("not.Hero")) then
-			if entity.isAlive then
-				table.insert(nauts, entity)
-			end
-		end
-	end
-	return nauts
+	return self:getEntities(function (entity)
+		return entity:is(require("not.Hero")) and entity.isAlive
+	end)
 end
 
 -- get Map name
