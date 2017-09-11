@@ -71,8 +71,7 @@ function World:buildMap ()
 			local x = image:getWidth() / -2
 			local y = image:getHeight() / -2
 			local bg = self:createDecoration(x, y, op.background) -- TODO: Decoration does not allow Image instead of filePath!
-			bg.ratio = op.ratio
-			bg.layer = 1
+			bg.layer = self.layers[1]
 		end
 	end
 end
@@ -103,30 +102,35 @@ end
 function World:createPlatform (x, y, polygon, sprite, animations)
 	local p = Platform(animations, polygon, x, y, self, sprite)
 	table.insert(self.entities, p)
+	p.layer = self.layers[5]
 	return p
 end
 
 function World:createNaut (x, y, name)
-	local naut = Player(name, x, y, self)
-	table.insert(self.entities, naut)
-	return naut
+	local h = Player(name, x, y, self)
+	table.insert(self.entities, h)
+	h.layer = self.layers[4]
+	return h
 end
 
 function World:createDecoration (x, y, sprite)
-	local deco = Decoration(x, y, self, sprite)
-	table.insert(self.entities, deco)
-	return deco
+	local d = Decoration(x, y, self, sprite)
+	table.insert(self.entities, d)
+	d.layer = self.layers[3]
+	return d
 end
 
 function World:createEffect (name, x, y)
 	local e = Effect(name, x, y, self)
 	table.insert(self.entities, e)
+	e.layer = self.layers[5]
 	return e
 end
 
 function World:createRay (naut)
 	local r = Ray(naut, self)
 	table.insert(self.entities, r)
+	r.layer = self.layers[6]
 	return r
 end
 
@@ -134,6 +138,7 @@ end
 -- TODO: Once entities are stored inside single table create single `insertEntity` method for World.
 function World:insertCloud (cloud)
 	table.insert(self.entities, cloud)
+	cloud.layer = self.layers[2]
 	return cloud
 end
 
@@ -252,30 +257,9 @@ function World:draw ()
 	-- TODO: Prototype of layering. See `World@new`.
 	-- TODO: Camera rewrite in progress.
 	for _,entity in pairs(self.entities) do
-		local layer
-		if entity:is(Decoration) then
-			if entity.layer == 1 then
-				layer = self.layers[1]
-			else
-				layer = self.layers[3]
-			end
-		end
-		if entity:is(Cloud) then
-			layer = self.layers[2]
-		end
-		if entity:is(Player) then
-			layer = self.layers[4]
-		end
-		if entity:is(Platform) or entity:is(Effect) then
-			layer = self.layers[5]
-		end
-		if entity:is(Ray) then
-			layer = self.layers[6]
-		end
-
-		if layer then
-			self.camera:translate(layer.ratio)
-			layer:renderTo(entity.draw, entity, 0, 0, scale, debug)
+		if entity.draw and entity.layer then
+			self.camera:translate(entity.layer.ratio)
+			entity.layer:renderTo(entity.draw, entity, 0, 0, scale, debug)
 			self.camera:pop()
 		end
 	end
