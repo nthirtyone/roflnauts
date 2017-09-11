@@ -21,18 +21,26 @@ function Camera:initShake ()
 	}
 end
 
+function Camera:push ()
+	love.graphics.push()
+end
+
+function Camera:scale (scale)
+	scale = scale or getScale()
+	love.graphics.scale(scale, scale)
+end
+
 -- TODO: Even more magic numbers present in Camera. Translate method.
 function Camera:translate (ratio)
-	local x, y = self:getPositionScaled()
-	local dx, dy = self:getShakeScaled()
+	local px, py = self:getPosition()
+	local dx, dy = self:getShake()
 	if ratio then
 		dx = dx * ratio
 		dy = dy * ratio
-		x = x * ratio
-		y = y * ratio
+		px = px * ratio
+		py = py * ratio
 	end
-	love.graphics.push()
-	love.graphics.translate(160*getScale() - x - dx, 90*getScale() - y - dy)
+	love.graphics.translate(160 - px - dx, 90 - py - dy)
 end
 
 function Camera:pop ()

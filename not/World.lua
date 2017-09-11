@@ -255,17 +255,23 @@ function World:update (dt)
 end
 
 function World:draw ()
-	local scale = getScale()
+	local scale = 1
 
 	-- TODO: Prototype of layering. See `World@new`.
 	-- TODO: Camera rewrite in progress.
 	for _,entity in pairs(self.entities) do
-		if entity.draw and entity.layer then
+		if entity:is(Ray) then
+			entity.layer:renderTo(entity.draw, entity)
+		elseif entity.draw and entity.layer then
+			self.camera:push()
+			self.camera:scale()
 			self.camera:translate(entity.layer.ratio)
 			entity.layer:renderTo(entity.draw, entity, 0, 0, scale, debug) -- TODO: Offsets are passed as zeroes in World@draw for compatibility reasons. Remove them.
 			self.camera:pop()
 		end
 		if entity.drawTag then
+			self.camera:push()
+			self.camera:scale()
 			self.camera:translate()
 			self.layers[6]:renderTo(entity.drawTag, entity, 0, 0, scale) -- TODO: Offsets passed. See `World@draw`.
 			self.camera:pop()
@@ -280,7 +286,8 @@ function World:draw ()
 	if debug then
 		local center = self.map.center
 		local ax, ay, bx, by = self.camera:getBoundariesScaled()
-		
+
+		self.camera:push()
 		self.camera:translate()
 		love.graphics.setLineWidth(1)
 		love.graphics.setLineStyle("rough")
@@ -292,7 +299,6 @@ function World:draw ()
 		love.graphics.setColor(200,200,200)
 		love.graphics.line(ax,0,bx,0)
 		love.graphics.line(0,ay,0,by)
-
 		self.camera:pop()
 	end
 	
