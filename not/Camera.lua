@@ -71,7 +71,7 @@ end
 function Camera:translatePoints (...)
 	local a = {...}
 	local r = {}
-	local x,y = self:getOffsets()
+	local x,y = 0,0
 	for k,v in pairs(a) do
 		if k%2 == 1 then
 			table.insert(r, (v + x) * getScale())
