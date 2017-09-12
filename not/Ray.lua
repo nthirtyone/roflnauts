@@ -4,7 +4,7 @@ Ray = require "not.Object":extends()
 function Ray:new (source, world)
 	self.source = source
 	self.world = world
-	self.delay = 1.2
+	self.delay = 0.3
 end
 
 function Ray:update (dt)
@@ -15,26 +15,40 @@ function Ray:update (dt)
 	return false
 end
 
--- TODO: Ray is work-in-progress.
--- TODO: Whole Ray is dated but `draw` require a lot attention due to layering in World. See `World@new`.
+-- TODO: For some reason ray needs these 50s on camera boundaries.
+-- TODO: Ray draw should be cleaned-up and exploded into methods if possible.
 function Ray:draw ()
 	love.graphics.setColor(255, 247, 228, 247)
 	love.graphics.setLineStyle("rough")
 	love.graphics.setLineWidth(self.delay*160)
 
-	local x, y = self.source:getPosition()
-	local m = self.world.map
-	local dy = m.height
+	-- point b top-left
+	-- point c bottom-right
+	-- point d ray start
+	-- point e ray end
 
-	if y > m.center.y then
-		dy = -dy
+	local x, y = self.source:getPosition()
+	local bx, by, cx, cy = self.world.camera:getBoundaries()
+	local a = y / x
+
+	bx = bx - 50
+	by = by - 50
+	cx = cx + 50
+	cy = cy + 50
+
+	local dy, dx = bx * a, bx
+	if dy < by or dy > cy then
+		dy = by
+		dx = by / a
 	end
 
-	local offset_x, offset_y = 0, 0
+	local ey, ex = cx * a, cx
+	if ey < by or ey > cy then
+		ey = cy
+		ex = cy / a
+	end
 
-	-- love.graphics.rectangle("fill", 0, 0, 200, 200)
-
-	love.graphics.line(-x+offset_x,-y+offset_y-dy*0.7,x+offset_x,y+dy*0.7+offset_y)
+	love.graphics.line(dx, dy, ex, ey)
 end
 
 return Ray
