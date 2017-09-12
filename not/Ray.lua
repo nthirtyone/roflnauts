@@ -15,40 +15,16 @@ function Ray:update (dt)
 	return false
 end
 
--- TODO: For some reason ray needs these 50s on camera boundaries.
--- TODO: Ray draw should be cleaned-up and exploded into methods if possible.
+-- TODO: Ray should use Camera boundaries just-in-case.
+-- TODO: Ray uses magic numbers.
 function Ray:draw ()
 	love.graphics.setColor(255, 247, 228, 247)
 	love.graphics.setLineStyle("rough")
 	love.graphics.setLineWidth(self.delay*160)
 
-	-- point b top-left
-	-- point c bottom-right
-	-- point d ray start
-	-- point e ray end
-
 	local x, y = self.source:getPosition()
-	local bx, by, cx, cy = self.world.camera:getBoundaries()
-	local a = y / x
 
-	bx = bx - 50
-	by = by - 50
-	cx = cx + 50
-	cy = cy + 50
-
-	local dy, dx = bx * a, bx
-	if dy < by or dy > cy then
-		dy = by
-		dx = by / a
-	end
-
-	local ey, ex = cx * a, cx
-	if ey < by or ey > cy then
-		ey = cy
-		ex = cy / a
-	end
-
-	love.graphics.line(dx, dy, ex, ey)
+	love.graphics.line(x, y, -x, -y)
 end
 
 return Ray
