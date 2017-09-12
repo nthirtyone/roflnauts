@@ -33,10 +33,6 @@ function World:new (map, nauts)
 		local layer = Layer(320, 180)
 		layer.ratio = 0
 		layer.scale = 1
-		layer.draw = function (self)
-			love.graphics.setColor(255, 255, 255, 255)
-			love.graphics.draw(self.canvas, 0, 0, 0, getScale(), getScale())
-		end
 		table.insert(self.layers, layer) -- 7
 	end
 

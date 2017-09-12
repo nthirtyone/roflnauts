@@ -38,8 +38,12 @@ function Layer:clear ()
 end
 
 function Layer:draw ()
+	local scale = 1
+	if self.scale then
+		scale = getScale() / self.scale
+	end
 	love.graphics.setColor(255, 255, 255, 255)
-	love.graphics.draw(self.canvas)
+	love.graphics.draw(self.canvas, 0, 0, 0, scale, scale)
 end
 
 return Layer
