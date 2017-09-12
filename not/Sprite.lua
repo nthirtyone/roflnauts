@@ -84,24 +84,22 @@ function Sprite:getOffset () return 0,0 end
 
 -- Drawing self to LOVE2D buffer.
 -- If there is no Quad, it will draw entire image. It won't draw anything if there is no image.
+-- TODO: Sprite@draw requires a serious review!
 -- TODO: it doesn't follow same pattern as `not.Hero.draw`. It should implement so it can be called from `not.World`.
 -- TODO: change children if above changes are in effect: `not.Platform`, `not.Decoration`.
-function Sprite:draw (offset_x, offset_y, scale)
-	local offset_x = offset_x or 0
-	local offset_y = offset_y or 0
-
+function Sprite:draw (debug)
 	local i, q = self:getImage(), self:getQuad()
 	local x, y = self:getPosition()
 	local angle = self:getAngle()
 
-	local scaleX = self:getHorizontalMirror()*(scale or 1)
-	local scaleY = self:getVerticalMirror()*(scale or 1)
+	local scaleX = self:getHorizontalMirror()
+	local scaleY = self:getVerticalMirror()
 
 	-- pixel grid ; `approx` selected to prevent floating characters on certain conditions
 	local approx = math.floor
 	if (y - math.floor(y)) > 0.5 then approx = math.ceil end
-	local draw_y = (approx(y) + offset_y) * scale
-	local draw_x = (math.floor(x) + offset_x) * scale
+	local draw_y = approx(y)
+	local draw_x = math.floor(x)
 
 	if i then
 		love.graphics.setColor(255,255,255,255)

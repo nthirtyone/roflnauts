@@ -259,10 +259,10 @@ function World:draw ()
 	-- TODO: Camera rewrite in progress.
 	for _,entity in pairs(self.entities) do
 		if entity.draw and entity.layer then
-			entity.layer:renderToWith(self.camera, entity.draw, entity, 0, 0, 1, debug) -- TODO: Offsets and Scale are passed as 0,0,1 in World@draw for compatibility reasons. Remove them.
+			entity.layer:renderToWith(self.camera, entity.draw, entity, debug) -- TODO: Offsets and Scale are passed as 0,0,1 in World@draw for compatibility reasons. Remove them.
 		end
 		if entity.drawTag then
-			self.layers[6]:renderToWith(self.camera, entity.drawTag, entity, 0, 0, 1) -- TODO: Offsets and Scale passed. See `World@draw`.
+			self.layers[6]:renderToWith(self.camera, entity.drawTag, entity, debug) -- TODO: Offsets and Scale passed. See `World@draw`.
 		end
 	end
 

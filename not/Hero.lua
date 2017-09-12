@@ -165,17 +165,17 @@ function Hero:getOffset ()
 	return 12,15
 end
 
--- Draw of `Hero`
-function Hero:draw (offset_x, offset_y, scale, debug)
+function Hero:draw (debug)
 	if not self.isAlive then return end
-	Hero.__super.draw(self, offset_x, offset_y, scale, debug)
+	Hero.__super.draw(self, debug)
 end
 
-function Hero:drawTag (offset_x, offset_y, scale)
+-- TODO: Hero@drawTag's printf is not readable.
+function Hero:drawTag ()
 	local x,y = self:getPosition()
 	love.graphics.setFont(Font)
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.printf(string.format("Player %d", math.abs(self.group)), (math.floor(x)+offset_x)*scale, (math.floor(y)+offset_y-26)*scale,100,'center',0,scale,scale,50,0)
+	love.graphics.printf(string.format("Player %d", math.abs(self.group)), math.floor(x), math.floor(y)-26 ,100,'center',0,1,1,50,0)
 end
 
 -- Draw HUD of `Hero`

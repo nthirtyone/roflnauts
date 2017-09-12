@@ -63,8 +63,8 @@ function PhysicalBody:update (dt)
 end
 
 -- Draw of `PhysicalBody`.
-function PhysicalBody:draw (offset_x, offset_y, scale, debug)
-	PhysicalBody.__super.draw(self, offset_x, offset_y, scale)
+function PhysicalBody:draw (debug)
+	PhysicalBody.__super.draw(self, debug)
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
 			local category = fixture:getCategory()
