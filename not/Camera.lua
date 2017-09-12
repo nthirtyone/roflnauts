@@ -57,33 +57,12 @@ function Camera:getPosition ()
 	return self.x, self.y
 end
 
-function Camera:getPositionScaled ()
-	local scale = getScale()
-	return self.x * scale, self.y * scale
-end
-
 -- TODO: Magic numbers present in camera's boundaries.
 function Camera:getBoundaries ()
 	local x, y = self:getPosition()
 	return x - 160, y - 90, x + 160, y + 90
 end
 
-function Camera:getBoundariesScaled ()
-	local x, y = self:getPositionScaled()
-	local width, height = love.graphics.getDimensions()
-	width = width / 2
-	height = height / 2
-	return x - width, y - height, x + width, y + height
-end
-
--- TODO: Camera@scalePoints is left because PhysicalBody still uses it as love.graphics.scale is not used yet.
-function Camera:scalePoints (...)
-	local a, r, scale = {...}, {}, getScale()
-	for _,v in pairs(a) do
-		table.insert(r, v * scale)
-	end
-	return r
-end
 
 function Camera:startShake ()
 	self.shakeTime = Camera.SHAKE_LENGTH
@@ -122,12 +101,6 @@ function Camera:getShake ()
 	local radius = self.shakeShift.radius
 	local theta = self.shakeShift.theta * math.pi
 	return radius * math.cos(theta), radius * math.sin(theta)
-end
-
-function Camera:getShakeScaled ()
-	local x, y = self:getShake()
-	local scale = getScale()
-	return x * scale, y * scale
 end
 
 function Camera:resetSum ()
