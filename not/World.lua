@@ -19,24 +19,10 @@ function World:new (map, nauts)
 	self.world:setCallbacks(self:getContactCallbacks())
 
 	self.lastNaut = false
-
-	-- TODO: Clean layering. This is prototype. Seriously don't use it in production.
 	self.entities = {}
-	local width, height = love.graphics.getDimensions()
-	self.layers = {}
-	for i=1,6 do
-		table.insert(self.layers, Layer(width, height))
-	end
-	self.layers[1].ratio = 0
-	-- TODO: Scaled layers for Rays and future extensions.
-	do
-		local layer = Layer(320, 180)
-		layer.ratio = 0
-		layer.scale = 1
-		table.insert(self.layers, layer) -- 7
-	end
-
 	self.map = map
+
+	self:initLayers()
 	self:buildMap()
 	self:initClouds()
 	self:spawnNauts(nauts)
@@ -56,6 +42,23 @@ function World:delete ()
 	end
 	self.world:destroy()
 	collectgarbage()
+end
+
+-- TODO: Clean layering. This isn't for stable release, yet.
+function World:initLayers ()
+	local width, height = love.graphics.getDimensions()
+	self.layers = {}
+	for i=1,6 do
+		table.insert(self.layers, Layer(width, height))
+	end
+	self.layers[1].ratio = 0
+	-- TODO: Scaled layers for Rays and future extensions.
+	do
+		local layer = Layer(320, 180)
+		layer.ratio = 0
+		layer.scale = 1
+		table.insert(self.layers, layer) -- 7
+	end
 end
 
 --- Builds map using one of tables frin config files located in `config/maps/` directory.
@@ -119,6 +122,7 @@ function World:createNaut (x, y, name)
 	return h
 end
 
+-- TODO: Sprites' in general don't take actual Image in constructor. That is not only case of Decoration.
 function World:createDecoration (x, y, sprite)
 	local d = Decoration(x, y, self, sprite)
 	table.insert(self.entities, d)
@@ -140,8 +144,6 @@ function World:createRay (naut)
 	return r
 end
 
--- TODO: Sprites' in general don't take actual Image in constructor. That is not only case of Decoration.
--- TODO: Once entities are stored inside single table create single `insertEntity` method for World.
 function World:insertCloud (cloud)
 	table.insert(self.entities, cloud)
 	cloud.layer = self.layers[2]
