@@ -78,6 +78,9 @@ function World:buildMap ()
 			local x = image:getWidth() / -2
 			local y = image:getHeight() / -2
 			local bg = self:createDecoration(x, y, op.background) -- TODO: Decoration does not allow Image instead of filePath!
+			if op.animations then
+				bg:setAnimationsList(op.animations)
+			end
 			bg.layer = self.layers[1]
 		end
 	end
