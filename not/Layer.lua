@@ -3,6 +3,8 @@ Layer = require "not.Object":extends()
 
 function Layer:new (width, height)
 	self.canvas = love.graphics.newCanvas(width, height)
+	self.scale = false
+	self.ratio = false
 end
 
 function Layer:delete ()
@@ -21,6 +23,14 @@ function Layer:renderTo (func, ...)
 	local c = self:setAsCanvas()
 	func(...)
 	love.graphics.setCanvas(c)
+end
+
+function Layer:renderToWith (camera, func, ...)
+	camera:push()
+	camera:scale(self.scale)
+	camera:translate(self.ratio)
+	self:renderTo(func, ...)
+	camera:pop()
 end
 
 function Layer:clear ()

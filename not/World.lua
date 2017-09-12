@@ -260,18 +260,10 @@ function World:draw ()
 	-- TODO: Camera rewrite in progress.
 	for _,entity in pairs(self.entities) do
 		if entity.draw and entity.layer then
-			self.camera:push()
-			self.camera:scale(entity.layer.scale)
-			self.camera:translate(entity.layer.ratio)
-			entity.layer:renderTo(entity.draw, entity, 0, 0, 1, debug) -- TODO: Offsets and Scale are passed as 0,0,1 in World@draw for compatibility reasons. Remove them.
-			self.camera:pop()
+			entity.layer:renderToWith(self.camera, entity.draw, entity, 0, 0, 1, debug) -- TODO: Offsets and Scale are passed as 0,0,1 in World@draw for compatibility reasons. Remove them.
 		end
 		if entity.drawTag then
-			self.camera:push()
-			self.camera:scale()
-			self.camera:translate()
-			self.layers[6]:renderTo(entity.drawTag, entity, 0, 0, 1) -- TODO: Offsets and Scale passed. See `World@draw`.
-			self.camera:pop()
+			self.layers[6]:renderToWith(self.camera, entity.drawTag, entity, 0, 0, 1) -- TODO: Offsets and Scale passed. See `World@draw`.
 		end
 	end
 
