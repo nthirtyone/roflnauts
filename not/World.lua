@@ -95,6 +95,8 @@ function World:buildMap ()
 			if op.animations then
 				bg:setAnimationsList(op.animations)
 				_,_,width,height = bg:getAnimations()[1]:getViewport()
+				width = width * getScale()
+				height = height * getScale()
 			end
 			bg.layer = self:addLayer(width, height, op.ratio)
 		end
