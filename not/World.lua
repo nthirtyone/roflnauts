@@ -52,7 +52,7 @@ function World:initLayers ()
 		table.insert(self.layers, Layer(width, height))
 	end
 	self.layers[1].ratio = 0
-	-- TODO: Scaled layers for Rays and future extensions.
+	-- TODO: Find a better way to create customized Layers.
 	do
 		local layer = Layer(320, 180)
 		layer.ratio = 0
@@ -76,7 +76,7 @@ function World:buildMap ()
 			local image = love.graphics.newImage(op.background)
 			local x = image:getWidth() / -2
 			local y = image:getHeight() / -2
-			local bg = self:createDecoration(x, y, op.background) -- TODO: Decoration does not allow Image instead of filePath!
+			local bg = self:createDecoration(x, y, op.background)
 			if op.animations then
 				bg:setAnimationsList(op.animations)
 			end
@@ -234,7 +234,6 @@ end
 function World:update (dt)
 	self.world:update(dt)
 	self.camera:update(dt)
-	self.camera:sum(self.map.center.x, self.map.center.y)
 
 	if self.cloudGenerator then
 		self.cloudGenerator:update(dt)
@@ -246,7 +245,8 @@ function World:update (dt)
 		end
 	end
 
-	-- TODO: Weird Camera following Heroes.
+	-- TODO: Possibly rename Camera@sum because this code part in World doesn't make sense without reading further.
+	self.camera:sum(self.map.center.x, self.map.center.y)
 	for _,hero in pairs(self:getNautsAll()) do
 		self.camera:sum(hero:getPosition())
 	end
@@ -257,14 +257,12 @@ function World:update (dt)
 end
 
 function World:draw ()
-	-- TODO: Prototype of layering. See `World@new`.
-	-- TODO: Camera rewrite in progress.
 	for _,entity in pairs(self.entities) do
 		if entity.draw and entity.layer then
-			entity.layer:renderToWith(self.camera, entity.draw, entity, debug) -- TODO: Offsets and Scale are passed as 0,0,1 in World@draw for compatibility reasons. Remove them.
+			entity.layer:renderToWith(self.camera, entity.draw, entity, debug)
 		end
 		if entity.drawTag then
-			self.layers[6]:renderToWith(self.camera, entity.drawTag, entity, debug) -- TODO: Offsets and Scale passed. See `World@draw`.
+			self.layers[6]:renderToWith(self.camera, entity.drawTag, entity, debug)
 		end
 	end
 
@@ -273,6 +271,7 @@ function World:draw ()
 		layer:clear()
 	end
 	
+	-- TODO: Debug information could possibly get its own layer so it could follow flow of draw method.
 	if debug then
 		local center = self.map.center
 		local ax, ay, bx, by = self.camera:getBoundaries()
@@ -294,7 +293,7 @@ function World:draw ()
 		self.camera:pop()
 	end
 	
-	-- TODO: Draw method beyond this point is a very, very dark place.
+	-- TODO: Draw method beyond this point is a very, very dark place (portraits drawing to review).
 	local scale = getScale()
 	for _,naut in pairs(self:getNautsAll()) do
 		-- I have no idea where to place them T_T
