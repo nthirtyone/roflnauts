@@ -4,16 +4,16 @@ CloudGenerator = require "not.Object":extends()
 
 require "not.Cloud"
 
--- TODO: Allow map config to modify cloud styles: maximum cloud count, animations and atlas.
-function CloudGenerator:new (atlas, animations, world)
+function CloudGenerator:new (atlas, animations, count, world)
 	self.world = world
 	self.atlas = atlas
 	self.quads = animations
-	self.count = 18
+	self.count = count
 	self.interval = 6
 	self.timer = 0
 end
 
+-- TODO: This was a bad idea. Move Cloud creation back to World, pass created Cloud here for configuration.
 function CloudGenerator:createCloud (x, y, style)
 	local cloud = Cloud(x, y, self.world, self.atlas)
 	cloud:setAnimationsList(self.quads)
@@ -46,7 +46,7 @@ function CloudGenerator:getRandomStyle ()
 end
 
 function CloudGenerator:run (count, inside)
-	local count = count or 1
+	count = count or 1
 	for i=1,count do
 		local x, y = self:getRandomPosition(inside)
 		local style = self:getRandomStyle()
@@ -56,10 +56,11 @@ end
 
 function CloudGenerator:update (dt)
 	local count = self.world:getCloudsCount()
-	self.timer = self.timer - dt
-	if self.timer < 0 then
+	if self.timer < 0 and self.count > count then
 		self.timer = self.timer + self.interval
 		self:run()
+	else
+		self.timer = self.timer - dt
 	end
 end
 

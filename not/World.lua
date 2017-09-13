@@ -101,7 +101,9 @@ function World:buildMap ()
 			if type(animations) == "string" then
 				animations = require("config.animations." .. animations)
 			end
-			self:insertEntity(CloudGenerator(op.clouds, animations, self)):run(6, true)
+			local cg = CloudGenerator(op.clouds, animations, op.count, self)
+			self:insertEntity(cg)
+			cg:run(op.count, true)
 		end
 	end
 end

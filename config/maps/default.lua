@@ -15,7 +15,8 @@ return
 	create = {
 		{
 			clouds = "assets/clouds.png",
-			animations = "clouds-default"
+			animations = "clouds-default",
+			count = 8
 		},
 		{
 			ratio = 0,
