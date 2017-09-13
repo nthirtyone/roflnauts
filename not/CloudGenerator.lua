@@ -20,6 +20,7 @@ function CloudGenerator:createCloud (x, y, style)
 	cloud:setAnimation(style)
 	cloud:setVelocity(13, 0)
 	cloud:setBoundary(340, 320)
+	cloud.generator = self
 	return cloud
 end
 
@@ -55,7 +56,7 @@ function CloudGenerator:run (count, inside)
 end
 
 function CloudGenerator:update (dt)
-	local count = self.world:getCloudsCount()
+	local count = self.world:getCloudsCountFrom(self)
 	if self.timer < 0 and self.count > count then
 		self.timer = self.timer + self.interval
 		self:run()

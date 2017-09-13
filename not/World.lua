@@ -222,6 +222,12 @@ function World:getCloudsCount ()
 	end)
 end
 
+function World:getCloudsCountFrom (generator)
+	return self:countEntities(function (entity)
+		return entity:is(Cloud) and entity.generator == generator
+	end)
+end
+
 function World:getNautsAll ()
 	return self:getEntities(function (entity)
 		return entity:is(require("not.Hero")) and not entity.body:isDestroyed()
