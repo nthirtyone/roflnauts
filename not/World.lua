@@ -95,7 +95,7 @@ function World:buildMap ()
 			if op.animations then
 				bg:setAnimationsList(op.animations)
 			end
-			bg.layer = self:addLayer(width, height, 0)
+			bg.layer = self:addLayer(width, height, op.ratio)
 		end
 	end
 end
