@@ -51,7 +51,6 @@ end
 
 function CloudGenerator:run (count, inside)
 	count = count or 1
-	print(self, "spawning", count)
 	for i=1,count do
 		local x, y = self:getRandomPosition(inside)
 		local style = self:getRandomStyle()
