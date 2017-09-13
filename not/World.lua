@@ -103,9 +103,8 @@ function World:buildMap ()
 			local bg = self:createDecoration(x, y, op.background)
 			if op.animations then
 				bg:setAnimationsList(op.animations)
-				_,_,width,height = bg:getAnimation()[1]:getViewport()
-				width = width * getScale()
-				height = height * getScale()
+				_,_,x,y = bg:getAnimation()[1]:getViewport()
+				bg:setPosition(x / -2, y / -2)
 			end
 			bg.layer = self:addLayer(width, height)
 			bg.layer.transformRatio = op.ratio
