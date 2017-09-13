@@ -12,7 +12,6 @@ return
 		{x =  135, y = 10},
 		{x =  135, y = 10}
 	},
-	clouds = false,
 	create = {
 		{
 			ratio = 0,

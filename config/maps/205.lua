@@ -11,7 +11,6 @@ return
 		{x = 0, y = -55},
 		{x = 10, y = -55}
 	},
-	clouds = false,
 	create = {
 		{
 			x = -36,
