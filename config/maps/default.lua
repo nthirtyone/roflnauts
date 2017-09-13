@@ -12,8 +12,10 @@ return
 		{x =   5, y = -80},
 		{x =  15, y = -80}
 	},
-	clouds = true,
 	create = {
+		{
+			clouds = true
+		},
 		{
 			ratio = 0,
 			background = "assets/backgrounds/default.png"

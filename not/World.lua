@@ -24,7 +24,6 @@ function World:new (map, nauts)
 
 	self:initLayers()
 	self:buildMap()
-	self:initClouds()
 	self:spawnNauts(nauts)
 
 	self.camera = Camera(self.map.center.x, self.map.center.y, self)
@@ -97,13 +96,9 @@ function World:buildMap ()
 			end
 			bg.layer = self:addLayer(width, height, op.ratio)
 		end
-	end
-end
-
-function World:initClouds ()
-	if self.map.clouds then
-		self.cloudGenerator = CloudGenerator(self)
-		self.cloudGenerator:run(6, true)
+		if op.clouds then
+			self:insertEntity(CloudGenerator(self)):run(6, true)
+		end
 	end
 end
 
@@ -264,10 +259,6 @@ end
 function World:update (dt)
 	self.world:update(dt)
 	self.camera:update(dt)
-
-	if self.cloudGenerator then
-		self.cloudGenerator:update(dt)
-	end
 
 	for key,entity in pairs(self.entities) do
 		if entity:update(dt) then
