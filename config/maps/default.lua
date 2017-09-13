@@ -16,20 +16,7 @@ return
 		{
 			clouds = "assets/clouds.png",
 			animations = "clouds-default",
-			count = 4,
-			ratio = 0.9
-		},
-		{
-			clouds = "assets/clouds.png",
-			animations = "clouds-default",
-			count = 3,
-			ratio = 0.8
-		},
-		{
-			clouds = "assets/clouds.png",
-			animations = "clouds-default",
-			count = 3,
-			ratio = 0.7
+			count = 8,
 		},
 		{
 			ratio = 0,
