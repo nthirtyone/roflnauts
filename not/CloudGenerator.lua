@@ -27,6 +27,7 @@ function CloudGenerator:createCloud (x, y, style)
 end
 
 -- TODO: CloudGen's randomization methods are too static (not configurable).
+-- TODO: Random position for Clouds inside map shouldn't be random. Make them place them where no clouds are present.
 function CloudGenerator:getRandomPosition (inside)
 	local x, y
 	local map = self.world.map
