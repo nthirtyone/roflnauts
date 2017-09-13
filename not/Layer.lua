@@ -1,4 +1,5 @@
 --- A little bit more than just a Canvas.
+-- TODO: Scaled and RealScaled support should be extended.
 Layer = require "not.Object":extends()
 
 function Layer:new (width, height)
@@ -43,7 +44,7 @@ function Layer:draw ()
 		scale = getScale() / self.scale
 	end
 	love.graphics.setColor(255, 255, 255, 255)
-	love.graphics.draw(self.canvas, 0, 0, 0, scale, scale)
+	love.graphics.draw(self.canvas, nil, nil, nil, scale, scale)
 end
 
 return Layer

@@ -1,4 +1,5 @@
 --- Used in drawing other stuff in places.
+-- TODO: Support for real scale translations.
 Camera = require "not.Object":extends()
 
 Camera.SHAKE_LENGTH = 0.6
@@ -25,26 +26,29 @@ function Camera:push ()
 	love.graphics.push()
 end
 
+-- TODO: self._scale usage is temporary, used for real scaling.
 function Camera:scale (scale)
 	scale = scale or getScale()
 	love.graphics.scale(scale, scale)
+	self._scale = scale
 end
 
--- TODO: Even more magic numbers present in Camera. Translate method.
 function Camera:translate (ratio)
 	local px, py = self:getPosition()
 	local dx, dy = self:getShake()
+	local ox, oy = self:getHalfViewSize()
 	if ratio then
 		dx = dx * ratio
 		dy = dy * ratio
 		px = px * ratio
 		py = py * ratio
 	end
-	love.graphics.translate(160 - px - dx, 90 - py - dy)
+	love.graphics.translate(ox - px - dx, oy - py - dy)
 end
 
 function Camera:pop ()
 	love.graphics.pop()
+	self._scale = nil
 end
 
 function Camera:setPosition (x, y)
@@ -57,12 +61,24 @@ function Camera:getPosition ()
 	return self.x, self.y
 end
 
--- TODO: Magic numbers present in camera's boundaries.
 function Camera:getBoundaries ()
 	local x, y = self:getPosition()
-	return x - 160, y - 90, x + 160, y + 90
+	local width, height = self:getHalfViewSize()
+	return x - width, y - height, x + width, y + height
 end
 
+-- TODO: Review getViewSize of Camera.
+function Camera:getViewSize ()
+	local scale = self._scale or getScale()
+	local width = love.graphics.getWidth() / scale
+	local height = love.graphics.getHeight() / scale
+	return width, height
+end
+
+function Camera:getHalfViewSize ()
+	local width, height = self:getViewSize()
+	return width / 2, height / 2
+end
 
 function Camera:startShake ()
 	self.shakeTime = Camera.SHAKE_LENGTH

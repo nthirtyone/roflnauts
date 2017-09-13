@@ -76,6 +76,7 @@ end
 
 --- Builds map using one of tables frin config files located in `config/maps/` directory.
 -- TODO: Clean World@buildMap. Possibly explode into more methods.
+-- TODO: ScaledLayers and RealScaledLayers should be implemented properly with good Camera support.
 function World:buildMap ()
 	for _,op in pairs(self.map.create) do
 		if op.platform then
@@ -98,7 +99,13 @@ function World:buildMap ()
 				width = width * getScale()
 				height = height * getScale()
 			end
-			bg.layer = self:addLayer(width, height, op.ratio)
+			bg.layer = self:addLayer(width, height, op.ratio, getRealScale())
+			print("ayyy", getScale(), getRealScale())
+			print("lmao", x, y)
+			bg.layer.draw = function (self)
+				love.graphics.setColor(255, 255, 255, 255)
+				love.graphics.draw(self.canvas)
+			end
 		end
 		if op.clouds then
 			local width, height = love.graphics.getDimensions()
@@ -313,7 +320,7 @@ function World:draw ()
 		layer:draw()
 		layer:clear()
 	end
-	
+
 	-- TODO: Debug information could possibly get its own layer so it could follow flow of draw method.
 	if debug then
 		local center = self.map.center
