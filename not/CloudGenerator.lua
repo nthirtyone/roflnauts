@@ -9,8 +9,8 @@ function CloudGenerator:new (atlas, animations, count, world)
 	self.atlas = atlas
 	self.quads = animations
 	self.count = count
-	self.interval = 8
-	self.timer = 0
+	self.interval = 12
+	self.timer = self.interval
 	self.layer = false
 end
 
@@ -50,6 +50,7 @@ end
 
 function CloudGenerator:run (count, inside)
 	count = count or 1
+	print(self, "spawning", count)
 	for i=1,count do
 		local x, y = self:getRandomPosition(inside)
 		local style = self:getRandomStyle()
@@ -59,9 +60,11 @@ end
 
 function CloudGenerator:update (dt)
 	local count = self.world:getCloudsCountFrom(self)
-	if self.timer < 0 and self.count > count then
-		self.timer = self.timer + self.interval
-		self:run()
+	if self.timer < 0 then
+		if self.count > count then
+			self.timer = self.timer + self.interval
+			self:run()
+		end
 	else
 		self.timer = self.timer - dt
 	end
