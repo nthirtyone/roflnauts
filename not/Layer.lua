@@ -1,11 +1,11 @@
 --- A little bit more than just a Canvas.
--- TODO: Scaled and RealScaled support should be extended.
 Layer = require "not.Object":extends()
 
 function Layer:new (width, height)
 	self.canvas = love.graphics.newCanvas(width, height)
-	self.scale = false
-	self.ratio = false
+	self.transformScale = getScale()
+	self.transformRatio = 1
+	self.drawScale = 1
 end
 
 function Layer:delete ()
@@ -28,8 +28,7 @@ end
 
 function Layer:renderToWith (camera, func, ...)
 	camera:push()
-	camera:scale(self.scale)
-	camera:translate(self.ratio)
+	camera:transform(self.transformScale, self.transformRatio, self.canvas:getDimensions())
 	self:renderTo(func, ...)
 	camera:pop()
 end
@@ -39,12 +38,8 @@ function Layer:clear ()
 end
 
 function Layer:draw ()
-	local scale = 1
-	if self.scale then
-		scale = getScale() / self.scale
-	end
 	love.graphics.setColor(255, 255, 255, 255)
-	love.graphics.draw(self.canvas, nil, nil, nil, scale, scale)
+	love.graphics.draw(self.canvas, nil, nil, nil, self.drawScale, self.drawScale)
 end
 
 return Layer

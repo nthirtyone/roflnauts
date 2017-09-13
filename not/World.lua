@@ -64,22 +64,27 @@ end
 function World:initLayers ()
 	self.layers = setmetatable({}, {__call = layersIterator})
 	self.layers.n = 0
-
-	local width, height = self.camera:getViewSize()
-	self.layers.rays = self:addLayer(width, height, 0, 1)
-
-	local width, height = love.graphics.getDimensions()
-	self.layers.tags = self:addLayer(width, height)
-	self.layers.platforms = self:addLayer(width, height)
-	self.layers.effects = self:addLayer(width, height)
-	self.layers.heroes = self:addLayer(width, height)
-	self.layers.decorations = self:addLayer(width, height)
-	self.layers.clouds = self:addLayer(width, height)
+	do
+		local width, height = love.graphics.getWidth() / getScale(), love.graphics.getHeight() / getScale()
+		local rays = self:addLayer(width, height)
+		rays.transformScale = 1
+		rays.transformRatio = 0
+		rays.drawScale = getScale()
+		self.layers.rays = rays
+	end
+	do
+		local width, height = love.graphics.getDimensions()
+		self.layers.tags = self:addLayer(width, height)
+		self.layers.platforms = self:addLayer(width, height)
+		self.layers.effects = self:addLayer(width, height)
+		self.layers.heroes = self:addLayer(width, height)
+		self.layers.decorations = self:addLayer(width, height)
+		self.layers.clouds = self:addLayer(width, height)
+	end
 end
 
 --- Builds map using one of tables frin config files located in `config/maps/` directory.
 -- TODO: Clean World@buildMap. Possibly explode into more methods.
--- TODO: ScaledLayers and RealScaledLayers should be implemented properly with good Camera support.
 function World:buildMap ()
 	for _,op in pairs(self.map.create) do
 		if op.platform then
@@ -102,18 +107,9 @@ function World:buildMap ()
 				width = width * getScale()
 				height = height * getScale()
 			end
-			bg.layer = self:addLayer(width, height, op.ratio, getRealScale())
-			bg.layer.renderToWith = function (self, camera, func, ...)
-				camera:push()
-				camera:scale(self.scale)
-				camera:translateReal(self.ratio)
-				self:renderTo(func, ...)
-				camera:pop()
-			end
-			bg.layer.draw = function (self)
-				love.graphics.setColor(255, 255, 255, 255)
-				love.graphics.draw(self.canvas)
-			end
+			bg.layer = self:addLayer(width, height)
+			bg.layer.transformRatio = op.ratio
+			bg.layer.transformScale = getRealScale()
 		end
 		if op.clouds then
 			local width, height = love.graphics.getDimensions()
@@ -123,7 +119,8 @@ function World:buildMap ()
 			end
 			local cg = CloudGenerator(op.clouds, animations, op.count, self)
 			if op.ratio then
-				cg.layer = self:addLayer(width, height, op.ratio)
+				cg.layer = self:addLayer(width, height)
+				cg.layer.transformRatio = op.ratio
 			end
 			self:insertEntity(cg)
 			cg:run(op.count, true)
@@ -146,16 +143,9 @@ function World:getSpawnPosition ()
 	return self.map.respawns[n].x, self.map.respawns[n].y
 end
 
--- TODO: Possibly automate calculation of new layer's dimensions based on scale.
-function World:addLayer (width, height, ratio, scale)
+function World:addLayer (width, height)
 	local layer = Layer(width, height)
 	local n = self.layers.n + 1
-	if ratio then
-		layer.ratio = ratio
-	end
-	if scale then
-		layer.scale = scale
-	end
 	self.layers[n] = layer
 	self.layers.n = n
 	return layer
@@ -332,14 +322,13 @@ function World:draw ()
 	-- TODO: Debug information could possibly get its own layer so it could follow flow of draw method.
 	if debug then
 		local center = self.map.center
-		local ax, ay, bx, by = self.camera:getBoundaries()
+		local ax, ay, bx, by = self.camera:getBoundaries(getScale(), love.graphics.getDimensions())
 
 		love.graphics.setLineWidth(1 / getScale())
 		love.graphics.setLineStyle("rough")
 
 		self.camera:push()
-		self.camera:scale()
-		self.camera:translate()
+		self.camera:transform(getScale(), 1, love.graphics.getDimensions())
 
 		love.graphics.setColor(130,130,130)
 		love.graphics.line(ax,center.y,bx,center.y)

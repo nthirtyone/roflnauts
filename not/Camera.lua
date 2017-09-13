@@ -1,5 +1,5 @@
 --- Used in drawing other stuff in places.
--- TODO: Support for real scale translations.
+-- TODO: Camera is missing documentation on every important method.
 Camera = require "not.Object":extends()
 
 Camera.SHAKE_LENGTH = 0.6
@@ -26,41 +26,19 @@ function Camera:push ()
 	love.graphics.push()
 end
 
-function Camera:scale (scale)
-	scale = scale or getScale()
+function Camera:transform (scale, ratio, vw, vh)
+	local px, py = self:getPosition()
+	local sx, sy = self:getShake()
+	local dx, dy = (px + sx) * ratio, (py + sy) * ratio
+
+	vw, vh = vw / scale / 2, vh / scale / 2
+
 	love.graphics.scale(scale, scale)
-end
-
-function Camera:translate (ratio)
-	local px, py = self:getPosition()
-	local dx, dy = self:getShake()
-	local ox, oy = self:getHalfViewSize()
-	if ratio then
-		dx = dx * ratio
-		dy = dy * ratio
-		px = px * ratio
-		py = py * ratio
-	end
-	love.graphics.translate(ox - px - dx, oy - py - dy)
-end
-
--- TODO: TranslateReal is temporary.
-function Camera:translateReal (ratio)
-	local px, py = self:getPosition()
-	local dx, dy = self:getShake()
-	local ox, oy = self:getHalfViewSize(getRealScale())
-	if ratio then
-		dx = dx * ratio
-		dy = dy * ratio
-		px = px * ratio
-		py = py * ratio
-	end
-	love.graphics.translate(ox - px - dx, oy - py - dy)
+	love.graphics.translate(vw - dx, vh - dy)
 end
 
 function Camera:pop ()
 	love.graphics.pop()
-	self._scale = nil
 end
 
 function Camera:setPosition (x, y)
@@ -73,23 +51,10 @@ function Camera:getPosition ()
 	return self.x, self.y
 end
 
-function Camera:getBoundaries ()
+function Camera:getBoundaries (scale, vw, vh)
 	local x, y = self:getPosition()
-	local width, height = self:getHalfViewSize()
+	local width, height = vw / scale / 2, vh / scale / 2
 	return x - width, y - height, x + width, y + height
-end
-
--- TODO: Review getViewSize of Camera.
-function Camera:getViewSize (scale)
-	scale = scale or getScale()
-	local width = love.graphics.getWidth() / scale
-	local height = love.graphics.getHeight() / scale
-	return width, height
-end
-
-function Camera:getHalfViewSize (scale)
-	local width, height = self:getViewSize(scale)
-	return width / 2, height / 2
 end
 
 function Camera:startShake ()
