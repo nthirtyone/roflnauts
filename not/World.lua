@@ -75,6 +75,7 @@ function World:initLayers ()
 end
 
 --- Builds map using one of tables frin config files located in `config/maps/` directory.
+-- TODO: Clean World@buildMap. Possibly explode into more methods.
 function World:buildMap ()
 	for _,op in pairs(self.map.create) do
 		if op.platform then
@@ -97,11 +98,15 @@ function World:buildMap ()
 			bg.layer = self:addLayer(width, height, op.ratio)
 		end
 		if op.clouds then
+			local width, height = love.graphics.getDimensions()
 			local animations = op.animations
 			if type(animations) == "string" then
 				animations = require("config.animations." .. animations)
 			end
 			local cg = CloudGenerator(op.clouds, animations, op.count, self)
+			if op.ratio then
+				cg.layer = self:addLayer(width, height, op.ratio)
+			end
 			self:insertEntity(cg)
 			cg:run(op.count, true)
 		end
@@ -177,7 +182,9 @@ end
 
 function World:insertCloud (cloud)
 	table.insert(self.entities, cloud)
-	cloud.layer = self.layers.clouds
+	if not cloud.layer then
+		cloud.layer = self.layers.clouds
+	end
 	return cloud
 end
 

@@ -9,8 +9,9 @@ function CloudGenerator:new (atlas, animations, count, world)
 	self.atlas = atlas
 	self.quads = animations
 	self.count = count
-	self.interval = 6
+	self.interval = 8
 	self.timer = 0
+	self.layer = false
 end
 
 -- TODO: This was a bad idea. Move Cloud creation back to World, pass created Cloud here for configuration.
@@ -21,6 +22,7 @@ function CloudGenerator:createCloud (x, y, style)
 	cloud:setVelocity(13, 0)
 	cloud:setBoundary(340, 320)
 	cloud.generator = self
+	cloud.layer = self.layer
 	return cloud
 end
 
