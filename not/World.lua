@@ -97,7 +97,11 @@ function World:buildMap ()
 			bg.layer = self:addLayer(width, height, op.ratio)
 		end
 		if op.clouds then
-			self:insertEntity(CloudGenerator(self)):run(6, true)
+			local animations = op.animations
+			if type(animations) == "string" then
+				animations = require("config.animations." .. animations)
+			end
+			self:insertEntity(CloudGenerator(op.clouds, animations, self)):run(6, true)
 		end
 	end
 end

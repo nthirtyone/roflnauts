@@ -4,28 +4,10 @@ CloudGenerator = require "not.Object":extends()
 
 require "not.Cloud"
 
-local animations = { 
-	default = {
-		[1] = love.graphics.newQuad(  1,  1, 158,47, 478,49),
-		frames = 1,
-		repeated = true
-	},
-	default2 = {
-		[1] = love.graphics.newQuad(160,  1, 158,47, 478,49),
-		frames = 1,
-		repeated = true
-	},
-	default3 = {
-		[1] = love.graphics.newQuad(319,  1, 158,47, 478,49),
-		frames = 1,
-		repeated = true
-	}
-}
-
 -- TODO: Allow map config to modify cloud styles: maximum cloud count, animations and atlas.
-function CloudGenerator:new (world)
+function CloudGenerator:new (atlas, animations, world)
 	self.world = world
-	self.atlas = "assets/clouds.png"
+	self.atlas = atlas
 	self.quads = animations
 	self.count = 18
 	self.interval = 6
