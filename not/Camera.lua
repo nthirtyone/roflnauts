@@ -26,17 +26,29 @@ function Camera:push ()
 	love.graphics.push()
 end
 
--- TODO: self._scale usage is temporary, used for real scaling.
 function Camera:scale (scale)
 	scale = scale or getScale()
 	love.graphics.scale(scale, scale)
-	self._scale = scale
 end
 
 function Camera:translate (ratio)
 	local px, py = self:getPosition()
 	local dx, dy = self:getShake()
 	local ox, oy = self:getHalfViewSize()
+	if ratio then
+		dx = dx * ratio
+		dy = dy * ratio
+		px = px * ratio
+		py = py * ratio
+	end
+	love.graphics.translate(ox - px - dx, oy - py - dy)
+end
+
+-- TODO: TranslateReal is temporary.
+function Camera:translateReal (ratio)
+	local px, py = self:getPosition()
+	local dx, dy = self:getShake()
+	local ox, oy = self:getHalfViewSize(getRealScale())
 	if ratio then
 		dx = dx * ratio
 		dy = dy * ratio
@@ -68,15 +80,15 @@ function Camera:getBoundaries ()
 end
 
 -- TODO: Review getViewSize of Camera.
-function Camera:getViewSize ()
-	local scale = self._scale or getScale()
+function Camera:getViewSize (scale)
+	scale = scale or getScale()
 	local width = love.graphics.getWidth() / scale
 	local height = love.graphics.getHeight() / scale
 	return width, height
 end
 
-function Camera:getHalfViewSize ()
-	local width, height = self:getViewSize()
+function Camera:getHalfViewSize (scale)
+	local width, height = self:getViewSize(scale)
 	return width / 2, height / 2
 end
 

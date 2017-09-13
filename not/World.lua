@@ -22,11 +22,11 @@ function World:new (map, nauts)
 	self.entities = {}
 	self.map = map
 
+	self.camera = Camera(self.map.center.x, self.map.center.y, self)
+
 	self:initLayers()
 	self:buildMap()
 	self:spawnNauts(nauts)
-
-	self.camera = Camera(self.map.center.x, self.map.center.y, self)
 
 	musicPlayer:play(self.map.theme)
 end
@@ -62,10 +62,13 @@ end
 -- Layers are drawn in reverse order, meaning that `instance.layers[1]` will be on the top.
 -- Calling `instance.layers` will return iterator.
 function World:initLayers ()
-	local width, height = love.graphics.getDimensions()
 	self.layers = setmetatable({}, {__call = layersIterator})
 	self.layers.n = 0
-	self.layers.rays = self:addLayer(320, 180, 0, 1)
+
+	local width, height = self.camera:getViewSize()
+	self.layers.rays = self:addLayer(width, height, 0, 1)
+
+	local width, height = love.graphics.getDimensions()
 	self.layers.tags = self:addLayer(width, height)
 	self.layers.platforms = self:addLayer(width, height)
 	self.layers.effects = self:addLayer(width, height)
@@ -100,8 +103,13 @@ function World:buildMap ()
 				height = height * getScale()
 			end
 			bg.layer = self:addLayer(width, height, op.ratio, getRealScale())
-			print("ayyy", getScale(), getRealScale())
-			print("lmao", x, y)
+			bg.layer.renderToWith = function (self, camera, func, ...)
+				camera:push()
+				camera:scale(self.scale)
+				camera:translateReal(self.ratio)
+				self:renderTo(func, ...)
+				camera:pop()
+			end
 			bg.layer.draw = function (self)
 				love.graphics.setColor(255, 255, 255, 255)
 				love.graphics.draw(self.canvas)
