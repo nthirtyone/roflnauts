@@ -37,28 +37,42 @@ function World:delete ()
 	for _,entity in pairs(self.entities) do
 	 	entity:delete()
 	end
-	for _,layer in pairs(self.layers) do
+	for layer in self.layers() do
 		layer:delete()
 	end
 	self.world:destroy()
 	collectgarbage()
 end
 
--- TODO: Clean layering. This isn't for stable release, yet.
+--- Custom iterator for layers table.
+-- Iterates over elements in reversed order. Doesn't pay attention to any changes in table.
+local
+function layersIterator (layers)
+	local i = layers.n + 1
+	return function ()
+		i = i - 1
+		return layers[i]
+	end
+end
+
+--- Layers in World may exists as two references. Every reference is stored inside `instance.layers`.
+-- First reference is indexed with number, it exists for every layer.
+-- Second reference is indexed with string, it exists only for selected layers.
+-- Mentioned special layers are initialized in this method.
+-- Additionally layer count is stored inside `instance.layers.n`.
+-- Layers are drawn in reverse order, meaning that `instance.layers[1]` will be on the top.
+-- Calling `instance.layers` will return iterator.
 function World:initLayers ()
 	local width, height = love.graphics.getDimensions()
-	self.layers = {}
-	for i=1,6 do
-		table.insert(self.layers, Layer(width, height))
-	end
-	self.layers[1].ratio = 0
-	-- TODO: Find a better way to create customized Layers.
-	do
-		local layer = Layer(320, 180)
-		layer.ratio = 0
-		layer.scale = 1
-		table.insert(self.layers, layer) -- 7
-	end
+	self.layers = setmetatable({}, {__call = layersIterator})
+	self.layers.n = 0
+	self.layers.rays = self:addLayer(320, 180, 0, 1)
+	self.layers.tags = self:addLayer(width, height)
+	self.layers.platforms = self:addLayer(width, height)
+	self.layers.effects = self:addLayer(width, height)
+	self.layers.heroes = self:addLayer(width, height)
+	self.layers.decorations = self:addLayer(width, height)
+	self.layers.clouds = self:addLayer(width, height)
 end
 
 --- Builds map using one of tables frin config files located in `config/maps/` directory.
@@ -73,6 +87,7 @@ function World:buildMap ()
 			self:createDecoration(op.x, op.y, op.decoration)
 		end
 		if op.background then
+			local width, height = love.graphics.getDimensions()
 			local image = love.graphics.newImage(op.background)
 			local x = image:getWidth() / -2
 			local y = image:getHeight() / -2
@@ -80,7 +95,7 @@ function World:buildMap ()
 			if op.animations then
 				bg:setAnimationsList(op.animations)
 			end
-			bg.layer = self.layers[1]
+			bg.layer = self:addLayer(width, height, 0)
 		end
 	end
 end
@@ -107,18 +122,33 @@ function World:getSpawnPosition ()
 	return self.map.respawns[n].x, self.map.respawns[n].y
 end
 
+-- TODO: Possibly automate calculation of new layer's dimensions based on scale.
+function World:addLayer (width, height, ratio, scale)
+	local layer = Layer(width, height)
+	local n = self.layers.n + 1
+	if ratio then
+		layer.ratio = ratio
+	end
+	if scale then
+		layer.scale = scale
+	end
+	self.layers[n] = layer
+	self.layers.n = n
+	return layer
+end
+
 -- TODO: Standardize `create*` methods with corresponding constructors. Pay attention to both params' order and names.
 function World:createPlatform (x, y, polygon, sprite, animations)
 	local p = Platform(animations, polygon, x, y, self, sprite)
 	table.insert(self.entities, p)
-	p.layer = self.layers[5]
+	p.layer = self.layers.platforms
 	return p
 end
 
 function World:createNaut (x, y, name)
 	local h = Player(name, x, y, self)
 	table.insert(self.entities, h)
-	h.layer = self.layers[4]
+	h.layer = self.layers.heroes
 	return h
 end
 
@@ -126,27 +156,27 @@ end
 function World:createDecoration (x, y, sprite)
 	local d = Decoration(x, y, self, sprite)
 	table.insert(self.entities, d)
-	d.layer = self.layers[3]
+	d.layer = self.layers.decorations
 	return d
 end
 
 function World:createEffect (name, x, y)
 	local e = Effect(name, x, y, self)
 	table.insert(self.entities, e)
-	e.layer = self.layers[5]
+	e.layer = self.layers.effects
 	return e
 end
 
 function World:createRay (naut)
 	local r = Ray(naut, self)
 	table.insert(self.entities, r)
-	r.layer = self.layers[7]
+	r.layer = self.layers.rays
 	return r
 end
 
 function World:insertCloud (cloud)
 	table.insert(self.entities, cloud)
-	cloud.layer = self.layers[2]
+	cloud.layer = self.layers.clouds
 	return cloud
 end
 
@@ -262,11 +292,11 @@ function World:draw ()
 			entity.layer:renderToWith(self.camera, entity.draw, entity, debug)
 		end
 		if entity.drawTag then
-			self.layers[6]:renderToWith(self.camera, entity.drawTag, entity, debug)
+			self.layers.tags:renderToWith(self.camera, entity.drawTag, entity, debug)
 		end
 	end
 
-	for _,layer in ipairs(self.layers) do
+	for layer in self.layers() do
 		layer:draw()
 		layer:clear()
 	end
