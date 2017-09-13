@@ -94,6 +94,7 @@ function World:buildMap ()
 			local bg = self:createDecoration(x, y, op.background)
 			if op.animations then
 				bg:setAnimationsList(op.animations)
+				_,_,width,height = bg:getAnimations()[1]:getViewport()
 			end
 			bg.layer = self:addLayer(width, height, op.ratio)
 		end
