@@ -1,7 +1,6 @@
-Timer = require "not.Object":extends()
+Timer = require "not.Trigger":extends()
 
-function Timer:new (trigger, delay)
-	self.trigger = trigger
+function Timer:new (delay)
 	self.delay = delay
 	self.left = 0
 	self.active = false
@@ -16,7 +15,7 @@ end
 function Timer:update (dt)
 	if self.active then
 		if self.left < 0 then
-			self.trigger:emit()
+			self:emit()
 			self.active = false
 			if self.restart then
 				self:start()
