@@ -83,6 +83,68 @@ function World:initLayers ()
 	end
 end
 
+-- TODO: Move flames to separate class `Trap`.
+-- TODO: Make collisions for category 3 more customizable or create new category for traps/area effects.
+local
+function createFlame (self, x, y, mirror, timerIn, timerOut)
+	local trap = require("not.PhysicalBody")(x, y, self, "assets/decorations/205-flames.png")
+	trap:setAnimationsList({
+		default = {
+			[1] = love.graphics.newQuad(0, 0, 42, 19, 168, 19),
+			[2] = love.graphics.newQuad(42, 0, 42, 19, 168, 19),
+			frames = 2,
+			repeated = true
+		},
+		fadein = {
+			[1] = love.graphics.newQuad(84, 0, 42, 19, 168, 19),
+			[2] = love.graphics.newQuad(126, 0, 42, 19, 168, 19),
+			frames = 2,
+			repeated = false
+		},
+		fadeout = {
+			[1] = love.graphics.newQuad(126, 0, 42, 19, 168, 19),
+			[2] = love.graphics.newQuad(84, 0, 42, 19, 168, 19),
+			frames = 2,
+			repeated = false
+		}
+	})
+
+	-- hotfix for clash
+	trap.body:setUserData(trap)
+	trap.damage = function () end
+
+	local fixture = trap:addFixture({0,0, 41*mirror,0, 41*mirror,18, 0,18})
+	fixture:setCategory(3)
+	fixture:setMask(1)
+	local direction = "right"
+	if mirror < 0 then direction = "left" end
+	fixture:setUserData({0, direction})
+	fixture:setSensor(true)
+	trap:setBodyType("static")
+	trap.layer = self.layers.decorations
+
+	trap.getHorizontalMirror = function (self) return mirror end
+
+	trap.goToNextFrame = function (self)
+		if self.current.repeated or not (self.frame == self.current.frames) then
+			self.frame = (self.frame % self.current.frames) + 1
+		elseif self.current == self.animations.fadeout then
+			self:setAnimation("default")
+			self.hidden = true
+		else
+			self:setAnimation("default")
+		end
+	end
+
+	timerIn:register(trap.setBodyActive, trap, true)
+	timerIn:register(trap.setAnimation, trap, "fadein")
+	timerIn:register(function (self) trap.hidden = false end, trap)
+	timerOut:register(trap.setBodyActive, trap, false)
+	timerOut:register(trap.setAnimation, trap, "fadeout")
+
+	self:insertEntity(trap)
+end
+
 --- Builds map using one of tables frin config files located in `config/maps/` directory.
 -- TODO: Clean World@buildMap. Possibly explode into more methods.
 function World:buildMap ()
@@ -123,6 +185,21 @@ function World:buildMap ()
 			end
 			self:insertEntity(cg)
 			cg:run(op.count, true)
+		end
+		-- TODO: Make flames and other traps more configurable through map config file.
+		if op.flames then
+				local timerIn = require("not.Timer")(10)
+				local timerOut = require("not.Timer")(5)
+
+				timerIn:register(timerOut.start, timerOut)
+				timerOut:register(timerIn.start, timerIn)
+				
+				createFlame(self, -62, 16, 1, timerIn, timerOut)
+				createFlame(self, 63, 16, -1, timerIn, timerOut)
+
+				self:insertEntity(timerIn)
+				self:insertEntity(timerOut)
+				timerOut:start()
 		end
 	end
 end

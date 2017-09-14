@@ -13,6 +13,9 @@ return
 	},
 	create = {
 		{
+			flames = true
+		},
+		{
 			x = -36,
 			y = -48,
 			platform = "205-top"
