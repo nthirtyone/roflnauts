@@ -1,6 +1,7 @@
 Timer = require "not.Trigger":extends()
 
 function Timer:new (delay)
+	Timer.__super.new(self)
 	self.delay = delay
 	self.left = 0
 	self.active = false
