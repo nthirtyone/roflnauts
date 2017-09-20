@@ -21,7 +21,7 @@ do
 			local i, name = map.portrait, map.name
 			map.filename = path
 			if i then
-				table.insert(icons, love.graphics.newQuad((i-1)*76, 0, 76, 37, 532, 37))
+				table.insert(icons, love.graphics.newQuad((i-1)*76, 0, 76, 37, 608, 37))
 				table.insert(maps, map)
 			end
 		end
