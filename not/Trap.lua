@@ -38,6 +38,23 @@ function Trap:new (direction, x, y, world, imagePath)
 	self.mirror = mirror
 end
 
+function Trap:fadeIn ()
+	self.hidden = false
+	self:setBodyActive(true)
+	if self.animations.fadein then
+		self:setAnimation("fadein")
+	end
+end
+
+function Trap:fadeOut ()
+	self:setBodyActive(false)
+	if self.animations.fadeout then
+		self:setAnimation("fadeout")
+	else
+		self.hidden = true
+	end
+end
+
 function Trap:getHorizontalMirror ()
 	return self.mirror
 end

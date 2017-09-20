@@ -92,11 +92,8 @@ function createFlame (self, x, y, direction, timerIn, timerOut)
 
 	trap.layer = self.layers.platforms
 
-	timerIn:register(trap.setBodyActive, trap, true)
-	timerIn:register(trap.setAnimation, trap, "fadein")
-	timerIn:register(function (self) trap.hidden = false end, trap)
-	timerOut:register(trap.setBodyActive, trap, false)
-	timerOut:register(trap.setAnimation, trap, "fadeout")
+	timerIn:register(trap.fadeIn, trap)
+	timerOut:register(trap.fadeOut, trap)
 
 	self:insertEntity(trap)
 end
