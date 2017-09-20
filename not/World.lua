@@ -205,26 +205,11 @@ function World:addLayer (width, height)
 end
 
 -- TODO: Standardize `create*` methods with corresponding constructors. Pay attention to both params' order and names.
-function World:createPlatform (x, y, polygon, sprite, animations)
-	local p = Platform(animations, polygon, x, y, self, sprite)
-	table.insert(self.entities, p)
-	p.layer = self.layers.platforms
-	return p
-end
-
 function World:createNaut (x, y, name)
 	local h = Player(name, x, y, self)
 	table.insert(self.entities, h)
 	h.layer = self.layers.heroes
 	return h
-end
-
--- TODO: Sprites' in general don't take actual Image in constructor. That is not only case of Decoration.
-function World:createDecoration (x, y, sprite)
-	local d = Decoration(x, y, self, sprite)
-	table.insert(self.entities, d)
-	d.layer = self.layers.decorations
-	return d
 end
 
 function World:createEffect (name, x, y)

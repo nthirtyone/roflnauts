@@ -11,6 +11,7 @@ Sprite.frame = 1
 Sprite.delay = .1
 
 -- Constructor of `Sprite`.
+-- TODO: Sprites' in general don't take actual Image in constructor. That is not only case of Decoration.
 function Sprite:new (imagePath)
 	if type(imagePath) == "string" then
 		self:setImage(Sprite.newImage(imagePath))
