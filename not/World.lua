@@ -12,6 +12,7 @@ require "not.CloudGenerator"
 require "not.Layer"
 require "not.Timer"
 require "not.Trap"
+require "not.Entity"
 
 --- ZA WARUDO!
 -- TODO: Missing documentation on most of World's methods.
@@ -98,39 +99,62 @@ function createFlame (self, x, y, direction, timerIn, timerOut)
 	self:insertEntity(trap)
 end
 
+local
+function getAnimations (a)
+	if type(a) == "string" then
+		return require("config.animations." .. a)
+	end
+	if type(a) == "table" then
+		return a
+	end
+end
+
 --- Builds map using one of tables frin config files located in `config/maps/` directory.
 -- TODO: Clean World@buildMap. Possibly explode into more methods.
 function World:buildMap ()
+	local width, height = love.graphics.getDimensions()
+
 	for _,op in pairs(self.map.create) do
 		if op.platform then
-			local path = string.format("config/platforms/%s.lua", op.platform)
-			local config = love.filesystem.load(path)()
-			self:createPlatform(op.x, op.y, config.shape, config.sprite, config.animations)
+			-- TODO: Merge configs imported from other files to currently processed element.
+			local config = love.filesystem.load(string.format("config/platforms/%s.lua", op.platform))()
+			local platform = Platform(config.animations, config.shape, op.x, op.y, self, config.sprite)
+			platform.layer = self.layers.platforms
+			self:insertEntity(platform)
 		end
-		if op.decoration then
-			self:createDecoration(op.x, op.y, op.decoration)
-		end
-		if op.background then
-			local width, height = love.graphics.getDimensions()
-			local image = love.graphics.newImage(op.background)
-			local x = image:getWidth() / -2
-			local y = image:getHeight() / -2
-			local bg = self:createDecoration(x, y, op.background)
-			if op.animations then
-				bg:setAnimationsList(op.animations)
+		if op.decoration or op.background then
+			local imagePath = op.decoration or op.background
+			local entity = Decoration(0, 0, self, imagePath)
+
+			local x, y = 0, 0
+			if op.x and op.y then
+				x = op.x
+				y = op.y
+			elseif op.animations then
+				entity:setAnimationsList(getAnimations(op.animations))
 				_,_,x,y = bg:getAnimation()[1]:getViewport()
 				bg:setPosition(x / -2, y / -2)
+			else
+				local image = love.graphics.newImage(imagePath)
+				x = image:getWidth() / -2
+				y = image:getHeight() / -2
 			end
-			bg.layer = self:addLayer(width, height)
-			bg.layer.transformRatio = op.ratio
-			bg.layer.transformScale = getRealScale()
+			entity:setPosition(x, y)
+
+			local layer = self.layers.decorations
+			if op.ratio then
+				layer = self:addLayer(width, height)
+				layer.transformRatio = op.ratio
+				if op.background then
+					layer.transformScale = getRealScale()
+				end
+			end
+			entity.layer = layer
+
+			self:insertEntity(entity)
 		end
 		if op.clouds then
-			local width, height = love.graphics.getDimensions()
-			local animations = op.animations
-			if type(animations) == "string" then
-				animations = require("config.animations." .. animations)
-			end
+			local animations = getAnimations(op.animations)
 			local cg = CloudGenerator(op.clouds, animations, op.count, self)
 			if op.ratio then
 				cg.layer = self:addLayer(width, height)
