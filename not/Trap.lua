@@ -29,7 +29,7 @@ function Trap:new (direction, x, y, world, imagePath)
 
 	local mirror = 1
 	if direction == "left" then	mirror = -1 end
-	local fixture = Trap.__super.addFixture(self, {0, 0, 41 * mirror, 0, 41 * mirror, 18, 0, 18})
+	local fixture = self:addFixture({0, 0, 41 * mirror, 0, 41 * mirror, 18, 0, 18})
 	fixture:setCategory(3)
 	fixture:setMask(1)
 	fixture:setUserData({0, direction})
