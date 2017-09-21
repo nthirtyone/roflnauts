@@ -24,7 +24,7 @@ function createIconsList (sheetWidth, sheetHeight, iconWidth, keysList, avoidLis
 end
 
 function getNautsIconsList (avoidList)
-	local avoidList = avoidList or {37,38,39,40,41,42}
+	local avoidList = avoidList
 	local keysList = require "config.nauts"
 	local iconsList, newKeysList = createIconsList(1176, 27, 28, keysList, avoidList)
 	return iconsList, newKeysList
