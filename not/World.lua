@@ -419,7 +419,7 @@ function World:beginContact (a, b, coll)
 			b:getUserData():land()
 		end
 		local vx, vy = b:getUserData().body:getLinearVelocity()
-		if math.abs(x) == COLL_PLATFORM or (y < -0.6 and x == 0) then
+		if math.abs(x) == 1 or (y < -0.6 and x == 0) then
 			b:getUserData():playSound(3)
 		end
 	end
