@@ -405,27 +405,29 @@ function World:getContactCallbacks ()
 	return b, e
 end
 
--- TODO: Review current state of Box2D callbacks (again).
--- TODO: Stop using magical numbers in Box2D callbacks.
---	[1] -> Platform
---	[2] -> Hero
---	[3] -> Punch sensor
+-- TODO: Move these constants to a proper place (I have no idea where proper place is).
+local COLL_HERO = 2
+local COLL_PLATFORM = 1
+local COLL_PUNCH = 3
+local COLL_TRAP = 4
+
+-- TODO: Review current state of both Box2D callbacks (again).
 function World:beginContact (a, b, coll)
-	if a:getCategory() == 1 then
+	if a:getCategory() == COLL_PLATFORM then
 		local x,y = coll:getNormal()
 		if y < -0.6 then
 			b:getUserData():land()
 		end
 		local vx, vy = b:getUserData().body:getLinearVelocity()
-		if math.abs(x) == 1 or (y < -0.6 and x == 0) then
+		if math.abs(x) == COLL_PLATFORM or (y < -0.6 and x == 0) then
 			b:getUserData():playSound(3)
 		end
 	end
-	if a:getCategory() == 3 then
-		if b:getCategory() == 2 then
+	if a:getCategory() == COLL_PUNCH then
+		if b:getCategory() == COLL_HERO then
 			b:getUserData():damage(a:getUserData()[2])
 		end
-		if b:getCategory() == 3 then
+		if b:getCategory() == COLL_PUNCH then
 			a:getBody():getUserData():damage(b:getUserData()[2])
 			b:getBody():getUserData():damage(a:getUserData()[2])
 			local x1,y1 = b:getBody():getUserData():getPosition()
@@ -435,14 +437,25 @@ function World:beginContact (a, b, coll)
 			self:createEffect("clash", x, y)
 		end
 	end
-	if b:getCategory() == 3 then
-		if a:getCategory() == 2 then
+	if b:getCategory() == COLL_PUNCH then
+		if a:getCategory() == COLL_HERO then
 			a:getUserData():damage(b:getUserData()[2])
 		end
 	end
+	if a:getCategory() == COLL_TRAP then
+		if b:getCategory() == COLL_HERO then
+			b:getUserData():damage(a:getUserData()[1])
+		end
+	end
+	if b:getCategory() == COLL_TRAP then
+		if a:getCategory() == COLL_HERO then
+			a:getUserData():damage(b:getUserData()[1])
+		end
+	end
 end
+
 function World:endContact (a, b, coll)
-	if a:getCategory() == 1 then
+	if a:getCategory() == COLL_PLATFORM then
 		b:getUserData().inAir = true
 	end
 end
