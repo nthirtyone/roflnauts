@@ -21,7 +21,7 @@ do
 	local nauts = require("config.nauts")
 	local icons = {}
 	for i=0,#nauts-1 do
-		table.insert(icons, love.graphics.newQuad(i*28, 0, 28, 27, 1008, 27))
+		table.insert(icons, love.graphics.newQuad(i*28, 0, 28, 27, 1176, 27))
 	end
 
 	group = Group(menu)
