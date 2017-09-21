@@ -27,7 +27,7 @@ function Hero:new (name, x, y, world)
 	Hero.load()
 	Hero.__super.new(self, x, y, world, imagePath)
 	-- Physics
-	self.group = -1-#world.Nauts
+	self.group = -1-#world:getNautsAll()
 	self:setBodyType("dynamic")
 	self:setBodyFixedRotation(true)
 	self:newFixture()
@@ -87,8 +87,8 @@ function Hero:update (dt)
 	-- TODO: World/Map function for testing if Point is inside playable area.
 	local m = self.world.map
 	local x, y = self:getPosition()
-	if (x < m.center_x - m.width*1.5 or x > m.center_x + m.width*1.5  or
-	    y < m.center_y - m.height*1.5 or y > m.center_y + m.height*1.5) and
+	if (x < m.center.x - m.width*1.5 or x > m.center.x + m.width*1.5  or
+	    y < m.center.y - m.height*1.5 or y > m.center.y + m.height*1.5) and
 	    self.isAlive
 	then
 		self:die()
@@ -165,16 +165,17 @@ function Hero:getOffset ()
 	return 12,15
 end
 
--- Draw of `Hero`
-function Hero:draw (offset_x, offset_y, scale, debug)
+function Hero:draw (debug)
 	if not self.isAlive then return end
-	Hero.__super.draw(self, offset_x, offset_y, scale, debug)
+	Hero.__super.draw(self, debug)
 end
 
-function Hero:drawTag (offset_x, offset_y, scale)
+-- TODO: Hero@drawTag's printf is not readable.
+function Hero:drawTag ()
 	local x,y = self:getPosition()
 	love.graphics.setFont(Font)
-	love.graphics.printf(string.format("Player %d", math.abs(self.group)), (math.floor(x)+offset_x)*scale, (math.floor(y)+offset_y-26)*scale,100,'center',0,scale,scale,50,0)
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.printf(string.format("Player %d", math.abs(self.group)), math.floor(x), math.floor(y)-26 ,100,'center',0,1,1,50,0)
 end
 
 -- Draw HUD of `Hero`

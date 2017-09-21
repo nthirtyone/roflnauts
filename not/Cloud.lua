@@ -1,61 +1,45 @@
-require "not.Decoration"
-
 --- `Cloud`
--- That white thing moving in the background.
--- TODO: extends variables names to be readable.
-Cloud = Decoration:extends()
-Cloud.t = 1  -- type (sprite number)
-Cloud.v = 13 -- velocity
+-- Moving decorations with limited lifespan.
+Cloud = require "not.Decoration":extends()
 
--- TODO: allow maps to use other quads and sprites for clouds
--- TODO: you know this isn't right, don't you?
-local animations = { 
-	default = {
-		[1] = love.graphics.newQuad(  1,  1, 158,47, 478,49),
-		frames = 1,
-		repeated = true
-	},
-	default2 = {
-		[1] = love.graphics.newQuad(160,  1, 158,47, 478,49),
-		frames = 1,
-		repeated = true
-	},
-	default3 = {
-		[1] = love.graphics.newQuad(319,  1, 158,47, 478,49),
-		frames = 1,
-		repeated = true
-	}
-}
+function Cloud:new (x, y, world, imagePath)
+	Cloud.__super.new(self, x, y, world, imagePath)
+	self.velocity_x = 0
+	self.velocity_y = 0
+	self.boundary_x = 0
+	self.boundary_y = 0
+end
 
--- Constructor of `Cloud`.
-function Cloud:new (x, y, t, v, world)
-	if self:getImage() == nil then
-		self:setImage(Sprite.newImage("assets/clouds.png"))
+function Cloud:setVelocity (x, y)
+	self.velocity_x = x
+	self.velocity_y = y
+end
+
+function Cloud:setBoundary (x, y)
+	self.boundary_x = x
+	self.boundary_y = y
+end
+
+function Cloud:setStyle (style)
+	self:setAnimation(style)
+end
+
+function Cloud:getStyle ()
+	return self:getAnimation()
+end
+
+function Cloud:testPosition ()
+	if self.x > self.boundary_x or self.y > self.boundary_y then
+		return true
 	end
-	Cloud.__super.new(self, x, y, world, nil)
-	self:setAnimationsList(animations)
-	self:setVelocity(v)
-	self:setType(t)
 end
 
--- Setters for cloud type and velocity.
-function Cloud:setType (type)
-	local animation = "default"
-	if type > 1 then
-		animation = animation .. type
-	end
-	self:setAnimation(animation)
-	self.t = type
-end
-function Cloud:setVelocity (velocity)
-	self.v = velocity
-end
-
--- Update of `Cloud`, returns x for world to delete cloud after reaching right corner.
+-- Cloud will get deleted if this function returns true.
 function Cloud:update (dt)
 	Cloud.__super.update(self, dt)
-	self.x = self.x + self.v*dt
-	return self.x
+	self.x = self.x + self.velocity_x * dt
+	self.y = self.y + self.velocity_y * dt
+	return self:testPosition()
 end
 
 return Cloud

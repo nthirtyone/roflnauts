@@ -1,8 +1,5 @@
-require "not.Object"
-
---- `MusicPlayer`
--- Simple music player object that plays and loops selected track.
-MusicPlayer = Object:extends()
+--- Simple music player object that stores, playes and loops tracks..
+MusicPlayer = require "not.Object":extends()
 
 function MusicPlayer:new (trackName)
 	self.tracks = {}
@@ -13,8 +10,9 @@ function MusicPlayer:new (trackName)
 end
 
 function MusicPlayer:delete ()
-	self.tracks = nil
 	self:stop()
+	self.tracks = nil
+	self.source = nil
 end
 
 function MusicPlayer:setTrack (trackName)
@@ -40,7 +38,10 @@ function MusicPlayer:getCurrentTrack ()
 	end
 end
 
-function MusicPlayer:play ()
+function MusicPlayer:play (trackName)
+	if trackName then
+		self:setTrack(trackName)
+	end
 	self.source:play()
 end
 

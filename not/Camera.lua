@@ -1,37 +1,46 @@
---- `Camera`
--- Used in drawing.
-Camera = {
-	x = 0,
-	y = 0,
-	dest_x = 0,
-	dest_y = 0,
-	shake = 0,
-	timer = 0,
-	delay = 0,
-	origin_x = 0,
-	origin_y = 0,
-	shake_x = 0,
-	shake_y = 0,
-	world = --[[not.World]]nil,
-}
+--- Used in drawing other stuff in places.
+-- TODO: Camera is missing documentation on every important method.
+Camera = require "not.Object":extends()
 
--- Constructor of `Camera`
-function Camera:new (world)
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
-	o.world = world
-	o:setPosition(o:follow())
-	o:setDestination(o:follow())
-	return o
+Camera.SHAKE_LENGTH = 0.6
+Camera.SHAKE_INTERVAL = 0.03
+
+-- TODO: Camera would really make use of vec2s (other classes would use them too).
+function Camera:new (x, y, world)
+	self.world = world
+	self:setPosition(x, y)
+	self:resetSum()
+	self:initShake()
 end
 
--- Drawing offsets
-function Camera:getOffsets ()
-	return -self.x,-self.y
+function Camera:initShake ()
+	self.shakeTime = 0
+	self.shakeInterval = 0
+	self.shakeShift = {
+		theta = love.math.random() * 2,
+		radius = 0
+	}
 end
 
--- Position
+function Camera:push ()
+	love.graphics.push()
+end
+
+function Camera:transform (scale, ratio, vw, vh)
+	local px, py = self:getPosition()
+	local sx, sy = self:getShake()
+	local dx, dy = (px + sx) * ratio, (py + sy) * ratio
+
+	vw, vh = vw / scale / 2, vh / scale / 2
+
+	love.graphics.scale(scale, scale)
+	love.graphics.translate(vw - dx, vh - dy)
+end
+
+function Camera:pop ()
+	love.graphics.pop()
+end
+
 function Camera:setPosition (x, y)
 	local x = x or 0
 	local y = y or 0
@@ -42,102 +51,86 @@ function Camera:getPosition ()
 	return self.x, self.y
 end
 
-function Camera:getPositionScaled ()
-	return self.x*getScale(), self.y*getScale()
-end
-
--- Destination
-function Camera:setDestination (x, y)
-	local x = x or 0
-	local y = y or 0
-	self.dest_x, self.dest_y = x, y
-end
-
-function Camera:getDestination ()
-	return self.dest_x, self.dest_y
-end
-
--- Translate points
-function Camera:translatePosition (x, y)
-	local x = x or 0
-	local y = y or 0
-	return (x-self.x)*getScale(), (y-self.y)*getScale()
-end
-
-function Camera:translatePoints(...)
-	local a = {...}
-	local r = {}
-	local x,y = self:getOffsets()
-	for k,v in pairs(a) do
-		if k%2 == 1 then
-			table.insert(r, (v + x) * getScale())
-		else
-			table.insert(r, (v + y) * getScale())
-		end
-	end
-	return r
-end
-
--- Shake it
--- Really bad script, but for now it works
-function Camera:shake ()
-	if self.shake_x == 0 then
-		self.shake_x = math.random(-10, 10) * 2
-	elseif self.shake_x > 0 then
-		self.shake_x = math.random(-10, -1) * 2
-	elseif self.shake_x < 0 then
-		self.shake_x = math.random(10, 1) * 2
-	end
-	if self.shake_y == 0 then
-		self.shake_y = math.random(-10, 10) * 2
-	elseif self.shake_y > 0 then
-		self.shake_y = math.random(-10, -1) * 2
-	elseif self.shake_y < 0 then
-		self.shake_y = math.random(10, 1) * 2
-	end
-	local x = self.origin_x + self.shake_x
-	local y = self.origin_y + self.shake_y
-	self:setDestination(x, y)
+function Camera:getBoundaries (scale, vw, vh)
+	local x, y = self:getPosition()
+	local width, height = vw / scale / 2, vh / scale / 2
+	return x - width, y - height, x + width, y + height
 end
 
 function Camera:startShake ()
-	self.timer = 0.3
-	self.origin_x, self.origin_y = self:getPosition()
+	self.shakeTime = Camera.SHAKE_LENGTH
 end
 
--- Move follow
-function Camera:follow ()
-	local map = self.world.map
-	local sum_x,sum_y,i = map.center_x, map.center_y, 1
-	for k,naut in pairs(self.world.Nauts) do
-		local naut_x,naut_y = naut:getPosition()
-		if math.abs(naut_x - map.center_x) < map.width/2 and
-		   math.abs(naut_y - map.center_y) < map.height/2 then
-			i = i + 1
-			sum_x = naut_x + sum_x
-			sum_y = naut_y + sum_y
-		end
+local
+function limit (theta)
+	if theta > 2 then
+		return limitAngle(theta - 2)
 	end
-	local x = sum_x / i - love.graphics.getWidth()/getScale()/2
-	local y = sum_y / i - love.graphics.getHeight()/getScale()/2 + 4*getScale() -- hotfix
-	return x,y
+	if theta < 0 then
+		return limitAngle(theta + 2)
+	end
+	return theta
 end
 
--- Update
-function Camera:update (dt)
-	if self.timer > 0 then
-		self.timer = self.timer - dt
-		if self.delay <= 0 then
-			self:shake()
-			self.delay = 0.02
+-- TODO: Magic numbers present in Camera's shake.
+function Camera:shake (dt)
+	if self.shakeTime > 0 then
+		self.shakeTime = self.shakeTime - dt
+		if self.shakeInterval < 0 then
+			self.shakeShift.theta = self.shakeShift.theta - 1.3 + love.math.random() * 0.6
+			self.shakeShift.radius = 50 * self.shakeTime
+			self.shakeInterval = Camera.SHAKE_INTERVAL
 		else
-			self.delay = self.delay - dt
+			self.shakeShift.radius = self.shakeShift.radius * 0.66
+			self.shakeInterval = self.shakeInterval - dt
 		end
-	else
-		self:setDestination(self:follow())
+		if self.shakeTime < 0 then
+			self.shakeShift.radius = 0
+		end
 	end
-	local dx, dy = self:getDestination()
-	dx = (dx - self.x) * 6 * dt
-	dy = (dy - self.y) * 6 * dt
-	self:setPosition(self.x + dx, self.y + dy)
+end
+
+function Camera:getShake ()
+	local radius = self.shakeShift.radius
+	local theta = self.shakeShift.theta * math.pi
+	return radius * math.cos(theta), radius * math.sin(theta)
+end
+
+function Camera:resetSum ()
+	self.sumX = 0
+	self.sumY = 0
+	self.sumI = 0
+end
+
+function Camera:sum (x, y)
+	local map = self.world.map
+	if math.abs(x - map.center.x) < map.width/2 and
+	   math.abs(y - map.center.y) < map.height/2 then
+		self.sumX = self.sumX + x
+		self.sumY = self.sumY + y
+		self.sumI = self.sumI + 1
+	end
+end
+
+function Camera:getSumPostion ()
+	if self.sumI > 0 then
+		return self.sumX / self.sumI, self.sumY / self.sumI
+	end
+	return 0, 0
+end
+
+function Camera:step (dt)
+	local x, y = self:getSumPostion()
+	local dx, dy = (x - self.x), (y - self.y)
+	if math.abs(dx) > 0.4 or math.abs(dy) > 0.4 then
+		x = self.x + (x - self.x) * dt * 6
+		y = self.y + (y - self.y) * dt * 6
+	end
+	self:setPosition(x, y)
+end
+
+function Camera:update (dt)
+	self:step(dt)
+	self:shake(dt)
+	self:resetSum()
 end

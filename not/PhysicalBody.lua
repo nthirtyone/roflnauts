@@ -62,22 +62,30 @@ function PhysicalBody:update (dt)
 	PhysicalBody.__super.update(self, dt)
 end
 
--- Draw of `PhysicalBody`.
-function PhysicalBody:draw (offset_x, offset_y, scale, debug)
-	PhysicalBody.__super.draw(self, offset_x, offset_y, scale)
+function PhysicalBody:draw (debug)
+	PhysicalBody.__super.draw(self, debug)
 	if debug then
 		for _,fixture in pairs(self.body:getFixtureList()) do
 			local category = fixture:getCategory()
+			-- TODO: Fixture drawing of PhysicalBodies could take activity into account in every case.
 			if category == 1 then
-				love.graphics.setColor(255, 69, 0, 140)
+				love.graphics.setColor(255, 69, 0, 150)
 			end
 			if category == 2 then
-				love.graphics.setColor(137, 255, 0, 120)
+				love.graphics.setColor(137, 255, 0, 150)
 			end
 			if category == 3 then
-				love.graphics.setColor(137, 0, 255, 40)
+				love.graphics.setColor(137, 0, 255, 50)
 			end
-			love.graphics.polygon("fill", self.world.camera:translatePoints(self.body:getWorldPoints(fixture:getShape():getPoints())))
+			if category == 4 then
+				if self.body:isActive() then
+					love.graphics.setColor(255, 230, 0, 50)
+				else
+					love.graphics.setColor(255, 230, 0, 10)
+				end
+			end
+			local camera = self.world.camera
+			love.graphics.polygon("fill", self.body:getWorldPoints(fixture:getShape():getPoints()))
 		end
 	end
 end

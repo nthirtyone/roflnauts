@@ -15,6 +15,10 @@ function Button:new (parent)
 	self.sprite, self.quads = parent:getSheet()
 end
 
+function Button:getSize ()
+	return 58, 15
+end
+
 function Button:setText (text)
 	self.text = text or ""
 	return self

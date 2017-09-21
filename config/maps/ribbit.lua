@@ -1,46 +1,41 @@
-return {
-	-- GENERAL
-	name = "ribbit",
+return
+{
+	name = "Ribbit IV",
 	theme = "ribbit.ogg",
-	center_x = 0,
-	center_y = 50,
+	portrait = 3, -- TODO: Either separate portraits now or change `iconsList` and `menu/host`. See also both mentioned files.
+	center = {x = 0, y = 50},
 	width  = 360,
 	height = 240,
-	-- RESPAWN POINTS
 	respawns = {
 		{x = -15, y = -80},
 		{x =  -5, y = -80},
 		{x =   5, y = -80},
 		{x =  15, y = -80}
 	},
-	-- GRAPHICS
-	clouds = false,
-	background = "assets/backgrounds/ribbit.png",
-	platforms = {
+	create = {
+		{
+			ratio = 0,
+			background = "assets/backgrounds/ribbit.png"
+		},
 		{
 			x = -154,
 			y = 10,
-			shape = {1,12, 48,12, 48,32, 1,32},
-			sprite = "assets/platforms/ribbit-left.png"
+			platform = "ribbit-left"
 		},
 		{
 			x = 67,
 			y = 7,
-			shape = {36,14, 83,14, 83,29, 36,29},
-			sprite = "assets/platforms/ribbit-right.png"
+			platform = "ribbit-right"
 		},
 		{
 			x = -70,
 			y = -5,
-			shape = {0,3, 139,3, 134,24, 5,24},
-			sprite = "assets/platforms/ribbit-top.png"
+			platform = "ribbit-top"
 		},
 		{
 			x = -54,
 			y = 63,
-			shape = {0,3, 107,3, 75,44, 32,44},
-			sprite = "assets/platforms/ribbit-bottom.png"
+			platform = "ribbit-bottom"
 		}
-	},
-	decorations = {}
+	}
 }

@@ -47,12 +47,18 @@ function love.draw ()
 		love.graphics.setFont(Font)
 		love.graphics.setColor(255, 0, 0, 255)
 		love.graphics.print("Debug ON", 10, 10, 0, scale, scale)
-		love.graphics.setColor(255, 255, 255, 255)
-		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10+9*scale, 0, scale, scale)
+		if dbg_msg then
+			love.graphics.setColor(255, 255, 255, 255)
+			love.graphics.print(dbg_msg, 10, 10+9*scale, 0, scale, scale)
+		end
 	end
 end
 
-function love.update (dt) sceneManager:update(dt) end
+function love.update (dt)
+	dbg_msg = string.format("FPS: %d\n", love.timer.getFPS())
+	sceneManager:update(dt)
+end
+
 function love.quit () Settings.save() end
 
 -- Pass input to Controller
