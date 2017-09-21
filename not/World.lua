@@ -111,6 +111,7 @@ end
 
 --- Builds map using one of tables frin config files located in `config/maps/` directory.
 -- TODO: Clean World@buildMap. Possibly explode into more methods.
+-- TODO: Move buildMap along with getAnimations to Factory.
 function World:buildMap ()
 	local width, height = love.graphics.getDimensions()
 
