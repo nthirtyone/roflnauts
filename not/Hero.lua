@@ -8,7 +8,6 @@ Hero.jumpTimer = 0.16
 Hero.jumpCounter = 2
 Hero.sfx = require "config.sounds"
 
-Hero.QUAD_PORTRAITS = getNautsIconsList()
 Hero.QUAD_FRAME = love.graphics.newQuad(0, 15, 32,32, 80,130)
 Hero.IMAGE_PORTRAITS = nil
 Hero.IMAGE_FRAME = nil
@@ -21,9 +20,9 @@ Hero.PUNCH_RIGHT = {2,-6, 20,-6, 20,6, 2,6}
 Hero.PUNCH_UP = {-8,-4, -8,-20, 8,-20, 8,-4}
 Hero.PUNCH_DOWN = {-8,4, -8,20, 8,20, 8,4}
 
--- Constructor of `Hero`.
-function Hero:new (name, x, y, world)
-	local imagePath = string.format("assets/nauts/%s.png", name)
+-- TODO: Portrait managment in Hero and config passed from Menu should be reviewed!
+function Hero:new (config, x, y, world)
+	local imagePath = config.image
 	Hero.load()
 	Hero.__super.new(self, x, y, world, imagePath)
 	-- Physics
@@ -33,7 +32,7 @@ function Hero:new (name, x, y, world)
 	self:newFixture()
 	-- General
 	self.world = world
-	self.name = name
+	self.name = config.name
 	self.angle = 0
 	self.facing = 1
 	-- Status
@@ -47,6 +46,7 @@ function Hero:new (name, x, y, world)
 	self.isJumping = false
 	self.spawntimer = 2
 	self.punchCooldown = 0
+	self.portrait = love.graphics.newQuad((config.portrait-1)*28, 0, 28, 27, 1176, 27)
 	self:setAnimationsList(require("config.animations.hero"))
 	-- Post-creation
 	self:createEffect("respawn")
@@ -185,7 +185,7 @@ function Hero:drawHUD (x,y,scale,elevation)
 	if self.isAlive then
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.draw(self.IMAGE_FRAME, self.QUAD_FRAME, (x)*scale, (y)*scale, 0, scale, scale)
-		love.graphics.draw(self.IMAGE_PORTRAITS, self.QUAD_PORTRAITS[self.name], (x+2)*scale, (y+3)*scale, 0, scale, scale)
+		love.graphics.draw(self.IMAGE_PORTRAITS, self.portrait, (x+2)*scale, (y+3)*scale, 0, scale, scale)
 		local dy = 30 * elevation
 		love.graphics.setFont(Font)
 		love.graphics.print((self.combo).."%",(x+2)*scale,(y-3+dy)*scale,0,scale,scale)

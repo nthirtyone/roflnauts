@@ -14,25 +14,40 @@ if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
--- TODO: Temporary group for naut selectors. This isn't production code at any means!
+-- TODO: Icons for nauts and maps are still waiting to get their assets split.
 local group, get
 do
 	local atlas = love.graphics.newImage("assets/portraits.png")
-	local nauts = require("config.nauts")
-	local icons = {}
-	for i=0,#nauts-1 do
-		table.insert(icons, love.graphics.newQuad(i*28, 0, 28, 27, 1176, 27))
+	local nauts, icons = {}, {}
+	local files = love.filesystem.getDirectoryItems("config/nauts")
+	for _,filename in pairs(files) do
+		local path = string.format("config/nauts/%s", filename)
+		if love.filesystem.isFile(path) and filename ~= "readme.md" then
+			local naut = love.filesystem.load(path)()
+			local i, name = naut.portrait, naut.name
+			if naut.available then
+				table.insert(icons, love.graphics.newQuad((i-1)*28, 0, 28, 27, 1176, 27))
+				table.insert(nauts, naut)
+			end
+		end
 	end
+
+	-- TODO: Find a better way to add empty and random entries to naut Selector.
+	table.insert(icons, 1, love.graphics.newQuad((1-1)*28, 0, 28, 27, 1176, 27))
+	table.insert(nauts, 1, {name = "empty"})
+	table.insert(icons, 2, love.graphics.newQuad((2-1)*28, 0, 28, 27, 1176, 27))
+	table.insert(nauts, 2, {name = "random"})
 
 	group = Group(menu)
 
 	local
 	function attack (self)
 		if not self.lock then
-			if self.index == 1 then
+			local selected = self:getSelected()
+			if selected.name == "empty" then
 				return
 			end
-			if self.index == 2 then
+			if selected.name == "random" then
 				self.index = self:rollRandom({1, 2})
 			end
 			if self:isUnique() then
@@ -46,6 +61,9 @@ do
 			:set("icons_atlas", atlas)
 			:set("icons_quads", icons)
 			:set("attack", attack)
+			:set("getText", function (self)
+					return string.upper(self:getSelected().name)
+				end)
 	end
 
 	group:set("margin", 16)
