@@ -1,30 +1,8 @@
 Trap = require "not.PhysicalBody":extends()
 
--- TODO: Move flames' animations to config file.
-local animations = {
-	default = {
-		[1] = love.graphics.newQuad(0, 0, 42, 19, 168, 19),
-		[2] = love.graphics.newQuad(42, 0, 42, 19, 168, 19),
-		frames = 2,
-		repeated = true
-	},
-	fadein = {
-		[1] = love.graphics.newQuad(84, 0, 42, 19, 168, 19),
-		[2] = love.graphics.newQuad(126, 0, 42, 19, 168, 19),
-		frames = 2,
-		repeated = false
-	},
-	fadeout = {
-		[1] = love.graphics.newQuad(126, 0, 42, 19, 168, 19),
-		[2] = love.graphics.newQuad(84, 0, 42, 19, 168, 19),
-		frames = 2,
-		repeated = false
-	}
-}
-
 function Trap:new (direction, x, y, world, imagePath)
 	Trap.__super.new(self, x, y, world, imagePath)
-	self:setAnimationsList(animations)
+	self:setAnimationsList(require("config.animations.flames"))
 	self:setBodyType("static")
 
 	local mirror = 1
