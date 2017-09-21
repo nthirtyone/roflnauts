@@ -48,7 +48,4 @@ function Trap:goToNextFrame ()
 	end
 end
 
--- TODO: Trap@damage is hotfix for clashing.
-function Trap:damage () end
-
 return Trap
