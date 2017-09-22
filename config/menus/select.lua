@@ -14,22 +14,27 @@ if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
--- TODO: Clean-up menus/select, menus/host and Hero after portraits split.
-local group, get
-do
-	local nauts, icons = {}, {}
-	local files = love.filesystem.getDirectoryItems("config/nauts")
-	for _,filename in pairs(files) do
-		local path = string.format("config/nauts/%s", filename)
-		if love.filesystem.isFile(path) and filename ~= "readme.md" then
-			local naut = love.filesystem.load(path)()
-			local i, name = naut.portrait, naut.name
-			if naut.available then
-				table.insert(icons, love.graphics.newImage(naut.portrait))
-				table.insert(nauts, naut)
+-- TODO: loadConfigs is duplicated in menus/select and menus/host.
+local
+function loadConfigs (dir, process)
+	local items, icons = {}, {}
+	for _,file in pairs(love.filesystem.getDirectoryItems(dir)) do
+		local path = string.format("%s/%s", dir, file)
+		if love.filesystem.isFile(path) and file ~= "readme.md" then
+			local item = love.filesystem.load(path)()
+			if item and process(item) then
+				table.insert(icons, love.graphics.newImage(item.portrait))
+				table.insert(items, item)
 			end
 		end
 	end
+	return items, icons
+end
+
+-- TODO: Clean-up menus/select, menus/host and Hero after portraits split.
+local group, get
+do
+	local nauts, icons = loadConfigs("config/nauts", function (naut) return naut.available end)
 
 	-- TODO: Find a better way to add empty and random entries to naut Selector.
 	table.insert(icons, 1, false)
