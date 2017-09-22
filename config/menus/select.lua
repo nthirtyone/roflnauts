@@ -8,31 +8,50 @@ local Group = require "not.Group"
 local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
 
-local start_Button = Button(menu)
+local startButton = Button(menu)
 
 if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
--- TODO: Temporary group for naut selectors. This isn't production code at any means!
+-- TODO: loadConfigs is duplicated in menus/select and menus/host.
+local
+function loadConfigs (dir, process)
+	local items, icons = {}, {}
+	for _,file in pairs(love.filesystem.getDirectoryItems(dir)) do
+		local path = string.format("%s/%s", dir, file)
+		if love.filesystem.isFile(path) and file ~= "readme.md" then
+			local item = love.filesystem.load(path)()
+			if item and process(item) then
+				table.insert(icons, love.graphics.newImage(item.portrait))
+				table.insert(items, item)
+			end
+		end
+	end
+	return items, icons
+end
+
+-- TODO: Clean-up menus/select, menus/host and Hero after portraits split.
 local group, get
 do
-	local atlas = love.graphics.newImage("assets/portraits.png")
-	local nauts = require("config.nauts")
-	local icons = {}
-	for i=0,#nauts-1 do
-		table.insert(icons, love.graphics.newQuad(i*28, 0, 28, 27, 1176, 27))
-	end
+	local nauts, icons = loadConfigs("config/nauts", function (naut) return naut.available end)
+
+	-- TODO: Find a better way to add empty and random entries to naut Selector.
+	table.insert(icons, 1, false)
+	table.insert(nauts, 1, {name = "empty"})
+	table.insert(icons, 2, love.graphics.newImage("assets/portraits/random.png"))
+	table.insert(nauts, 2, {name = "random"})
 
 	group = Group(menu)
 
 	local
 	function attack (self)
 		if not self.lock then
-			if self.index == 1 then
+			local selected = self:getSelected()
+			if selected.name == "empty" then
 				return
 			end
-			if self.index == 2 then
+			if selected.name == "random" then
 				self.index = self:rollRandom({1, 2})
 			end
 			if self:isUnique() then
@@ -43,9 +62,11 @@ do
 
 	for i,_ in pairs(Controller.getSets()) do
 		group:addChild(Selector(nauts, group, menu))
-			:set("icons_atlas", atlas)
-			:set("icons_quads", icons)
+			:set("icons", icons)
 			:set("attack", attack)
+			:set("getText", function (self)
+					return string.upper(self:getSelected().name)
+				end)
 	end
 
 	group:set("margin", 16)
@@ -64,7 +85,7 @@ end
 return {
 	background,
 	group,
-	start_Button
+	startButton
 		:setText("Force start")
 		:setPosition(bx,134)
 		:set("isEnabled", function ()
@@ -102,7 +123,7 @@ return {
 					self.the_final_countdown = 9
 				end
 				if self.the_final_countdown < 0 then
-					start_Button:active()
+					startButton:active()
 				end
 			end)
 	,

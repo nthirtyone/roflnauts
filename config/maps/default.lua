@@ -2,7 +2,7 @@ return
 {
 	name = "default",
 	theme = "default.ogg",
-	portrait = 1, -- TODO: See `maps/ribbit`.
+	portrait = "assets/maps/default.png",
 	center = {x = 0, y = 0},
 	width  = 360,
 	height = 240,

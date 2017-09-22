@@ -2,7 +2,7 @@ return
 {
 	name = "Rill",
 	theme = "rill.ogg",
-	portrait = 2, -- TODO: See `maps/ribbit`.
+	portrait = "assets/maps/rill.png",
 	center = {x = 0, y = 75},
 	width  = 400,
 	height = 260,

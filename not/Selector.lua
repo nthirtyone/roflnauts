@@ -100,6 +100,12 @@ function Selector:getText ()
 	return tostring(self:getSelected())
 end
 
+function Selector:getIcon ()
+	if self.icons then
+		return self.icons[self.index]
+	end
+end
+
 function Selector:focus ()
 	self.focused = true
 	return true
@@ -134,8 +140,9 @@ function Selector:draw (scale)
 	end
 	love.graphics.draw(self.atlas, self.quads[self:getShapeString()][boxType], x*scale, y*scale, 0, scale, scale)
 	-- TODO: That is one way to draw icon for selected value. Find better one. See: `config/menus/host`.
-	if self.icons_atlas and self.icons_quads then
-		love.graphics.draw(self.icons_atlas, self.icons_quads[self.index], (x+2)*scale, (y+3)*scale, 0, scale, scale)
+	local icon = self:getIcon()
+	if icon then
+		love.graphics.draw(icon, (x+2)*scale, (y+3)*scale, 0, scale, scale)
 	end
 
 	love.graphics.setColor(255, 255, 255, 255)

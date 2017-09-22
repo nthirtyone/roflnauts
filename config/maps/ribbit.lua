@@ -2,7 +2,7 @@ return
 {
 	name = "Ribbit IV",
 	theme = "ribbit.ogg",
-	portrait = 3, -- TODO: Either separate portraits now or change `iconsList` and `menu/host`. See also both mentioned files.
+	portrait = "assets/maps/ribbit.png",
 	center = {x = 0, y = 50},
 	width  = 360,
 	height = 240,
