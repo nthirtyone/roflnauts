@@ -468,7 +468,7 @@ function World:controlpressed (set, action, key)
 		map.filename = filename
 		local nauts = {}
 		for _,naut in pairs(self:getNautsAll()) do
-			table.insert(nauts, {naut.name, naut:getControllerSet()})
+			table.insert(nauts, {naut.config, naut:getControllerSet()})
 		end
 		local new = World(map, nauts)
 		sceneManager:changeScene(new)

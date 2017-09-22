@@ -32,8 +32,8 @@ function Hero:new (config, x, y, world)
 	self:setBodyFixedRotation(true)
 	self:newFixture()
 	-- General
+	self.config = config
 	self.world = world
-	self.name = config.name
 	self.angle = 0
 	self.facing = 1
 	-- Status
