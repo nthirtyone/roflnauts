@@ -8,7 +8,7 @@ local Group = require "not.Group"
 local width, height = love.graphics.getWidth()/getScale(), love.graphics.getHeight()/getScale()
 local bx = width/2-29
 
-local start_Button = Button(menu)
+local startButton = Button(menu)
 
 if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
@@ -85,7 +85,7 @@ end
 return {
 	background,
 	group,
-	start_Button
+	startButton
 		:setText("Force start")
 		:setPosition(bx,134)
 		:set("isEnabled", function ()
@@ -123,7 +123,7 @@ return {
 					self.the_final_countdown = 9
 				end
 				if self.the_final_countdown < 0 then
-					start_Button:active()
+					startButton:active()
 				end
 			end)
 	,
