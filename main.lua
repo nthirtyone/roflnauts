@@ -16,7 +16,6 @@ musicPlayer = require "not.MusicPlayer"()
 sceneManager = require "not.SceneManager"()
 
 -- Require
-require "iconsList"
 require "not.World"
 require "not.Camera"
 require "not.Menu"
