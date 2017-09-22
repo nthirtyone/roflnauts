@@ -14,7 +14,7 @@ if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
--- TODO: Icons for nauts and maps are still waiting to get their assets split.
+-- TODO: Clean-up menus/select, menus/host and Hero after portraits split.
 local group, get
 do
 	local atlas = love.graphics.newImage("assets/portraits.png")
@@ -26,16 +26,16 @@ do
 			local naut = love.filesystem.load(path)()
 			local i, name = naut.portrait, naut.name
 			if naut.available then
-				table.insert(icons, love.graphics.newQuad((i-1)*28, 0, 28, 27, 1176, 27))
+				table.insert(icons, love.graphics.newImage(naut.portrait))
 				table.insert(nauts, naut)
 			end
 		end
 	end
 
 	-- TODO: Find a better way to add empty and random entries to naut Selector.
-	table.insert(icons, 1, love.graphics.newQuad((1-1)*28, 0, 28, 27, 1176, 27))
+	table.insert(icons, 1, false)
 	table.insert(nauts, 1, {name = "empty"})
-	table.insert(icons, 2, love.graphics.newQuad((2-1)*28, 0, 28, 27, 1176, 27))
+	table.insert(icons, 2, love.graphics.newImage("assets/portraits/random.png"))
 	table.insert(nauts, 2, {name = "random"})
 
 	group = Group(menu)
@@ -59,7 +59,7 @@ do
 	for i,_ in pairs(Controller.getSets()) do
 		group:addChild(Selector(nauts, group, menu))
 			:set("icons_atlas", atlas)
-			:set("icons_quads", icons)
+			:set("icons", icons)
 			:set("attack", attack)
 			:set("getText", function (self)
 					return string.upper(self:getSelected().name)

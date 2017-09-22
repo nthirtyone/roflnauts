@@ -3,6 +3,6 @@ return
 {
 	name = "cowman",
 	image = "assets/nauts/cowman.png",
-	portrait = 23,
+	portrait = "assets/portraits/cowman.png",
 	available = true
 }
