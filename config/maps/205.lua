@@ -2,7 +2,7 @@ return
 {
 	name = "AI Station 205",
 	theme = "sorona.ogg",
-	portrait = 1, -- TODO: See `maps/ribbit`.
+	portrait = "assets/maps/205.png",
 	center = {x = 0, y = 0},
 	width  = 360,
 	height = 240,

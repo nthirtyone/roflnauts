@@ -2,7 +2,7 @@ return
 {
 	name = "Sorona",
 	theme = "sorona.ogg",
-	portrait = 6, -- TODO: See `maps/ribbit`.
+	portrait = "assets/maps/sorona.png",
 	center = {x = 0, y = 0},
 	width  = 360,
 	height = 240,

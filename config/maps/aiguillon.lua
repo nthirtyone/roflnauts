@@ -2,7 +2,7 @@ return
 {
 	name = "Aiguillon",
 	theme = "aiguillon.ogg",
-	portrait = 5, -- TODO: See `maps/ribbit`.
+	portrait = "assets/maps/aiguillon.png",
 	center = {x = 0, y = 10},
 	width  = 370,
 	height = 290,

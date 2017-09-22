@@ -2,7 +2,7 @@ return
 {
 	name = "Starstorm",
 	theme = "starstorm.ogg",
-	portrait = 4, -- TODO: See `maps/ribbit`.
+	portrait = "assets/maps/starstorm.png",
 	center = {x = 0, y = -20},
 	width  = 400,
 	height = 260,

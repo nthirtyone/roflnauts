@@ -2,7 +2,7 @@ return
 {
 	name = "Alpha Abyss",
 	theme = "alpha.ogg",
-	portrait = 7, -- TODO: See `maps/ribbit`.
+	portrait = "assets/maps/alpha.png",
 	center = {x = 0, y = -80},
 	width  = 360,
 	height = 240,

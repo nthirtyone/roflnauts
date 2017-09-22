@@ -21,7 +21,7 @@ do
 			local i, name = map.portrait, map.name
 			map.filename = path
 			if i then
-				table.insert(icons, love.graphics.newQuad((i-1)*76, 0, 76, 37, 608, 37))
+				table.insert(icons, love.graphics.newImage(map.portrait))
 				table.insert(maps, map)
 			end
 		end
@@ -35,8 +35,7 @@ return {
 	mapSelector
 		:setPosition(width/2-40, 40)
 		:set("shape", Selector.SHAPE_PANORAMA)
-		:set("icons_quads", icons)
-		:set("icons_atlas", love.graphics.newImage("assets/maps.png"))
+		:set("icons", icons)
 		:set("getText", function (self)
 				return self:getSelected().name
 			end)

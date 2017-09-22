@@ -2,7 +2,7 @@ return
 {
 	name = "AI Station 404",
 	theme = "404.ogg",
-	portrait = 8, -- TODO: See `maps/ribbit`.
+	portrait = "assets/maps/404.png",
 	center = {x = 0, y = 0},
 	width  = 360,
 	height = 240,
