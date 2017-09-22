@@ -57,7 +57,6 @@ end
 -- TODO: This is temporarily called by constructor.
 function Hero.load ()
 	if Hero.IMAGE_PORTRAITS == nil then
-		Hero.IMAGE_PORTRAITS = love.graphics.newImage("assets/portraits.png")
 		Hero.IMAGE_FRAME = love.graphics.newImage("assets/menu.png")
 	end
 end

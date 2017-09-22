@@ -17,7 +17,6 @@ end
 -- TODO: Clean-up menus/select, menus/host and Hero after portraits split.
 local group, get
 do
-	local atlas = love.graphics.newImage("assets/portraits.png")
 	local nauts, icons = {}, {}
 	local files = love.filesystem.getDirectoryItems("config/nauts")
 	for _,filename in pairs(files) do
@@ -58,7 +57,6 @@ do
 
 	for i,_ in pairs(Controller.getSets()) do
 		group:addChild(Selector(nauts, group, menu))
-			:set("icons_atlas", atlas)
 			:set("icons", icons)
 			:set("attack", attack)
 			:set("getText", function (self)
