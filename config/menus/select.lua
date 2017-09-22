@@ -14,7 +14,23 @@ if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
--- TODO: loadConfigs is duplicated in menus/select and menus/host.
+-- TODO: loadConfigs and isAvailable are duplicated in menus/select and menus/host.
+local
+function isAvailable (item)
+	if item then
+		if debug then
+			return true
+		end
+		local at = type(item.available)
+		if at == "boolean" then
+			return item.available
+		end
+		if at == "string" then
+			return false
+		end
+	end
+end
+
 local
 function loadConfigs (dir, process)
 	local items, icons = {}, {}
@@ -22,7 +38,10 @@ function loadConfigs (dir, process)
 		local path = string.format("%s/%s", dir, file)
 		if love.filesystem.isFile(path) and file ~= "readme.md" then
 			local item = love.filesystem.load(path)()
-			if item and process(item) then
+			if isAvailable(item) then
+				if process then
+					process(item, file, path)
+				end
 				table.insert(icons, love.graphics.newImage(item.portrait))
 				table.insert(items, item)
 			end
@@ -34,7 +53,7 @@ end
 -- TODO: Clean-up menus/select, menus/host and Hero after portraits split.
 local group, get
 do
-	local nauts, icons = loadConfigs("config/nauts", function (naut) return naut.available or debug end)
+	local nauts, icons = loadConfigs("config/nauts")
 
 	-- TODO: Find a better way to add empty and random entries to naut Selector.
 	table.insert(icons, 1, false)

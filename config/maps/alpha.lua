@@ -3,6 +3,7 @@ return
 	name = "Alpha Abyss",
 	theme = "alpha.ogg",
 	portrait = "assets/maps/alpha.png",
+	available = true,
 	center = {x = 0, y = -80},
 	width  = 360,
 	height = 240,

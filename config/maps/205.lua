@@ -3,6 +3,7 @@ return
 	name = "AI Station 205",
 	theme = "sorona.ogg",
 	portrait = "assets/maps/205.png",
+	available = false,
 	center = {x = 0, y = 0},
 	width  = 360,
 	height = 240,

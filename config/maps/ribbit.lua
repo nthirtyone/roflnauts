@@ -3,6 +3,7 @@ return
 	name = "Ribbit IV",
 	theme = "ribbit.ogg",
 	portrait = "assets/maps/ribbit.png",
+	available = true,
 	center = {x = 0, y = 50},
 	width  = 360,
 	height = 240,

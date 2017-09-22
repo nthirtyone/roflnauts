@@ -3,6 +3,7 @@ return
 	name = "Starstorm",
 	theme = "starstorm.ogg",
 	portrait = "assets/maps/starstorm.png",
+	available = true,
 	center = {x = 0, y = -20},
 	width  = 400,
 	height = 260,

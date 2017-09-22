@@ -10,7 +10,23 @@ if background == nil or not background:is(require "not.MenuBackground") then
 	background = require "not.MenuBackground"(menu)
 end
 
--- TODO: loadConfigs is duplicated in menus/select and menus/host.
+-- TODO: loadConfigs and isAvailable are duplicated in menus/select and menus/host.
+local
+function isAvailable (item)
+	if item then
+		if debug then
+			return true
+		end
+		local at = type(item.available)
+		if at == "boolean" then
+			return item.available
+		end
+		if at == "string" then
+			return false
+		end
+	end
+end
+
 local
 function loadConfigs (dir, process)
 	local items, icons = {}, {}
@@ -18,7 +34,10 @@ function loadConfigs (dir, process)
 		local path = string.format("%s/%s", dir, file)
 		if love.filesystem.isFile(path) and file ~= "readme.md" then
 			local item = love.filesystem.load(path)()
-			if item and process(item, file, path) then
+			if isAvailable(item) then
+				if process then
+					process(item, file, path)
+				end
 				table.insert(icons, love.graphics.newImage(item.portrait))
 				table.insert(items, item)
 			end
@@ -28,7 +47,7 @@ function loadConfigs (dir, process)
 end
 
 -- TODO: This is temporary solution for generating available maps list and portraits for them to pass to Selector.
-local maps, icons = loadConfigs("config/maps", function (map, _, path) map.filename = path; return true end)
+local maps, icons = loadConfigs("config/maps", function (map, _, path) map.filename = path end)
 local mapSelector = Selector(maps, nil, menu)
 
 return {

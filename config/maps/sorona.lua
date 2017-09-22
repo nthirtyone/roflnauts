@@ -3,6 +3,7 @@ return
 	name = "Sorona",
 	theme = "sorona.ogg",
 	portrait = "assets/maps/sorona.png",
+	available = true,
 	center = {x = 0, y = 0},
 	width  = 360,
 	height = 240,

@@ -3,6 +3,7 @@ return
 	name = "Aiguillon",
 	theme = "aiguillon.ogg",
 	portrait = "assets/maps/aiguillon.png",
+	available = true,
 	center = {x = 0, y = 10},
 	width  = 370,
 	height = 290,

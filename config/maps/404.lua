@@ -3,6 +3,7 @@ return
 	name = "AI Station 404",
 	theme = "404.ogg",
 	portrait = "assets/maps/404.png",
+	available = true,
 	center = {x = 0, y = 0},
 	width  = 360,
 	height = 240,

@@ -3,6 +3,7 @@ return
 	name = "Rill",
 	theme = "rill.ogg",
 	portrait = "assets/maps/rill.png",
+	available = true,
 	center = {x = 0, y = 75},
 	width  = 400,
 	height = 260,

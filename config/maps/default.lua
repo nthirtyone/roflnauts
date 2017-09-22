@@ -3,6 +3,7 @@ return
 	name = "default",
 	theme = "default.ogg",
 	portrait = "assets/maps/default.png",
+	available = true,
 	center = {x = 0, y = 0},
 	width  = 360,
 	height = 240,
