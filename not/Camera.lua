@@ -29,9 +29,9 @@ end
 function Camera:transform (scale, ratio, vw, vh)
 	local px, py = self:getPosition()
 	local sx, sy = self:getShake()
-	local dx, dy = (px + sx) * ratio, (py + sy) * ratio
+	local dx, dy = math.floor((px + sx) * ratio), math.floor((py + sy) * ratio)
 
-	vw, vh = vw / scale / 2, vh / scale / 2
+	vw, vh = math.floor(vw / scale / 2), math.floor(vh / scale / 2)
 
 	love.graphics.scale(scale, scale)
 	love.graphics.translate(vw - dx, vh - dy)
