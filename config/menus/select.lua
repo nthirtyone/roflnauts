@@ -34,7 +34,7 @@ end
 -- TODO: Clean-up menus/select, menus/host and Hero after portraits split.
 local group, get
 do
-	local nauts, icons = loadConfigs("config/nauts", function (naut) return naut.available end)
+	local nauts, icons = loadConfigs("config/nauts", function (naut) return naut.available or debug end)
 
 	-- TODO: Find a better way to add empty and random entries to naut Selector.
 	table.insert(icons, 1, false)
