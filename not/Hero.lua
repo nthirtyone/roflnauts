@@ -227,6 +227,26 @@ function Hero:land ()
 	self:createEffect("land")
 end
 
+function Hero:walk (face)
+	local x, y = self:getLinearVelocity()
+	self.facing = face
+	self:applyForce(250 * face, 0)
+	if x > self.MAX_VELOCITY then
+		self:applyForce(-250, 0)
+	end
+	if x < -self.MAX_VELOCITY then
+		self:applyForce(250, 0)
+	end
+end
+
+function Hero:walkLeft ()
+	self:walk(-1)
+end
+
+function Hero:walkRight ()
+	self:walk(1)
+end
+
 -- Creates temporary fixture for hero's body that acts as sensor.
 -- direction:  ("left", "right", "up", "down")
 -- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.

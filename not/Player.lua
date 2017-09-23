@@ -38,20 +38,10 @@ function Player:update (dt)
 
 	-- Walking.
 	if self:isControlDown("left") then
-		self.facing = -1
-		self:applyForce(-250, 0)
-		-- Controlled speed limit
-		if x < -self.MAX_VELOCITY then
-			self:applyForce(250, 0)
-		end
+		self:walkLeft()
 	end
 	if self:isControlDown("right") then
-		self.facing = 1
-		self:applyForce(250, 0)
-		-- Controlled speed limit
-		if x > self.MAX_VELOCITY then
-			self:applyForce(-250, 0)
-		end
+		self:walkRight()
 	end
 end
 
