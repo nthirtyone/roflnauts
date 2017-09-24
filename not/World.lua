@@ -133,8 +133,8 @@ function World:buildMap ()
 				y = op.y
 			elseif op.animations then
 				entity:setAnimationsList(getAnimations(op.animations))
-				_,_,x,y = bg:getAnimation()[1]:getViewport()
-				bg:setPosition(x / -2, y / -2)
+				_,_,x,y = entity:getAnimation()[1]:getViewport()
+				x, y = x / -2, y / -2
 			else
 				local image = love.graphics.newImage(imagePath)
 				x = image:getWidth() / -2
