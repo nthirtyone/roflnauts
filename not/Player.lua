@@ -35,14 +35,14 @@ function Player:update (dt)
 		self:setLinearVelocity(x,-160)
 		self.jumpTimer = self.jumpTimer - dt
 	end
+end
 
-	-- Walking.
-	if self:isControlDown("left") then
-		self:walkLeft()
-	end
-	if self:isControlDown("right") then
-		self:walkRight()
-	end
+function Player:isWalkingLeft ()
+	return self:isControlDown("left")
+end
+
+function Player:isWalkingRight ()
+	return self:isControlDown("right")
 end
 
 -- Controller callbacks.
@@ -78,7 +78,6 @@ function Player:controlpressed (set, action, key)
 
 	-- Walking
 	if (action == "left" or action == "right") then
-		self.isWalking = true
 		if (self.current ~= self.animations.attack) and
 		   (self.current ~= self.animations.attack_up) and
 		   (self.current ~= self.animations.attack_down) then
@@ -125,7 +124,6 @@ function Player:controlreleased (set, action, key)
 	-- Walking
 	if (action == "left" or action == "right") then
 		if not (self:isControlDown("left") or self:isControlDown("right")) then
-			self.isWalking = false
 			if self.current == self.animations.walk then
 				self:setAnimation("default")
 			end

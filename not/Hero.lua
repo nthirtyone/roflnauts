@@ -43,7 +43,6 @@ function Hero:new (config, x, y, world)
 	self.salto = false
 	self.smoke = false
 	self.isAlive = true
-	self.isWalking = false
 	self.isJumping = false
 	self.spawntimer = 2
 	self.punchCooldown = 0
@@ -124,6 +123,13 @@ function Hero:update (dt)
 		end
 	end
 
+	if self:isWalkingLeft() then
+		self:walk(-1)
+	end
+	if self:isWalkingRight() then
+		self:walk(1)
+	end
+
 	-- Stop vertical
 	local currentAnimation = self:getAnimation()
 	if self.frame < currentAnimation.frames then
@@ -138,7 +144,7 @@ end
 
 --- Damps linear velocity every frame by applying minor force to body.
 function Hero:dampVelocity (dt)
-	if not self.isWalking then
+	if not self:isWalking() then
 		local face
 		local x, y = self:getLinearVelocity()
 		if x < -12 then
@@ -199,7 +205,7 @@ end
 function Hero:goToNextFrame ()
 	if self.current.repeated or not (self.frame == self.current.frames) then
 		self.frame = (self.frame % self.current.frames) + 1
-	elseif self.isWalking then
+	elseif self:isWalking() then
 		self:setAnimation("walk")
 	elseif self.current == self.animations.damage then
 		self:setAnimation("default")
@@ -227,6 +233,18 @@ function Hero:land ()
 	self:createEffect("land")
 end
 
+function Hero:isWalking ()
+	return self:isWalkingLeft() or self:isWalkingRight()
+end
+
+function Hero:isWalkingLeft ()
+	return false
+end
+
+function Hero:isWalkingRight ()
+	return false
+end
+
 function Hero:walk (face)
 	local x, y = self:getLinearVelocity()
 	self.facing = face
@@ -237,14 +255,6 @@ function Hero:walk (face)
 	if x < -self.MAX_VELOCITY then
 		self:applyForce(250, 0)
 	end
-end
-
-function Hero:walkLeft ()
-	self:walk(-1)
-end
-
-function Hero:walkRight ()
-	self:walk(1)
 end
 
 -- Creates temporary fixture for hero's body that acts as sensor.
