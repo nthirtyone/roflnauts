@@ -43,7 +43,6 @@ function Hero:new (config, x, y, world)
 	self.salto = false
 	self.smoke = false
 	self.isAlive = true
-	self.isJumping = false
 	self.spawntimer = 2
 	self.punchCooldown = 0
 	-- TODO: Pass loaded portrait from menu to Hero.
@@ -140,6 +139,13 @@ function Hero:update (dt)
 			self:setLinearVelocity(38*self.facing, 0)
 		end
 	end
+
+	-- Jumping.
+	if self:isJumping() and self.jumpTimer > 0 and (self.jumpCounter == 0 or self.jumpCounter == 1) then
+		local x = self:getLinearVelocity()
+		self:setLinearVelocity(x,-160)
+		self.jumpTimer = self.jumpTimer - dt
+	end
 end
 
 --- Damps linear velocity every frame by applying minor force to body.
@@ -175,6 +181,13 @@ end
 function Hero:draw (debug)
 	if not self.isAlive then return end
 	Hero.__super.draw(self, debug)
+	if debug then
+		local x, y = self:getPosition()
+		love.graphics.setColor(255, 50, 50)
+		love.graphics.setFont(Font)
+		local msg = string.format("%d %s %s", self.jumpCounter, tostring(self.jumpTimer > 0), tostring(self:isJumping()))
+		love.graphics.print(msg, x + 10, y)
+	end
 end
 
 -- TODO: Hero@drawTag's printf is not readable.
@@ -231,6 +244,10 @@ function Hero:land ()
 	self.salto = false
 	self.smoke = false
 	self:createEffect("land")
+end
+
+function Hero:isJumping ()
+	return false
 end
 
 function Hero:isWalking ()

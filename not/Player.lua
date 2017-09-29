@@ -25,16 +25,8 @@ function Player:isControlDown (control)
 	return Controller.isDown(self:getControllerSet(), control)
 end
 
--- Update of `Player`.
-function Player:update (dt)
-	Player.__super.update(self, dt) -- TODO: It would be probably a good idea to add return to update functions to terminate if something goes badly in parent's update.
-	if self.body:isDestroyed() then return end
-	local x, y = self:getLinearVelocity()
-	-- Jumping.
-	if self.isJumping and self.jumpTimer > 0 then
-		self:setLinearVelocity(x,-160)
-		self.jumpTimer = self.jumpTimer - dt
-	end
+function Player:isJumping ()
+	return self:isControlDown("jump")
 end
 
 function Player:isWalkingLeft ()
@@ -51,10 +43,9 @@ function Player:controlpressed (set, action, key)
 	self.smoke = false -- TODO: temporary
 	-- Jumping
 	if action == "jump" then
+		self.jumpCounter = self.jumpCounter - 1
 		if self.jumpCounter > 0 then
-			-- General jump logics
-			self.isJumping = true
-			--self:playSound(6)
+			-- self:playSound(6)
 			-- Spawn proper effect
 			if not self.inAir then
 				self:createEffect("jump")
@@ -71,8 +62,6 @@ function Player:controlpressed (set, action, key)
 			   (self.current == self.animations.attack_down) then
 				self:setAnimation("default")
 			end
-			-- Remove jump
-			self.jumpCounter = self.jumpCounter - 1
 		end
 	end
 
@@ -118,7 +107,6 @@ function Player:controlreleased (set, action, key)
 	if set ~= self:getControllerSet() then return end
 	-- Jumping
 	if action == "jump" then
-		self.isJumping = false
 		self.jumpTimer = Hero.jumpTimer -- take initial from metatable
 	end
 	-- Walking
