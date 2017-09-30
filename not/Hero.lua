@@ -141,10 +141,41 @@ function Hero:update (dt)
 	end
 
 	-- Jumping.
-	if self:isJumping() and self.jumpTimer > 0 and (self.jumpCounter == 0 or self.jumpCounter == 1) then
-		local x = self:getLinearVelocity()
-		self:setLinearVelocity(x,-160)
-		self.jumpTimer = self.jumpTimer - dt
+	if self:isJumping() and self.jumpTimer > 0 then
+		if not self._jumpevent then
+			self._jumpevent = true
+			self:onJump()
+		end
+		if self.jumpCounter == 0 or self.jumpCounter == 1 then
+			local x = self:getLinearVelocity()
+			self:setLinearVelocity(x,-160)
+			self.jumpTimer = self.jumpTimer - dt
+		end
+	else
+		self._jumpevent = false
+	end
+end
+
+function Hero:onJump ()
+	-- Start salto if last jump
+	if self.jumpCounter == 1 then
+		self.salto = true
+	end
+	self.jumpCounter = self.jumpCounter - 1
+	if self.jumpCounter > 0 then
+		-- self:playSound(6)
+		-- Spawn proper effect
+		if not self.inAir then
+			self:createEffect("jump")
+		else
+			self:createEffect("doublejump")
+		end
+		-- Animation clear
+		if (self.current == self.animations.attack) or
+		   (self.current == self.animations.attack_up) or
+		   (self.current == self.animations.attack_down) then
+			self:setAnimation("default")
+		end
 	end
 end
 

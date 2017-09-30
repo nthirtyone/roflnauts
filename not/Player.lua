@@ -41,29 +41,6 @@ end
 function Player:controlpressed (set, action, key)
 	if set ~= self:getControllerSet() then return end
 	self.smoke = false -- TODO: temporary
-	-- Jumping
-	if action == "jump" then
-		self.jumpCounter = self.jumpCounter - 1
-		if self.jumpCounter > 0 then
-			-- self:playSound(6)
-			-- Spawn proper effect
-			if not self.inAir then
-				self:createEffect("jump")
-			else
-				self:createEffect("doublejump")
-			end
-			-- Start salto if last jump
-			if self.jumpCounter == 1 then
-				self.salto = true
-			end
-			-- Animation clear
-			if (self.current == self.animations.attack) or
-			   (self.current == self.animations.attack_up) or
-			   (self.current == self.animations.attack_down) then
-				self:setAnimation("default")
-			end
-		end
-	end
 
 	-- Walking
 	if (action == "left" or action == "right") then
