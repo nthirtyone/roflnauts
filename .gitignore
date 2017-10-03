@@ -1,10 +1,4 @@
-*.xcf
-*.sfs
 *.swp
 *.swo
 *~
-*.wav
-.project
-.backup/
-run.bat
-run.sh
+releases/
