@@ -17,8 +17,14 @@ return
 	},
 	create = {
 		{
+			clouds = "assets/dust.png",
+			animations = "clouds-default",
+			count = 8,
+		},
+		{
 			ratio = 0,
 			background = "assets/backgrounds/alpha.png",
+			animations = "background-alpha"
 		},
 		{
 			x = -60,
