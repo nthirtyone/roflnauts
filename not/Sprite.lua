@@ -27,8 +27,8 @@ end
 function Sprite.newImage (path)
 	local imagedata = love.image.newImageData(path)
 	local transparency = function(x, y, r, g, b, a)
-		if (r == 0 and g == 128 and b == 64) or
-		   (r == 0 and g == 240 and b ==  6) then
+		if (r == 0 and g == 128/255 and b == 64/255) or
+		   (r == 0 and g == 240/255 and b ==  6/255) then
 			a = 0
 		end
 		return r, g, b, a
