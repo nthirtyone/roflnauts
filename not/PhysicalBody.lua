@@ -65,7 +65,7 @@ end
 function PhysicalBody:draw (debug)
 	PhysicalBody.__super.draw(self, debug)
 	if debug then
-		for _,fixture in pairs(self.body:getFixtureList()) do
+		for _,fixture in pairs(self.body:getFixtures()) do
 			local category = fixture:getCategory()
 			-- TODO: Fixture drawing of PhysicalBodies could take activity into account in every case.
 			if category == 1 then

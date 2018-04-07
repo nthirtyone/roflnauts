@@ -114,7 +114,7 @@ function Hero:update (dt)
 	-- Cooldown
 	self.punchCooldown = self.punchCooldown - dt
 	if not self.body:isDestroyed() then -- TODO: This is weird
-		for _,fixture in pairs(self.body:getFixtureList()) do -- TODO: getFixtures from `PhysicalBody` or similar.
+		for _,fixture in pairs(self.body:getFixtures()) do -- TODO: getFixtures from `PhysicalBody` or similar.
 			if fixture:getUserData() ~= self then
 				fixture:setUserData({fixture:getUserData()[1] - dt, fixture:getUserData()[2]})
 				if fixture:getUserData()[1] < 0 then
