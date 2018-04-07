@@ -69,19 +69,19 @@ function PhysicalBody:draw (debug)
 			local category = fixture:getCategory()
 			-- TODO: Fixture drawing of PhysicalBodies could take activity into account in every case.
 			if category == 1 then
-				love.graphics.setColor(255, 69, 0, 150)
+				love.graphics.setColor(1, .3, 0, .6)
 			end
 			if category == 2 then
-				love.graphics.setColor(137, 255, 0, 150)
+				love.graphics.setColor(.5, 1, 0, .6)
 			end
 			if category == 3 then
-				love.graphics.setColor(137, 0, 255, 50)
+				love.graphics.setColor(.5, 0, 1, .2)
 			end
 			if category == 4 then
 				if self.body:isActive() then
-					love.graphics.setColor(255, 230, 0, 50)
+					love.graphics.setColor(1, .9, 0, .2)
 				else
-					love.graphics.setColor(255, 230, 0, 10)
+					love.graphics.setColor(1, .9, 0, .04)
 				end
 			end
 			local camera = self.world.camera

@@ -175,7 +175,7 @@ end
 function Hero:drawTag ()
 	local x,y = self:getPosition()
 	love.graphics.setFont(Font)
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setColor(1, 1, 1)
 	love.graphics.printf(string.format("Player %d", math.abs(self.group)), math.floor(x), math.floor(y)-26 ,100,'center',0,1,1,50,0)
 end
 
@@ -184,7 +184,7 @@ end
 function Hero:drawHUD (x,y,scale,elevation)
 	-- hud displays only if player is alive
 	if self.isAlive then
-		love.graphics.setColor(255,255,255,255)
+		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.draw(self.IMAGE_FRAME, self.QUAD_FRAME, (x)*scale, (y)*scale, 0, scale, scale)
 		love.graphics.draw(self.portrait, (x+2)*scale, (y+3)*scale, 0, scale, scale)
 		local dy = 30 * elevation

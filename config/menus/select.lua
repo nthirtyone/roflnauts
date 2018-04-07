@@ -128,7 +128,7 @@ return {
 				if self.the_final_countdown ~= 9 then
 					local x,y = self:getPosition()
 					local countdown = math.max(1, math.ceil(self.the_final_countdown))
-					love.graphics.setColor(255, 255, 255, 255)
+					love.graphics.setColor(1, 1, 1, 1)
 					love.graphics.setFont(Font)
 					love.graphics.print("Autostart in:", (x-16)*scale, (y+10)*scale, 0, scale, scale)
 					love.graphics.setFont(Bold)

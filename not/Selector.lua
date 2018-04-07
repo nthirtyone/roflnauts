@@ -134,9 +134,9 @@ function Selector:draw (scale)
 		boxType = "active"
 	end
 
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(1, 1, 1, 1)
 	if not self:isUnique() then
-		love.graphics.setColor(120, 120, 120, 255)
+		love.graphics.setColor(.5, .5, .5, 1)
 	end
 	love.graphics.draw(self.atlas, self.quads[self:getShapeString()][boxType], x*scale, y*scale, 0, scale, scale)
 	-- TODO: That is one way to draw icon for selected value. Find better one. See: `config/menus/host`.
@@ -145,7 +145,7 @@ function Selector:draw (scale)
 		love.graphics.draw(icon, (x+2)*scale, (y+3)*scale, 0, scale, scale)
 	end
 
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(1, 1, 1, 1)
 
 	if self.focused then
 		local dy = (h-6)/2

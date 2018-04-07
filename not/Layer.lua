@@ -38,7 +38,7 @@ function Layer:clear ()
 end
 
 function Layer:draw ()
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.draw(self.canvas, nil, nil, nil, self.drawScale, self.drawScale)
 end
 

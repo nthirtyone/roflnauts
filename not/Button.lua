@@ -42,9 +42,9 @@ function Button:draw (scale)
 	local quad = self.quads
 	local sprite = self.sprite
 	if self:isEnabled() then
-		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.setColor(1, 1, 1, 1)
 	else
-		love.graphics.setColor(140, 140, 140, 255)
+		love.graphics.setColor(.6, .6, .6, 1)
 	end
 	love.graphics.draw(sprite, quad.button.normal, x*scale, y*scale, 0, scale, scale)
 	if self.focused then

@@ -9,7 +9,7 @@ local bx = width/2-29
 return {
 	Element(menu)
 		:set("draw", function (self, scale)
-				love.graphics.setColor(0, 0, 0, 110)
+				love.graphics.setColor(0, 0, 0, .45)
 				local width, height = love.graphics.getWidth(), love.graphics.getHeight()
 				love.graphics.rectangle("fill", 0, 0, width, height)
 			end)

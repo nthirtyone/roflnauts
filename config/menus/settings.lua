@@ -16,13 +16,13 @@ local dimmer = Element(menu)
 	:set("previousControl", "") -- it actually means key that was set as this control PREVIOUSLY
 	:set("draw", function (self, scale) 
 			if self.visible then
-				love.graphics.setColor(0, 0, 0, 210)
+				love.graphics.setColor(0, 0, 0, .8)
 				love.graphics.rectangle("fill",0,0,width*getRealScale(),height*getRealScale())
-				love.graphics.setColor(120, 255, 120, 255)
+				love.graphics.setColor(.5, 1, .5, 1)
 				love.graphics.printf("Press new key for: \n> " .. self.currentControl .. " <", (width/2-110)*scale, (height/2-4)*scale, 220, "center", 0, scale, scale)
-				love.graphics.setColor(120, 120, 120, 255)
+				love.graphics.setColor(.5, .5, .5, 1)
 				love.graphics.printf("Old: " .. self.previousControl .. "", (width/2-110)*scale, (height/2+16)*scale, 220, "center", 0, scale, scale)
-				love.graphics.setColor(255, 255, 255, 255)
+				love.graphics.setColor(1, 1, 1, 1)
 			end
 		end)
 

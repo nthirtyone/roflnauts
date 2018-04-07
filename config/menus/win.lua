@@ -10,7 +10,7 @@ return {
 		:setPosition(width/2, 18)
 		:set("draw", function (self, scale) 
 				local x,y = self:getPosition()
-				love.graphics.setColor(255, 255, 255, 255)
+				love.graphics.setColor(1, 1, 1, 1)
 				love.graphics.printf("ROFL, NOW KILL YOURSELF", x*scale, y*scale, 160, "center", 0, scale, scale, 80, 3)
 			end)
 		:set("focus", function () return true end)

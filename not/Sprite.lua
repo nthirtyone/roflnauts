@@ -103,7 +103,7 @@ function Sprite:draw (debug)
 	local draw_x = math.floor(x)
 
 	if i and not self.hidden then
-		love.graphics.setColor(255,255,255,255)
+		love.graphics.setColor(1, 1, 1, 1)
 		if q then 
 			love.graphics.draw(i, q, draw_x, draw_y, angle, scaleX, scaleY, self:getOffset())
 		else 

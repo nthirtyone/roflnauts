@@ -369,11 +369,11 @@ function World:draw ()
 		self.camera:push()
 		self.camera:transform(getScale(), 1, love.graphics.getDimensions())
 
-		love.graphics.setColor(130,130,130)
+		love.graphics.setColor(.5, .5, .5)
 		love.graphics.line(ax,center.y,bx,center.y)
 		love.graphics.line(center.x,ay,center.x,by)
 
-		love.graphics.setColor(200,200,200)
+		love.graphics.setColor(.78, .78, .78)
 		love.graphics.line(ax,0,bx,0)
 		love.graphics.line(0,ay,0,by)
 		self.camera:pop()
