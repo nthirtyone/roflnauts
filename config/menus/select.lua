@@ -36,7 +36,7 @@ function loadConfigs (dir, process)
 	local items, icons = {}, {}
 	for _,file in pairs(love.filesystem.getDirectoryItems(dir)) do
 		local path = string.format("%s/%s", dir, file)
-		if love.filesystem.isFile(path) and file ~= "readme.md" then
+		if love.filesystem.getInfo(path).type == "file" and file ~= "readme.md" then
 			local item = love.filesystem.load(path)()
 			if isAvailable(item) then
 				if process then
