@@ -22,7 +22,7 @@ function MusicPlayer:setTrack (trackName)
 	if self.tracks[trackName] then
 		self.source = self.tracks[trackName]
 	else
-		local source = love.audio.newSource("assets/music/" .. trackName)
+		local source = love.audio.newSource("assets/music/" .. trackName, "stream")
 		source:setLooping(true)
 		source:setVolume(.7)
 		self.source = source
