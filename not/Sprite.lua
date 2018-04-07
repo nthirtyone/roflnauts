@@ -48,7 +48,7 @@ function Sprite:getImage ()
 end
 
 -- Sets new animations list.
-function Sprite:setAnimationsList (t)
+function Sprite:setAnimations (t)
 	if t then
 		self.animations = t
 		self:setAnimation("default")

@@ -49,7 +49,7 @@ function Hero:new (config, x, y, world)
 	self.punchCooldown = 0
 	-- TODO: Pass loaded portrait from menu to Hero.
 	self.portrait = love.graphics.newImage(config.portrait)
-	self:setAnimationsList(require("config.animations.hero"))
+	self:setAnimations(require("config.animations.hero"))
 	-- Post-creation
 	self:createEffect("respawn")
 end

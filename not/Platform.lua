@@ -8,7 +8,7 @@ Platform = PhysicalBody:extends()
 -- Constructor of `Platform`
 function Platform:new (animations, shape, x, y, world, imagePath)
 	Platform.__super.new(self, x, y, world, imagePath)
-	self:setAnimationsList(animations)
+	self:setAnimations(animations)
 	-- Create table of shapes if single shape is passed.
 	if type(shape[1]) == "number" then
 		shape = {shape}

@@ -132,7 +132,7 @@ function World:buildMap ()
 				x = op.x
 				y = op.y
 			elseif op.animations then
-				entity:setAnimationsList(getAnimations(op.animations))
+				entity:setAnimations(getAnimations(op.animations))
 				_,_,x,y = entity:getAnimation()[1]:getViewport()
 				x, y = x / -2, y / -2
 			else
