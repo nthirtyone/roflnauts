@@ -47,7 +47,7 @@ function Hero:new (config, x, y, world)
 	self.punchCooldown = 0
 	-- TODO: Pass loaded portrait from menu to Hero.
 	self.portrait = love.graphics.newImage(config.portrait)
-	self:setAnimationsList(require("config.animations.hero"))
+	self:setAnimations(require("config.animations.hero"))
 	-- Post-creation
 	self:createEffect("respawn")
 end
@@ -112,7 +112,7 @@ function Hero:update (dt)
 	-- Cooldown
 	self.punchCooldown = self.punchCooldown - dt
 	if not self.body:isDestroyed() then -- TODO: This is weird
-		for _,fixture in pairs(self.body:getFixtureList()) do -- TODO: getFixtures from `PhysicalBody` or similar.
+		for _,fixture in pairs(self.body:getFixtures()) do -- TODO: getFixtures from `PhysicalBody` or similar.
 			if fixture:getUserData() ~= self then
 				fixture:setUserData({fixture:getUserData()[1] - dt, fixture:getUserData()[2]})
 				if fixture:getUserData()[1] < 0 then
@@ -225,7 +225,7 @@ end
 function Hero:drawTag ()
 	local x,y = self:getPosition()
 	love.graphics.setFont(Font)
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setColor(1, 1, 1)
 	love.graphics.printf(string.format("Player %d", math.abs(self.group)), math.floor(x), math.floor(y)-26 ,100,'center',0,1,1,50,0)
 end
 
@@ -234,7 +234,7 @@ end
 function Hero:drawHUD (x,y,scale,elevation)
 	-- hud displays only if player is alive
 	if self.isAlive then
-		love.graphics.setColor(255,255,255,255)
+		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.draw(self.IMAGE_FRAME, self.QUAD_FRAME, (x)*scale, (y)*scale, 0, scale, scale)
 		love.graphics.draw(self.portrait, (x+2)*scale, (y+3)*scale, 0, scale, scale)
 		local dy = 30 * elevation

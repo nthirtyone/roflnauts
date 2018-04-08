@@ -27,7 +27,7 @@ debug = false
 
 -- LÖVE2D callbacks
 function love.load ()
-	love.graphics.setBackgroundColor(90, 90, 90)
+	love.graphics.setBackgroundColor(.35, .35, .35)
 	love.graphics.setDefaultFilter("nearest", "nearest")
 	-- TODO: Move fonts somewhere else out of global scope.
 	Font = love.graphics.newImageFont("assets/font-normal.png", " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;-_/\\!@#$%^&*?=+~`|'\"()[]{}<>", -1)
@@ -44,10 +44,10 @@ function love.draw ()
 	if debug then
 		local scale = getScale()
 		love.graphics.setFont(Font)
-		love.graphics.setColor(255, 0, 0, 255)
+		love.graphics.setColor(1, 0, 0, 1)
 		love.graphics.print("Debug ON", 10, 10, 0, scale, scale)
 		if dbg_msg then
-			love.graphics.setColor(255, 255, 255, 255)
+			love.graphics.setColor(1, 1, 1, 1)
 			love.graphics.print(dbg_msg, 10, 10+9*scale, 0, scale, scale)
 		end
 	end

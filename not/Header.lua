@@ -26,7 +26,7 @@ function Header:draw (scale)
 		local angle = self:getBounce(2)
 		local dy = self:getBounce()*4
 		local x,y = self:getPosition()
-		love.graphics.setColor(255,255,255,255)
+		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.setFont(Bold)
 		love.graphics.printf(string.upper(self.text),x*scale,(y+dy)*scale,400,"center",(angle*5)*math.pi/180,scale,scale,200,12)
 end

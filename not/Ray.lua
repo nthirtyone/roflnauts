@@ -18,7 +18,7 @@ end
 -- TODO: Ray should use Camera boundaries just-in-case.
 -- TODO: Ray uses magic numbers.
 function Ray:draw ()
-	love.graphics.setColor(255, 247, 228, 247)
+	love.graphics.setColor(1, .97, .89, .97)
 	love.graphics.setLineStyle("rough")
 	love.graphics.setLineWidth(self.delay*160)
 

@@ -58,7 +58,7 @@ return {
 		:setPosition(width/2, 15)
 		:set("draw", function (self, scale) 
 				local x,y = self:getPosition()
-				love.graphics.setColor(255, 255, 255, 255)
+				love.graphics.setColor(1, 1, 1, 1)
 				love.graphics.setFont(Bold)
 				love.graphics.draw(awesometwo, x*scale, y*scale, 0, scale, scale, 35)
 			end)

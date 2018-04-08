@@ -10,7 +10,7 @@ local function convertToNew (old)
 end
 
 local function filePrepare ()
-	if not love.filesystem.exists("settings") then
+	if not love.filesystem.getInfo("settings") then
 		local def = love.filesystem.newFile("settings.default")
 		local new = love.filesystem.newFile("settings")
 		new:open("w") def:open("r")
