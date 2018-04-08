@@ -122,6 +122,16 @@ function Hero:update (dt)
 		end
 	end
 
+	--- Walking
+	-- TODO: Walking is still not satisfactiory. Think of way to improve it.
+	if self:isWalking() then
+		if not self._already_walking then
+			self._already_walking = true
+			self:onWalkingStarted()
+		end
+	else
+		self._already_walking = false
+	end
 	if self:isWalkingLeft() then
 		self:walk(-1)
 	end
@@ -154,6 +164,12 @@ function Hero:update (dt)
 	else
 		self._jumpevent = false
 	end
+end
+
+--- Called each time Hero starts walking.
+-- Is not called when only direction of walking is changed.
+function Hero:onWalkingStarted ()
+
 end
 
 function Hero:onJump ()
