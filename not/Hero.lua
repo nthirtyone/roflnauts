@@ -169,7 +169,11 @@ end
 --- Called each time Hero starts walking.
 -- Is not called when only direction of walking is changed.
 function Hero:onWalkingStarted ()
-
+	if (self.current ~= self.animations.attack) and
+	   (self.current ~= self.animations.attack_up) and
+	   (self.current ~= self.animations.attack_down) then
+		self:setAnimation("walk")
+	end
 end
 
 function Hero:onJump ()

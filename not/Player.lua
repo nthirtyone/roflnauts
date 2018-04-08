@@ -42,15 +42,6 @@ function Player:controlpressed (set, action, key)
 	if set ~= self:getControllerSet() then return end
 	self.smoke = false -- TODO: temporary
 
-	-- Walking
-	if (action == "left" or action == "right") then
-		if (self.current ~= self.animations.attack) and
-		   (self.current ~= self.animations.attack_up) and
-		   (self.current ~= self.animations.attack_down) then
-			self:setAnimation("walk")
-		end
-	end
-
 	-- Punching
 	if action == "attack" and self.punchCooldown <= 0 then
 		local f = self.facing
@@ -80,6 +71,7 @@ function Player:controlpressed (set, action, key)
 		end
 	end
 end
+
 function Player:controlreleased (set, action, key)
 	if set ~= self:getControllerSet() then return end
 	-- Jumping
