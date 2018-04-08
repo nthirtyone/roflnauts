@@ -328,14 +328,37 @@ end
 -- Creates temporary fixture for hero's body that acts as sensor.
 -- direction:  ("left", "right", "up", "down")
 -- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.
+-- TODO: While it's good that punch animation changes are here, it is still bad. There is too much similar code in this method.
 function Hero:punch (direction)
 	self.punchCooldown = Hero.PUNCH_COOLDOWN
-	-- Choose shape based on punch direction.
+	self.salto = false
+	
 	local shape
-	if direction == "left" then shape = Hero.PUNCH_LEFT end
-	if direction == "right" then shape = Hero.PUNCH_RIGHT end
-	if direction == "up" then shape = Hero.PUNCH_UP end
-	if direction == "down" then shape = Hero.PUNCH_DOWN end
+	if direction == "left" then
+		shape = Hero.PUNCH_LEFT
+		if self.current ~= self.animations.damage then
+			self:setAnimation("attack")
+		end
+	end
+	if direction == "right" then
+		shape = Hero.PUNCH_RIGHT
+		if self.current ~= self.animations.damage then
+			self:setAnimation("attack")
+		end
+	end
+	if direction == "up" then
+		shape = Hero.PUNCH_UP
+		if self.current ~= self.animations.damage then
+			self:setAnimation("attack_up")
+		end
+	end
+	if direction == "down" then
+		shape = Hero.PUNCH_DOWN
+		if self.current ~= self.animations.damage then
+			self:setAnimation("attack_down")
+		end
+	end
+
 	-- Create and set sensor fixture.
 	local fixture = self:addFixture(shape, 0)
 	fixture:setSensor(true)

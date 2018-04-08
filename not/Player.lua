@@ -45,24 +45,11 @@ function Player:controlpressed (set, action, key)
 	-- Punching
 	if action == "attack" and self.punchCooldown <= 0 then
 		local f = self.facing
-		self.salto = false
 		if self:isControlDown("up") then
-			-- Punch up
-			if self.current ~= self.animations.damage then
-				self:setAnimation("attack_up")
-			end
 			self:punch("up")
 		elseif self:isControlDown("down") then
-			-- Punch down
-			if self.current ~= self.animations.damage then
-				self:setAnimation("attack_down")
-			end
 			self:punch("down")
 		else
-			-- Punch horizontal
-			if self.current ~= self.animations.damage then
-				self:setAnimation("attack")
-			end
 			if f == 1 then
 				self:punch("right")
 			else
