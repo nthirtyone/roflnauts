@@ -65,14 +65,6 @@ function Player:controlreleased (set, action, key)
 	if action == "jump" then
 		self.jumpTimer = Hero.JUMP_TIMER
 	end
-	-- Walking
-	if (action == "left" or action == "right") then
-		if not (self:isControlDown("left") or self:isControlDown("right")) then
-			if self.current == self.animations.walk then
-				self:setAnimation("default")
-			end
-		end
-	end
 end
 
 return Player

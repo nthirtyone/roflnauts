@@ -132,7 +132,10 @@ function Hero:update (dt)
 			self:onWalkingStarted()
 		end
 	else
-		self._already_walking = false
+		if self._already_walking then
+			self._already_walking = false
+			self:onWalkingStopped()
+		end
 	end
 	if self:isWalkingLeft() then
 		self:walk(-1)
@@ -169,12 +172,22 @@ function Hero:update (dt)
 end
 
 --- Called each time Hero starts walking.
--- Is not called when only direction of walking is changed.
+-- Is not called when direction of walking is changed.
 function Hero:onWalkingStarted ()
 	if (self.current ~= self.animations.attack) and
 	   (self.current ~= self.animations.attack_up) and
 	   (self.current ~= self.animations.attack_down) then
 		self:setAnimation("walk")
+	end
+end
+
+--- Called when Hero stops walking.
+-- Is not called when direction of walking is changed.
+function Hero:onWalkingStopped ()
+	if not (self:isControlDown("left") or self:isControlDown("right")) then
+		if self.current == self.animations.walk then
+			self:setAnimation("default")
+		end
 	end
 end
 
