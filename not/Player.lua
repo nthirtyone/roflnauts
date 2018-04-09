@@ -1,13 +1,11 @@
-require "not.Hero"
-
 --- `Player`
--- Special `not.Hero` controllable by a player.
--- TODO: move functions and properties related to controls from `not.Hero`.
-Player = Hero:extends()
+-- Right now this is more or less wrapper for Hero and various methods related to players' input.
+-- TODO: Few more things should be exchanged between Player and Hero.
+-- TODO: In the end this class could be implemented in form of more verbose and functional Controller class. Think about it.
+Player = require "not.Hero":extends()
 
 Player.controllerSet =--[[Controller.sets.*]]nil
 
--- Constructor of `Player`.
 function Player:new (name, x, y, world)
 	Player.__super.new(self, name, x, y, world)
 end
@@ -16,6 +14,7 @@ end
 function Player:assignControllerSet (set)
 	self.controllerSet = set
 end
+
 function Player:getControllerSet ()
 	return self.controllerSet
 end
