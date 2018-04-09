@@ -6,11 +6,8 @@ Player = require "not.Hero":extends()
 
 Player.controllerSet =--[[Controller.sets.*]]nil
 
-function Player:new (name, x, y, world)
-	Player.__super.new(self, name, x, y, world)
-end
-
--- Controller set manipulation.
+--- Assigns controller set to Player.
+-- @param set one of `Controller.sets`
 function Player:assignControllerSet (set)
 	self.controllerSet = set
 end
@@ -19,29 +16,34 @@ function Player:getControllerSet ()
 	return self.controllerSet
 end
 
--- Check if control of assigned controller is pressed.
+--- Wrapper for checking if passed control is currently pressed.
 function Player:isControlDown (control)
 	return Controller.isDown(self:getControllerSet(), control)
 end
 
+--- Overridden from Hero, used by Hero:update.
 function Player:isJumping ()
 	return self:isControlDown("jump")
 end
 
+--- Overridden from Hero, used by Hero:update.
 function Player:isWalkingLeft ()
 	return self:isControlDown("left")
 end
 
+--- Overridden from Hero, used by Hero:update.
 function Player:isWalkingRight ()
 	return self:isControlDown("right")
 end
 
--- Controller callbacks.
+--- Called when control is pressed.
+-- @param set ControllerSet that owns pressed control
+-- @param action action assigned to control
+-- @param key parent key of control
 function Player:controlpressed (set, action, key)
 	if set ~= self:getControllerSet() then return end
 	self.smoke = false -- TODO: temporary
 
-	-- Punching
 	if action == "attack" and self.punchCooldown <= 0 then
 		local f = self.facing
 		if self:isControlDown("up") then
@@ -58,8 +60,7 @@ function Player:controlpressed (set, action, key)
 	end
 end
 
-function Player:controlreleased (set, action, key)
-	if set ~= self:getControllerSet() then return end
-end
+--- Called when control is released.
+function Player:controlreleased (set, action, key) end
 
 return Player
