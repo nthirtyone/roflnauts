@@ -4,8 +4,6 @@
 Hero = require "not.PhysicalBody":extends()
 
 -- Few are left...
-Hero.jumpTimer = 0.16
-Hero.jumpCounter = 2
 Hero.sfx = require "config.sounds"
 
 Hero.QUAD_FRAME = love.graphics.newQuad(0, 15, 32,32, 80,130)
@@ -19,6 +17,8 @@ Hero.PUNCH_LEFT = {-2,-6, -20,-6, -20,6, -2,6}
 Hero.PUNCH_RIGHT = {2,-6, 20,-6, 20,6, 2,6}
 Hero.PUNCH_UP = {-8,-4, -8,-20, 8,-20, 8,-4}
 Hero.PUNCH_DOWN = {-8,4, -8,20, 8,20, 8,4}
+Hero.JUMP_TIMER = 0.16
+Hero.JUMP_COUNT = 2
 
 -- TODO: Portrait managment in Hero and config passed from Menu should be reviewed!
 -- TODO: Clean-up, see `menus/select`.
@@ -43,9 +43,9 @@ function Hero:new (config, x, y, world)
 	self.salto = false
 	self.smoke = false
 	self.isAlive = true
-	self.isWalking = false
-	self.isJumping = false
 	self.spawntimer = 2
+	self.jumpTimer = Hero.JUMP_TIMER
+	self.jumpCounter = Hero.JUMP_COUNT
 	self.punchCooldown = 0
 	-- TODO: Pass loaded portrait from menu to Hero.
 	self.portrait = love.graphics.newImage(config.portrait)
@@ -70,13 +70,18 @@ function Hero:newFixture ()
 	fixture:setGroupIndex(self.group)
 end
 
--- Update callback of `Hero`
+--- Called each game iteration.
+-- @param dt time since last iteration
+-- TODO: Cut this method into smaller parts.
 function Hero:update (dt)
 	Hero.__super.update(self, dt)
+
 	if self.body:isDestroyed() then
 		return
 	end
+
 	self:dampVelocity(dt)
+
 	-- Salto
 	if self.salto and (self.current == self.animations.walk or self.current == self.animations.default) then
 		self.angle = (self.angle + 17 * dt * self.facing) % 360
@@ -84,7 +89,7 @@ function Hero:update (dt)
 		self.angle = 0
 	end
 
-	-- Could you please die?
+	-- Death
 	-- TODO: World/Map function for testing if Point is inside playable area.
 	local m = self.world.map
 	local x, y = self:getPosition()
@@ -95,7 +100,7 @@ function Hero:update (dt)
 		self:die()
 	end
 
-	-- Respawn timer.
+	-- Respawn
 	if self.spawntimer > 0 then
 		self.spawntimer = self.spawntimer - dt
 	end
@@ -103,15 +108,14 @@ function Hero:update (dt)
 		self:respawn()
 	end
 
-	-- Trail spawner
+	-- Trail
 	-- TODO: lower the frequency of spawning - currently it is each frame.
 	if self.smoke and self.inAir then
 		local dx, dy = love.math.random(-5, 5), love.math.random(-5, 5)
 		self:createEffect("trail", dx, dy)
 	end
 
-	-- # PUNCH
-	-- Cooldown
+	-- Punch cooldown
 	self.punchCooldown = self.punchCooldown - dt
 	if not self.body:isDestroyed() then -- TODO: This is weird
 		for _,fixture in pairs(self.body:getFixtures()) do -- TODO: getFixtures from `PhysicalBody` or similar.
@@ -124,7 +128,27 @@ function Hero:update (dt)
 		end
 	end
 
-	-- Stop vertical
+	-- Walking
+	-- TODO: Walking is still not satisfactiory. Think of way to improve it.
+	if self:isWalking() then
+		if not self._already_walking then
+			self._already_walking = true
+			self:onWalkingStarted()
+		end
+	else
+		if self._already_walking then
+			self._already_walking = false
+			self:onWalkingStopped()
+		end
+	end
+	if self:isWalkingLeft() then
+		self:walk(-1)
+	end
+	if self:isWalkingRight() then
+		self:walk(1)
+	end
+
+	-- Set predefined velocity when attack animations are playing
 	local currentAnimation = self:getAnimation()
 	if self.frame < currentAnimation.frames then
 		if currentAnimation == self.animations.attack_up or currentAnimation == self.animations.attack_down then
@@ -134,11 +158,43 @@ function Hero:update (dt)
 			self:setLinearVelocity(38*self.facing, 0)
 		end
 	end
+
+	-- Jumping
+	if self:isJumping() then
+		if self.jumpTimer > 0 then
+			if not self._jumping then
+				self._jumping = true
+				self:onJumpStarted()
+			end
+			if self.jumpCounter == 0 or self.jumpCounter == 1 then
+				local x = self:getLinearVelocity()
+				self:setLinearVelocity(x,-160)
+				self.jumpTimer = self.jumpTimer - dt
+			end
+		end
+	else
+		if self._jumping then
+			self._jumping = false
+			self:onJumpStopped()
+		end
+	end
+end
+
+function Hero:walk (face)
+	local x, y = self:getLinearVelocity()
+	self.facing = face
+	self:applyForce(250 * face, 0)
+	if x > self.MAX_VELOCITY then
+		self:applyForce(-250, 0)
+	end
+	if x < -self.MAX_VELOCITY then
+		self:applyForce(250, 0)
+	end
 end
 
 --- Damps linear velocity every frame by applying minor force to body.
 function Hero:dampVelocity (dt)
-	if not self.isWalking then
+	if not self:isWalking() then
 		local face
 		local x, y = self:getLinearVelocity()
 		if x < -12 then
@@ -155,20 +211,64 @@ function Hero:dampVelocity (dt)
 	end
 end
 
--- TODO: comment them and place them somewhere properly
-function Hero:getAngle ()
-	return self.angle
+--- Called each time Hero starts walking.
+-- Is not called when direction of walking is changed.
+function Hero:onWalkingStarted ()
+	if (self.current ~= self.animations.attack) and
+	   (self.current ~= self.animations.attack_up) and
+	   (self.current ~= self.animations.attack_down) then
+		self:setAnimation("walk")
+	end
 end
-function Hero:getHorizontalMirror ()
-	return self.facing
+
+--- Called when Hero stops walking.
+-- Is not called when direction of walking is changed.
+function Hero:onWalkingStopped ()
+	if not (self:isControlDown("left") or self:isControlDown("right")) then
+		if self.current == self.animations.walk then
+			self:setAnimation("default")
+		end
+	end
 end
-function Hero:getOffset ()
-	return 12,15
+
+function Hero:onJumpStarted ()
+	self.smoke = false
+
+	if self.jumpCounter == 1 then
+		self.salto = true
+	end
+
+	self.jumpCounter = self.jumpCounter - 1
+
+	if self.jumpCounter > 0 then
+		if not self.inAir then
+			self:createEffect("jump")
+		else
+			self:createEffect("doublejump")
+		end
+
+		if (self.current == self.animations.attack) or
+		   (self.current == self.animations.attack_up) or
+		   (self.current == self.animations.attack_down) then
+			self:setAnimation("default")
+		end
+	end
+end
+
+function Hero:onJumpStopped ()
+	self.jumpTimer = Hero.JUMP_TIMER
 end
 
 function Hero:draw (debug)
 	if not self.isAlive then return end
 	Hero.__super.draw(self, debug)
+	if debug then
+		local x, y = self:getPosition()
+		love.graphics.setColor(255, 50, 50)
+		love.graphics.setFont(Font)
+		local msg = string.format("%d %s %s", self.jumpCounter, tostring(self.jumpTimer > 0), tostring(self:isJumping()))
+		love.graphics.print(msg, x + 10, y)
+	end
 end
 
 -- TODO: Hero@drawTag's printf is not readable.
@@ -199,7 +299,7 @@ end
 function Hero:goToNextFrame ()
 	if self.current.repeated or not (self.frame == self.current.frames) then
 		self.frame = (self.frame % self.current.frames) + 1
-	elseif self.isWalking then
+	elseif self:isWalking() then
 		self:setAnimation("walk")
 	elseif self.current == self.animations.damage then
 		self:setAnimation("default")
@@ -221,23 +321,75 @@ end
 -- Called by World when Hero starts contact with Platform (lands).
 function Hero:land ()
 	self.inAir = false
-	self.jumpCounter = 2
+	self.jumpCounter = Hero.JUMP_COUNT
 	self.salto = false
 	self.smoke = false
 	self:createEffect("land")
 end
 
+function Hero:getAngle ()
+	return self.angle
+end
+
+function Hero:getHorizontalMirror ()
+	return self.facing
+end
+
+function Hero:getOffset ()
+	return 12,15
+end
+
+function Hero:isJumping ()
+	return false
+end
+
+function Hero:isWalking ()
+	return self:isWalkingLeft() or self:isWalkingRight()
+end
+
+function Hero:isWalkingLeft ()
+	return false
+end
+
+function Hero:isWalkingRight ()
+	return false
+end
+
 -- Creates temporary fixture for hero's body that acts as sensor.
 -- direction:  ("left", "right", "up", "down")
 -- Sensor fixture is deleted after time set in UserData[1]; deleted by `not.Hero.update`.
+-- TODO: While it's good that punch animation changes are here, it is still bad. There is too much similar code in this method.
 function Hero:punch (direction)
 	self.punchCooldown = Hero.PUNCH_COOLDOWN
-	-- Choose shape based on punch direction.
+	self.salto = false
+	self.smoke = false
+	
 	local shape
-	if direction == "left" then shape = Hero.PUNCH_LEFT end
-	if direction == "right" then shape = Hero.PUNCH_RIGHT end
-	if direction == "up" then shape = Hero.PUNCH_UP end
-	if direction == "down" then shape = Hero.PUNCH_DOWN end
+	if direction == "left" then
+		shape = Hero.PUNCH_LEFT
+		if self.current ~= self.animations.damage then
+			self:setAnimation("attack")
+		end
+	end
+	if direction == "right" then
+		shape = Hero.PUNCH_RIGHT
+		if self.current ~= self.animations.damage then
+			self:setAnimation("attack")
+		end
+	end
+	if direction == "up" then
+		shape = Hero.PUNCH_UP
+		if self.current ~= self.animations.damage then
+			self:setAnimation("attack_up")
+		end
+	end
+	if direction == "down" then
+		shape = Hero.PUNCH_DOWN
+		if self.current ~= self.animations.damage then
+			self:setAnimation("attack_down")
+		end
+	end
+
 	-- Create and set sensor fixture.
 	local fixture = self:addFixture(shape, 0)
 	fixture:setSensor(true)
