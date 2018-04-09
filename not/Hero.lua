@@ -176,6 +176,37 @@ function Hero:update (dt)
 	end
 end
 
+function Hero:walk (face)
+	local x, y = self:getLinearVelocity()
+	self.facing = face
+	self:applyForce(250 * face, 0)
+	if x > self.MAX_VELOCITY then
+		self:applyForce(-250, 0)
+	end
+	if x < -self.MAX_VELOCITY then
+		self:applyForce(250, 0)
+	end
+end
+
+--- Damps linear velocity every frame by applying minor force to body.
+function Hero:dampVelocity (dt)
+	if not self:isWalking() then
+		local face
+		local x, y = self:getLinearVelocity()
+		if x < -12 then
+			face = 1
+		elseif x > 12 then
+			face = -1
+		else
+			face = 0
+		end
+		self:applyForce(40*face,0)
+		if not self.inAir then
+			self:applyForce(80*face,0)
+		end
+	end
+end
+
 --- Called each time Hero starts walking.
 -- Is not called when direction of walking is changed.
 function Hero:onWalkingStarted ()
@@ -221,36 +252,6 @@ end
 
 function Hero:onJumpStopped ()
 	self.jumpTimer = Hero.JUMP_TIMER
-end
-
---- Damps linear velocity every frame by applying minor force to body.
-function Hero:dampVelocity (dt)
-	if not self:isWalking() then
-		local face
-		local x, y = self:getLinearVelocity()
-		if x < -12 then
-			face = 1
-		elseif x > 12 then
-			face = -1
-		else
-			face = 0
-		end
-		self:applyForce(40*face,0)
-		if not self.inAir then
-			self:applyForce(80*face,0)
-		end
-	end
-end
-
--- TODO: comment them and place them somewhere properly
-function Hero:getAngle ()
-	return self.angle
-end
-function Hero:getHorizontalMirror ()
-	return self.facing
-end
-function Hero:getOffset ()
-	return 12,15
 end
 
 function Hero:draw (debug)
@@ -321,6 +322,18 @@ function Hero:land ()
 	self:createEffect("land")
 end
 
+function Hero:getAngle ()
+	return self.angle
+end
+
+function Hero:getHorizontalMirror ()
+	return self.facing
+end
+
+function Hero:getOffset ()
+	return 12,15
+end
+
 function Hero:isJumping ()
 	return false
 end
@@ -335,18 +348,6 @@ end
 
 function Hero:isWalkingRight ()
 	return false
-end
-
-function Hero:walk (face)
-	local x, y = self:getLinearVelocity()
-	self.facing = face
-	self:applyForce(250 * face, 0)
-	if x > self.MAX_VELOCITY then
-		self:applyForce(-250, 0)
-	end
-	if x < -self.MAX_VELOCITY then
-		self:applyForce(250, 0)
-	end
 end
 
 -- Creates temporary fixture for hero's body that acts as sensor.
