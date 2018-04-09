@@ -36,7 +36,7 @@ function loadConfigs (dir, process)
 	local items, icons = {}, {}
 	for _,file in pairs(love.filesystem.getDirectoryItems(dir)) do
 		local path = string.format("%s/%s", dir, file)
-		if love.filesystem.isFile(path) and file ~= "readme.md" then
+		if love.filesystem.getInfo(path).type == "file" and file ~= "readme.md" then
 			local item = love.filesystem.load(path)()
 			if isAvailable(item) then
 				if process then
@@ -128,7 +128,7 @@ return {
 				if self.the_final_countdown ~= 9 then
 					local x,y = self:getPosition()
 					local countdown = math.max(1, math.ceil(self.the_final_countdown))
-					love.graphics.setColor(255, 255, 255, 255)
+					love.graphics.setColor(1, 1, 1, 1)
 					love.graphics.setFont(Font)
 					love.graphics.print("Autostart in:", (x-16)*scale, (y+10)*scale, 0, scale, scale)
 					love.graphics.setFont(Bold)

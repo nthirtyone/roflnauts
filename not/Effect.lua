@@ -10,7 +10,7 @@ function Effect:new (name, x, y, world)
 	end
 	Effect.__super.new(self, x, y, world, nil)
 	self.finished = false
-	self:setAnimationsList(require("config.animations.effects"))
+	self:setAnimations(require("config.animations.effects"))
 	self:setAnimation(name)
 end
 

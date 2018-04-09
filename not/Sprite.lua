@@ -27,8 +27,8 @@ end
 function Sprite.newImage (path)
 	local imagedata = love.image.newImageData(path)
 	local transparency = function(x, y, r, g, b, a)
-		if (r == 0 and g == 128 and b == 64) or
-		   (r == 0 and g == 240 and b ==  6) then
+		if (r == 0 and g == 128/255 and b == 64/255) or
+		   (r == 0 and g == 240/255 and b ==  6/255) then
 			a = 0
 		end
 		return r, g, b, a
@@ -48,7 +48,7 @@ function Sprite:getImage ()
 end
 
 -- Sets new animations list.
-function Sprite:setAnimationsList (t)
+function Sprite:setAnimations (t)
 	if t then
 		self.animations = t
 		self:setAnimation("default")
@@ -103,7 +103,7 @@ function Sprite:draw (debug)
 	local draw_x = math.floor(x)
 
 	if i and not self.hidden then
-		love.graphics.setColor(255,255,255,255)
+		love.graphics.setColor(1, 1, 1, 1)
 		if q then 
 			love.graphics.draw(i, q, draw_x, draw_y, angle, scaleX, scaleY, self:getOffset())
 		else 

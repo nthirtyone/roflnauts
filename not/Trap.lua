@@ -2,7 +2,7 @@ Trap = require "not.PhysicalBody":extends()
 
 function Trap:new (direction, x, y, world, imagePath)
 	Trap.__super.new(self, x, y, world, imagePath)
-	self:setAnimationsList(require("config.animations.flames"))
+	self:setAnimations(require("config.animations.flames"))
 	self:setBodyType("static")
 
 	local mirror = 1
