@@ -70,13 +70,18 @@ function Hero:newFixture ()
 	fixture:setGroupIndex(self.group)
 end
 
--- Update callback of `Hero`
+--- Called each game iteration.
+-- @param dt time since last iteration
+-- TODO: Cut this method into smaller parts.
 function Hero:update (dt)
 	Hero.__super.update(self, dt)
+
 	if self.body:isDestroyed() then
 		return
 	end
+
 	self:dampVelocity(dt)
+
 	-- Salto
 	if self.salto and (self.current == self.animations.walk or self.current == self.animations.default) then
 		self.angle = (self.angle + 17 * dt * self.facing) % 360
@@ -84,7 +89,7 @@ function Hero:update (dt)
 		self.angle = 0
 	end
 
-	-- Could you please die?
+	-- Death
 	-- TODO: World/Map function for testing if Point is inside playable area.
 	local m = self.world.map
 	local x, y = self:getPosition()
@@ -95,7 +100,7 @@ function Hero:update (dt)
 		self:die()
 	end
 
-	-- Respawn timer.
+	-- Respawn
 	if self.spawntimer > 0 then
 		self.spawntimer = self.spawntimer - dt
 	end
@@ -103,15 +108,14 @@ function Hero:update (dt)
 		self:respawn()
 	end
 
-	-- Trail spawner
+	-- Trail
 	-- TODO: lower the frequency of spawning - currently it is each frame.
 	if self.smoke and self.inAir then
 		local dx, dy = love.math.random(-5, 5), love.math.random(-5, 5)
 		self:createEffect("trail", dx, dy)
 	end
 
-	-- # PUNCH
-	-- Cooldown
+	-- Punch cooldown
 	self.punchCooldown = self.punchCooldown - dt
 	if not self.body:isDestroyed() then -- TODO: This is weird
 		for _,fixture in pairs(self.body:getFixtures()) do -- TODO: getFixtures from `PhysicalBody` or similar.
@@ -124,7 +128,7 @@ function Hero:update (dt)
 		end
 	end
 
-	--- Walking
+	-- Walking
 	-- TODO: Walking is still not satisfactiory. Think of way to improve it.
 	if self:isWalking() then
 		if not self._already_walking then
@@ -144,7 +148,7 @@ function Hero:update (dt)
 		self:walk(1)
 	end
 
-	-- Stop vertical
+	-- Set predefined velocity when attack animations are playing
 	local currentAnimation = self:getAnimation()
 	if self.frame < currentAnimation.frames then
 		if currentAnimation == self.animations.attack_up or currentAnimation == self.animations.attack_down then
@@ -155,7 +159,7 @@ function Hero:update (dt)
 		end
 	end
 
-	-- Jumping.
+	-- Jumping
 	if self:isJumping() then
 		if self.jumpTimer > 0 then
 			if not self._jumping then
@@ -228,20 +232,21 @@ function Hero:onWalkingStopped ()
 end
 
 function Hero:onJumpStarted ()
-	-- Start salto if last jump
+	self.smoke = false
+
 	if self.jumpCounter == 1 then
 		self.salto = true
 	end
+
 	self.jumpCounter = self.jumpCounter - 1
+
 	if self.jumpCounter > 0 then
-		-- self:playSound(6)
-		-- Spawn proper effect
 		if not self.inAir then
 			self:createEffect("jump")
 		else
 			self:createEffect("doublejump")
 		end
-		-- Animation clear
+
 		if (self.current == self.animations.attack) or
 		   (self.current == self.animations.attack_up) or
 		   (self.current == self.animations.attack_down) then
@@ -357,6 +362,7 @@ end
 function Hero:punch (direction)
 	self.punchCooldown = Hero.PUNCH_COOLDOWN
 	self.salto = false
+	self.smoke = false
 	
 	local shape
 	if direction == "left" then

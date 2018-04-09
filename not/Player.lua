@@ -42,8 +42,6 @@ end
 -- @param key parent key of control
 function Player:controlpressed (set, action, key)
 	if set ~= self:getControllerSet() then return end
-	self.smoke = false -- TODO: temporary
-
 	if action == "attack" and self.punchCooldown <= 0 then
 		local f = self.facing
 		if self:isControlDown("up") then
