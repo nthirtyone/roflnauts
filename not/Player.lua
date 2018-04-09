@@ -60,10 +60,6 @@ end
 
 function Player:controlreleased (set, action, key)
 	if set ~= self:getControllerSet() then return end
-	-- Jumping
-	if action == "jump" then
-		self.jumpTimer = Hero.JUMP_TIMER
-	end
 end
 
 return Player

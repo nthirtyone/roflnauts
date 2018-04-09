@@ -156,18 +156,23 @@ function Hero:update (dt)
 	end
 
 	-- Jumping.
-	if self:isJumping() and self.jumpTimer > 0 then
-		if not self._jumpevent then
-			self._jumpevent = true
-			self:onJump()
-		end
-		if self.jumpCounter == 0 or self.jumpCounter == 1 then
-			local x = self:getLinearVelocity()
-			self:setLinearVelocity(x,-160)
-			self.jumpTimer = self.jumpTimer - dt
+	if self:isJumping() then
+		if self.jumpTimer > 0 then
+			if not self._jumping then
+				self._jumping = true
+				self:onJumpStarted()
+			end
+			if self.jumpCounter == 0 or self.jumpCounter == 1 then
+				local x = self:getLinearVelocity()
+				self:setLinearVelocity(x,-160)
+				self.jumpTimer = self.jumpTimer - dt
+			end
 		end
 	else
-		self._jumpevent = false
+		if self._jumping then
+			self._jumping = false
+			self:onJumpStopped()
+		end
 	end
 end
 
@@ -191,7 +196,7 @@ function Hero:onWalkingStopped ()
 	end
 end
 
-function Hero:onJump ()
+function Hero:onJumpStarted ()
 	-- Start salto if last jump
 	if self.jumpCounter == 1 then
 		self.salto = true
@@ -212,6 +217,10 @@ function Hero:onJump ()
 			self:setAnimation("default")
 		end
 	end
+end
+
+function Hero:onJumpStopped ()
+	self.jumpTimer = Hero.JUMP_TIMER
 end
 
 --- Damps linear velocity every frame by applying minor force to body.
