@@ -4,8 +4,6 @@
 Hero = require "not.PhysicalBody":extends()
 
 -- Few are left...
-Hero.jumpTimer = 0.16
-Hero.jumpCounter = 2
 Hero.sfx = require "config.sounds"
 
 Hero.QUAD_FRAME = love.graphics.newQuad(0, 15, 32,32, 80,130)
@@ -19,6 +17,8 @@ Hero.PUNCH_LEFT = {-2,-6, -20,-6, -20,6, -2,6}
 Hero.PUNCH_RIGHT = {2,-6, 20,-6, 20,6, 2,6}
 Hero.PUNCH_UP = {-8,-4, -8,-20, 8,-20, 8,-4}
 Hero.PUNCH_DOWN = {-8,4, -8,20, 8,20, 8,4}
+Hero.JUMP_TIMER = 0.16
+Hero.JUMP_COUNT = 2
 
 -- TODO: Portrait managment in Hero and config passed from Menu should be reviewed!
 -- TODO: Clean-up, see `menus/select`.
@@ -44,6 +44,8 @@ function Hero:new (config, x, y, world)
 	self.smoke = false
 	self.isAlive = true
 	self.spawntimer = 2
+	self.jumpTimer = Hero.JUMP_TIMER
+	self.jumpCounter = Hero.JUMP_COUNT
 	self.punchCooldown = 0
 	-- TODO: Pass loaded portrait from menu to Hero.
 	self.portrait = love.graphics.newImage(config.portrait)
@@ -291,7 +293,7 @@ end
 -- Called by World when Hero starts contact with Platform (lands).
 function Hero:land ()
 	self.inAir = false
-	self.jumpCounter = 2
+	self.jumpCounter = Hero.JUMP_COUNT
 	self.salto = false
 	self.smoke = false
 	self:createEffect("land")
